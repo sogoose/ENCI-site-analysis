@@ -7,7 +7,7 @@ import {createPhotoArchive} from './photo-archive.js?v=29';
 import {buildIndustrialMeshes,industrialOBJ} from './industrial-meshes.js?v=33';
 import {heritageRecords,heritageSource,formerPalette,applyFormerFunctions} from './former-functions.js?v=33';
 import {buildViewingMeshes} from './viewing-meshes.js?v=32';
-let industrialEnabled=true,viewingEnabled=true;
+let industrialEnabled=true,viewingEnabled=true,accessToolsOpen=false;
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {Line2} from 'three/addons/lines/Line2.js';
 import {LineGeometry} from 'three/addons/lines/LineGeometry.js';
@@ -155,7 +155,7 @@ function updateLegendClearance(){const footer=document.querySelector('footer');i
 if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(updateLegendClearance);observer.observe(document.querySelector('footer'))}addEventListener('resize',updateLegendClearance);updateLegendClearance();
 function renderDrawer(){const drawer=$('#drawer'),p=$('#options'),key=$('#map-legend');drawer.hidden=mode==='terrain';p.replaceChildren();key.replaceChildren();key.hidden=mode!=='access'&&mode!=='geology'&&!(mode==='environment'&&(env||reserveOn))&&!(mode==='sections'&&cliffCutaway&&sectionInfo);if(!key.hidden)renderUnifiedLegend(key);if(mode==='terrain')return;
 if(mode==='geology'){renderGeologyControls(p);return}
-if(mode==='environment'||mode==='access')p.append(focusControl(false));if((mode==='environment'||mode==='access')&&year===2026&&enabled.has('buildings'))p.append(focusControl(true));if(mode==='access'&&year===2026)p.append(roadFadeControl());
+if(mode==='environment'||mode==='access')p.append(focusControl(false));if(mode==='environment'&&year===2026&&enabled.has('buildings'))p.append(focusControl(true));
 if(mode==='environment'){
  p.append(checkOption('Natura 2000 · protected areas',reserveOn,v=>{reserveOn=v;renderDrawer();refreshReserve()},'#23754d'));if(reserveOn&&reserveError)p.append(option('Retry protected areas',()=>refreshReserve(),false,'↻'));
  p.append(option('Original material',()=>{env=null;clearEnv();renderDrawer();say('')},!env));
@@ -167,14 +167,32 @@ if(mode==='environment'){
 }
 if(mode==='access'){
 if(year!==2026)p.append(option('Current terrain',()=>selectYear(2026,false),false,'↗'));
-for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads')){const lab=el('label',undefined,'option');const cb=el('input');cb.type='checkbox';cb.checked=enabled.has(l.id);cb.onchange=()=>{cb.checked?enabled.add(l.id):enabled.delete(l.id);renderDrawer();renderContext()};if(l.id==='roads'){const sw=el('span',undefined,'walk-swatch');sw.style.background=l.color;lab.append(sw)}lab.append(el('span',l.label),cb);p.append(lab);
-if(l.id==='water'&&enabled.has('water')&&contextInfo.water&&/error|failed|no class|unavailable/i.test(contextInfo.water))p.append(sub(contextInfo.water));
-if(l.id==='buildings'&&year===2026&&enabled.has('buildings'))p.append(checkOption('Clean factory mesh',factoryClean,v=>{factoryClean=v;renderContext();renderDrawer()}));
-if(l.id==='buildings'){const use=checkOption('Building use / function',buildingUse,v=>{buildingUse=v;formerSelected=null;if(v)enabled.add('buildings');renderDrawer();renderContext()});use.classList.add('use-option');p.append(use);if(buildingUse){const label=el('label',undefined,'dxf-datum'),sel=el('select');label.append(el('span','Classification'));sel.append(new Option('Former industrial function','former'),new Option('Registered use (BAG)','bag'));sel.value=buildingUseMode;sel.onchange=()=>{buildingUseMode=sel.value;formerSelected=null;renderDrawer();renderContext()};label.append(sel);p.append(label);if(buildingUseSummary)p.append(sub(buildingUseSummary));if(buildingUseMode==='former')renderHeritageInfo(p)}}
+const toolsPanel=el('details',undefined,'qa-details access-tools'),toolsHeading=el('summary','Display & export');
+toolsPanel.open=accessToolsOpen;toolsHeading.onclick=e=>{e.preventDefault();accessToolsOpen=!toolsPanel.open;toolsPanel.open=accessToolsOpen};toolsPanel.append(toolsHeading);
+for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads')){
+ const target=l.id==='buildings'?p:toolsPanel;
+ target.append(checkOption(l.label,enabled.has(l.id),v=>{v?enabled.add(l.id):enabled.delete(l.id);renderDrawer();renderContext()}));
+ if(l.id==='water'&&enabled.has('water')&&contextInfo.water&&/error|failed|no class|unavailable/i.test(contextInfo.water))target.append(sub(contextInfo.water));
+ if(l.id==='buildings'){const use=checkOption('Building use / function',buildingUse,v=>{buildingUse=v;formerSelected=null;if(v)enabled.add('buildings');renderDrawer();renderContext()});use.classList.add('use-option');p.append(use);if(buildingUse){const label=el('label',undefined,'dxf-datum'),sel=el('select');label.append(el('span','Classification'));sel.append(new Option('Former industrial function','former'),new Option('Registered use (BAG)','bag'));sel.value=buildingUseMode;sel.onchange=()=>{buildingUseMode=sel.value;formerSelected=null;renderDrawer();renderContext()};label.append(sel);p.append(label);if(buildingUseSummary)p.append(sub(buildingUseSummary));if(buildingUseMode==='former')renderHeritageInfo(p)}}
 }
-if(year===2026&&enabled.has('buildings')&&kind!=='local'){p.append(checkOption('Industrial mesh additions',industrialEnabled,v=>{industrialEnabled=v;updateUI();renderContext();renderDrawer()}));if(industrialEnabled){p.append(sub('Photo / heritage plan reconstruction · approximate geometry'),option('Export industrial OBJ',()=>downloadIndustrialOBJ(),false,'↓'))}}
-if(year===2026&&kind!=='local'){p.append(checkOption('Viewing deck & stairs',viewingEnabled,v=>{viewingEnabled=v;updateUI();renderContext();renderDrawer()}));if(viewingEnabled)p.append(option('Export viewing deck OBJ',()=>downloadViewingOBJ(),false,'↓'))}
-if(networkBusy)p.append(sub('Loading saved road data…'));if(networkError)p.append(sub(networkError),option('Reload road data',()=>{networkError='';refreshNetwork()},false,'↻'));if(year===2026)mobilityPanel(p);}
+if(networkBusy)p.append(sub('Loading saved road data…'));if(networkError)p.append(sub(networkError),option('Reload road data',()=>{networkError='';refreshNetwork()},false,'↻'));
+if(year===2026){
+ mobilityPanel(p);
+ if(enabled.has('buildings'))toolsPanel.append(focusControl(true));
+ toolsPanel.append(roadFadeControl());
+ if(enabled.has('buildings'))toolsPanel.append(checkOption('Clean factory mesh',factoryClean,v=>{factoryClean=v;renderContext();renderDrawer()}));
+ if(kind!=='local'){
+  if(enabled.has('buildings'))toolsPanel.append(checkOption('Industrial mesh additions',industrialEnabled,v=>{industrialEnabled=v;updateUI();renderContext();renderDrawer()}));
+  toolsPanel.append(checkOption('Viewing deck & stairs',viewingEnabled,v=>{viewingEnabled=v;updateUI();renderContext();renderDrawer()}));
+  if((industrialEnabled&&enabled.has('buildings'))||viewingEnabled){
+   toolsPanel.append(el('div','OBJ EXPORT · RHINO','env-group-label'));
+   if(industrialEnabled&&enabled.has('buildings'))toolsPanel.append(option('Industrial structures',()=>downloadIndustrialOBJ(),false,'↓'));
+   if(viewingEnabled)toolsPanel.append(option('Viewing deck & stairs',()=>downloadViewingOBJ(),false,'↓'));
+  }
+ }
+ p.append(toolsPanel);
+}
+}
 if(mode==='sections')renderSectionControls(p);
 if(mode==='views')photoArchive.render(p);}
 
