@@ -67,7 +67,7 @@ const enabled=new Set(['buildings']), grids=new Map();
 let buildingUse=false,buildingUseMode='former',buildingUseSummary='',buildingUseCounts=null,formerSelected=null,detailAvailable=false;
 let studyBoundary=true,networkData=null,networkError='',networkBusy=false,networkModel=null;
 const dsmLayer=new THREE.Group();scene.add(dsmLayer);let dsmResolution='off',dsmWorker=null,dsmStatus='',dsmCount=0,dsmExpected=0,dsmIsolated=false;
-const networkLayer=new THREE.Group(),focusLayer=new THREE.Group(),mobilityLayer=new THREE.Group();scene.add(networkLayer,focusLayer,mobilityLayer);let roadFade=cfg.focus?.roadFade??.35,mobilityEnabled=false,mobilityData=null,mobilityBusy=false,mobilityError='',mobilityModel=null;let terrainFade=0,outsideFade=cfg.focus?.outsideFade??.72,buildingFade=cfg.focus?.buildingFade??.35,focusMaterial=null,focusBuildingMaterial=null,focusTexture=null;
+const networkLayer=new THREE.Group(),focusLayer=new THREE.Group(),mobilityLayer=new THREE.Group();scene.add(networkLayer,focusLayer,mobilityLayer);let roadFade=cfg.focus?.roadFade??.35,mobilityEnabled=false,mobilityData=null,mobilityBusy=false,mobilityError='',mobilityModel=null;const terrainFadeOriginals=new Map(),terrainFadeVariants=new Map();let terrainFade=0,outsideFade=cfg.focus?.outsideFade??.72,buildingFade=cfg.focus?.buildingFade??.35,focusMaterial=null,focusBuildingMaterial=null,focusTexture=null;
 const geologyLayer=new THREE.Group();scene.add(geologyLayer);let cliffCutaway=false,selectedCut=null,cliffMode=true,cliffData=null,cliffPromise=null,cliffSelected=null,cliffLength=240,showStrata=true,sectionToken=0,sectionBusy=false,sectionMessage='',sectionIndex=null,sectionModel=null;const cliffOverlay=new THREE.Group(),sectionFace=new THREE.Group();scene.add(cliffOverlay);const cutScene=new THREE.Scene();cutScene.add(sectionFace);const fadeScene=new THREE.Scene(),fadeCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,2);fadeCamera.position.z=1;const fadeMaterial=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.78,depthTest:false,depthWrite:false});fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fadeMaterial));let sectionBackground=.78,sectionInfo=null,sectionLast=null,dxfDatum='source';let sectionPins=[],sectionExpanded=false,sectionCameraPending=false,sectionFlip=false,sectionSlopeVisible=true;let geologyY=-840,geologyCut=true,geologyMessage='',geologyModel=null,geologyLastY=null;let legendOpen=true;const legendSections=new Map();let stackGap=650,stackEntries=[],stackLoading=false,nativeLayers=[],layerOverrides={},contextInfo={},roadCache=null;
 const preview=await json('./assets/terrain/preview-grid.json');
 const compressed=Uint8Array.from(atob(preview.data),v=>v.charCodeAt(0));
@@ -260,12 +260,56 @@ function walkingLink(text,url){const a=el('a',text,'walk-link');a.href=url;a.tar
 function checkOption(name,on,fn,color){const label=el('label',undefined,'option');if(color){const sw=el('span',undefined,'walk-swatch');sw.style.background=color;label.append(sw)}label.append(el('span',name));const cb=el('input');cb.type='checkbox';cb.checked=on;cb.onchange=()=>fn(cb.checked);label.append(cb);return label}
 function localXY(lon,lat){const b=envManifest?.wgs84_bounds,m=envManifest?.model_bounds;if(!b||!m)throw Error('Missing site georeference');return [m[0]+(lon-b[0])/(b[2]-b[0])*(m[2]-m[0]),m[1]+(lat-b[1])/(b[3]-b[1])*(m[3]-m[1])]}
 
-function focusControl(buildings=false,terrainOnly=false){const title=buildings?'Building fade · outside site':'Surroundings fade';const amount=terrainOnly?terrainFade:buildings?buildingFade:outsideFade;const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(amount*100)+'%','focus-value');head.append(el('span',title),value);const slider=el('input');slider.type='range';slider.min=0;slider.max=100;slider.step=5;slider.value=Math.round(amount*100);slider.setAttribute('aria-label',title);slider.oninput=()=>{const v=Number(slider.value)/100;if(terrainOnly){terrainFade=v;if(v===0)clearFocus();else if(focusMaterial)focusMaterial.uniforms.strength.value=v;else refreshFocus()}else if(buildings){buildingFade=v;if(focusBuildingMaterial)focusBuildingMaterial.uniforms.strength.value=v}else{outsideFade=v;if(focusMaterial)focusMaterial.uniforms.strength.value=v}value.textContent=slider.value+'%';updateMobilityFade();makeDirty()};box.append(head,slider);return box}
-function clearFocus(){focusLayer.clear();for(const m of [focusMaterial,focusBuildingMaterial])m?.dispose();focusMaterial=null;focusBuildingMaterial=null;makeDirty()}
+function focusControl(buildings=false,terrainOnly=false){const title=buildings?'Building fade · outside site':'Surroundings fade';const amount=terrainOnly?terrainFade:buildings?buildingFade:outsideFade;const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(amount*100)+'%','focus-value');head.append(el('span',title),value);const slider=el('input');slider.type='range';slider.min=0;slider.max=100;slider.step=5;slider.value=Math.round(amount*100);slider.setAttribute('aria-label',title);slider.oninput=()=>{const v=Number(slider.value)/100;if(terrainOnly){terrainFade=v;if(v===0)clearFocus();else if(terrainFadeOriginals.size)updateTerrainAlpha();else refreshFocus()}else if(buildings){buildingFade=v;if(focusBuildingMaterial)focusBuildingMaterial.uniforms.strength.value=v}else{outsideFade=v;if(focusMaterial)focusMaterial.uniforms.strength.value=v}value.textContent=slider.value+'%';updateMobilityFade();makeDirty()};box.append(head,slider);return box}
+function clearFocus(){for(const [mesh,original] of terrainFadeOriginals)mesh.material=original;terrainFadeOriginals.clear();for(const v of terrainFadeVariants.values()){v.inside.dispose();v.outside.dispose()}terrainFadeVariants.clear();focusLayer.clear();for(const m of [focusMaterial,focusBuildingMaterial])m?.dispose();focusMaterial=null;focusBuildingMaterial=null;makeDirty()}
 function maskTexture(){if(focusTexture)return focusTexture;const ring=walking.boundary?.paths?.[0];if(!ring?.length)return null;const c=document.createElement('canvas');c.width=1024;c.height=Math.round(1024*(ymax-ymin)/(xmax-xmin));const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.fillStyle='#000';g.beginPath();ring.forEach((p,i)=>{const x=(p[0]-xmin)/(xmax-xmin)*c.width,y=(ymax-p[1])/(ymax-ymin)*c.height;i?g.lineTo(x,y):g.moveTo(x,y)});g.closePath();g.fill();focusTexture=new THREE.CanvasTexture(c);focusTexture.colorSpace=THREE.NoColorSpace;return focusTexture}
-function refreshFocus(){clearFocus();const inTerrain=mode==='terrain';if((!active&&!stack)||(stack&&!inTerrain)||!['terrain','environment','access','sections','views'].includes(mode)||(inTerrain&&terrainFade===0))return;const tx=maskTexture();if(!tx)return;
+// Terrain uses two complementary material passes, not a white overlay.
+// Opaque interior writes depth. The exterior blends without writing depth,
+// so it cannot blank out the lower maps in the exploded stack.
+function terrainVariant(original,tx){
+ if(terrainFadeVariants.has(original))return terrainFadeVariants.get(original);
+ const bounds=new THREE.Vector4(xmin,ymin,xmax,ymax);
+ function pass(exterior){
+  const m=original.clone();
+  const previous=original.onBeforeCompile;
+  m.onBeforeCompile=function(shader,renderer){
+   previous.call(this,shader,renderer);
+   shader.uniforms.enciTerrainMask={value:tx};shader.uniforms.enciTerrainBounds={value:bounds};
+   shader.vertexShader='varying vec2 enciTerrainXY;\n'+shader.vertexShader.replace('#include <project_vertex>','#include <project_vertex>\nvec4 enciWorld=modelMatrix*vec4(transformed,1.);\nenciTerrainXY=vec2(enciWorld.x,-enciWorld.z);');
+   shader.fragmentShader='uniform sampler2D enciTerrainMask;uniform vec4 enciTerrainBounds;varying vec2 enciTerrainXY;\n'+shader.fragmentShader.replace('#include <alphamap_fragment>','#include <alphamap_fragment>\nvec2 enciUV=clamp((enciTerrainXY-enciTerrainBounds.xy)/(enciTerrainBounds.zw-enciTerrainBounds.xy),0.,1.);\nfloat enciOutside=texture2D(enciTerrainMask,enciUV).r;\n'+(exterior?'if(enciOutside<0.5 || diffuseColor.a<0.005)discard;':'if(enciOutside>=0.5)discard;'));
+  };
+  m.customProgramCacheKey=()=>original.customProgramCacheKey()+'|enci-terrain-'+(exterior?'outside':'inside');
+  if(exterior){m.transparent=true;m.depthWrite=false;m.forceSinglePass=true;m.opacity=original.opacity*(1-terrainFade);m.alphaTest=0}
+  m.needsUpdate=true;return m
+ }
+ const v={inside:pass(false),outside:pass(true),opacity:original.opacity};terrainFadeVariants.set(original,v);return v
+}
+function updateTerrainAlpha(){
+ for(const v of terrainFadeVariants.values())v.outside.opacity=v.opacity*(1-terrainFade);
+ for(const m of focusLayer.children)if(m.userData.terrainExterior)m.visible=terrainFade<.999;
+ makeDirty()
+}
+function applyTerrainAlpha(tx){
+ terrain.updateMatrixWorld(true);
+ const roots=stack?stackEntries.map(e=>e.group):[active];
+ for(const root of roots)root.traverse(n=>{
+  if(!n.isMesh||!n.geometry||!n.material)return;
+  const orig=n.material,arr=Array.isArray(orig)?orig:[orig];
+  if(arr.some(m=>!m||m.isShaderMaterial||m.isRawShaderMaterial))return;
+  const variants=arr.map(m=>terrainVariant(m,tx));
+  terrainFadeOriginals.set(n,orig);
+  n.material=Array.isArray(orig)?variants.map(v=>v.inside):variants[0].inside;
+  const exterior=new THREE.Mesh(n.geometry,Array.isArray(orig)?variants.map(v=>v.outside):variants[0].outside);
+  exterior.matrixAutoUpdate=false;exterior.matrix.copy(n.matrixWorld);exterior.matrixWorldNeedsUpdate=true;
+  exterior.userData.focusSource=n;exterior.userData.terrainExterior=true;
+  exterior.visible=terrainFade<.999;exterior.raycast=()=>{};
+  focusLayer.add(exterior)
+ });
+ makeDirty()
+}
+function refreshFocus(){clearFocus();const inTerrain=mode==='terrain';if((!active&&!stack)||(stack&&!inTerrain)||!['terrain','environment','access','sections','views'].includes(mode)||(inTerrain&&terrainFade===0))return;const tx=maskTexture();if(!tx)return;if(inTerrain){applyTerrainAlpha(tx);return}
  const material=strength=>new THREE.ShaderMaterial({clipping:true,transparent:true,depthWrite:false,depthTest:true,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-8,side:THREE.DoubleSide,uniforms:{mask:{value:tx},strength:{value:strength},bounds:{value:new THREE.Vector4(xmin,ymin,xmax,ymax)}},vertexShader:'#include <clipping_planes_pars_vertex>\nvarying vec3 world;void main(){world=(modelMatrix*vec4(position,1.)).xyz;vec4 mvPosition=viewMatrix*vec4(world,1.);gl_Position=projectionMatrix*mvPosition;\n#include <clipping_planes_vertex>\n}',fragmentShader:'#include <clipping_planes_pars_fragment>\nuniform sampler2D mask;uniform float strength;uniform vec4 bounds;varying vec3 world;void main(){\n#include <clipping_planes_fragment>\nvec2 uv=(vec2(world.x,-world.z)-bounds.xy)/(bounds.zw-bounds.xy);float a=texture2D(mask,clamp(uv,0.,1.)).r*strength;if(a<.005)discard;gl_FragColor=vec4(1.,1.,1.,a);}'});
- focusMaterial=material(inTerrain?terrainFade:outsideFade);focusBuildingMaterial=material(buildingFade);function add(root,mat){root.updateMatrixWorld(true);root.traverse(n=>{if(n.isMesh&&n.geometry){const m=new THREE.Mesh(n.geometry,mat);m.matrixAutoUpdate=false;m.matrix.copy(n.matrixWorld);m.matrixWorldNeedsUpdate=true;m.userData.focusSource=n;m.renderOrder=7.5;focusLayer.add(m)}})}if(stack){terrain.updateMatrixWorld(true);for(const e of stackEntries)add(e.group,focusMaterial)}else add(active,focusMaterial);if(['environment','access'].includes(mode))for(const root of context.children)if(root.userData.atlasBuildingContext)add(root,focusBuildingMaterial);makeDirty();
+ focusMaterial=material(outsideFade);focusBuildingMaterial=material(buildingFade);function add(root,mat){root.updateMatrixWorld(true);root.traverse(n=>{if(n.isMesh&&n.geometry){const m=new THREE.Mesh(n.geometry,mat);m.matrixAutoUpdate=false;m.matrix.copy(n.matrixWorld);m.matrixWorldNeedsUpdate=true;m.userData.focusSource=n;m.renderOrder=7.5;focusLayer.add(m)}})}add(active,focusMaterial);if(['environment','access'].includes(mode))for(const root of context.children)if(root.userData.atlasBuildingContext)add(root,focusBuildingMaterial);makeDirty();
 }
 
 function roadFadeControl(){const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(roadFade*100)+'%','focus-value'),s=el('input');head.append(el('span','Transport network fade · outside site'),value);s.type='range';s.min=0;s.max=100;s.step=5;s.value=Math.round(roadFade*100);s.setAttribute('aria-label','Road network fade');s.oninput=()=>{roadFade=+s.value/100;value.textContent=s.value+'%';for(const o of [...networkLayer.children,...mobilityLayer.children])if(o.userData.projectionMaterial)o.userData.projectionMaterial.uniforms.outsideFade.value=roadFade;updateMobilityFade();makeDirty()};box.append(head,s);return box}
