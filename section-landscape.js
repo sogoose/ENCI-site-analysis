@@ -1,0 +1,23 @@
+
+const colors={forest:[18,97,59],water:[0,100,200]};
+const rasterCache=new Map();
+function raster(path){if(!rasterCache.has(path)){const p=new Promise((resolve,reject)=>{const im=new Image(),timeout=setTimeout(()=>reject(Error('Raster timeout')),12000);im.onload=()=>{clearTimeout(timeout);try{const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(im,0,0);resolve(ctx.getImageData(0,0,c.width,c.height))}catch(e){reject(e)}};im.onerror=()=>{clearTimeout(timeout);reject(Error('Raster unavailable: '+path))};im.src=path});rasterCache.set(path,p)}return rasterCache.get(path)}
+export async function loadLandscapeRaster(){const [forest,water]=await Promise.allSettled([raster('./assets/environment/Forest_Cover_2020_V4.png'),raster('./assets/environment/Land_Cover_2020.png')]);return {forest:forest.status==='fulfilled'?forest.value:null,water:water.status==='fulfilled'?water.value:null}}
+export function classifyRaster(im,b,x,y,color){if(!im)return null;const u=Math.floor((x-b[0])/(b[2]-b[0])*im.width),v=Math.floor((b[3]-y)/(b[3]-b[1])*im.height);if(u<0||v<0||u>=im.width||v>=im.height)return null;const i=(v*im.width+u)*4;if(im.data[i+3]<128)return null;return color.every((c,k)=>Math.abs(im.data[i+k]-c)<=3)}
+function inside(x,y,ring){let hit=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if((a[1]>y)!==(b[1]>y)&&x<(b[0]-a[0])*(y-a[1])/(b[1]-a[1])+a[0])hit=!hit}return hit}
+export function reservePolygons(features,localXY){if(!features)return null;return features.flatMap(f=>{const g=f.geometry;if(!g)return [];return (g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[]).map(poly=>poly.map(r=>r.map(p=>localXY(p[0],p[1]))))})}
+function inReserve(poly,x,y){return poly.some(p=>p.length&&inside(x,y,p[0])&&!p.slice(1).some(r=>inside(x,y,r)))}
+export function sectionLandscape(s,len,points,b,data,polygons){
+ const out={forest:[],water:[],reserve:[],available:{forest:!!data?.forest,water:!!data?.water,reserve:polygons!==null},noData:{forest:0,water:0}};
+ if(!len)return out;const n=Math.max(1,Math.ceil(len/5));
+ const hAt=d=>{let lo=0,hi=points.length-1;while(hi-lo>1){const i=(lo+hi)>>1;if(points[i][0]<d)lo=i;else hi=i}const [a,h]=points[lo],[z,j]=points[hi];return Number.isFinite(h)&&Number.isFinite(j)?(a===z?h:h+(j-h)*(d-a)/(z-a)):null};
+ for(const k of ['forest','water','reserve']){if(!out.available[k])continue;let run=null;for(let i=0;i<n;i++){const a=i/n*len,z=(i+1)/n*len,t=(a+z)/2/len,x=s.a[0]+(s.b[0]-s.a[0])*t,y=s.a[1]+(s.b[1]-s.a[1])*t;const hit=k==='reserve'?inReserve(polygons,x,y):classifyRaster(data[k],b,x,y,colors[k]);if(hit===null)out.noData[k]++;if(hit===true){if(!run)run={a,z};else run.z=z}else if(run){out[k].push(run);run=null}}if(run)out[k].push(run)}
+ out.height=hAt;return out;
+}
+export function landscapeDrawing(svg,node,ctx,layer){const {X,Y,scale,len,max,min}=ctx;const green='#24734c',blue='#3485ad',tree='#386949';
+ // The map designation is a horizontal dimension band, not a geological stratum.
+ for(const r of layer.reserve){const a=X(r.a),z=X(r.z),w=z-a,y=32;node('rect',{x:a,y,width:w,height:8,fill:'#cbe4ce',stroke:green,'stroke-width':.65});for(const x of [a,z])node('line',{x1:x,x2:x,y1:y-2,y2:y+12,stroke:green,'stroke-width':.8});if(w>68)node('text',{x:(a+z)/2,y:y-4,'font-size':9,'text-anchor':'middle',fill:green},'Natura 2000')}
+ for(const r of layer.forest){const spacing=Math.max(12,16/scale),count=Math.max(1,Math.floor((r.z-r.a)/spacing));for(let i=0;i<count;i++){const d=r.a+(i+.5)*(r.z-r.a)/count,h=layer.height(d);if(!Number.isFinite(h))continue;const x=X(d),y=Y(h),r0=4.4;node('line',{x1:x,x2:x,y1:y,y2:y-13,stroke:tree,'stroke-width':.9});node('circle',{cx:x,cy:y-14,r:r0,fill:'#fbfdf9',stroke:tree,'stroke-width':1})}}
+ // A water-classified surface receives a symbolic blue line. The raster does not supply depth.
+ for(const r of layer.water){const pts=[],n=Math.max(1,Math.ceil((r.z-r.a)/2));for(let i=0;i<=n;i++){const d=r.a+(r.z-r.a)*i/n,h=layer.height(d);if(Number.isFinite(h))pts.push([X(d),Y(h)]) ;else pts.push(null)}let path='',started=false;for(const p of pts){if(!p){started=false;continue}path+=(started?'L':'M')+p[0]+' '+p[1]+' ';started=true}if(path)node('path',{d:path,fill:'none',stroke:blue,'stroke-width':4,'stroke-linecap':'butt','stroke-linejoin':'round'});const mid=(r.a+r.z)/2,h=layer.height(mid);if(Number.isFinite(h)&&X(r.z)-X(r.a)>55){node('line',{x1:X(mid),x2:X(mid),y1:Y(h)-2,y2:Y(h)-14,stroke:blue,'stroke-width':.65});node('text',{x:X(mid),y:Y(h)-17,'text-anchor':'middle','font-size':9,fill:blue},'Surface water')}}
+}
