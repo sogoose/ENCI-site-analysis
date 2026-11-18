@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {createPhotoArchive} from './photo-archive.js?v=29';
 import {buildIndustrialMeshes,industrialOBJ} from './industrial-meshes.js?v=31';
-let industrialEnabled=true;
+import {buildViewingMeshes} from './viewing-meshes.js?v=32';
+let industrialEnabled=true,viewingEnabled=true;
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {Line2} from 'three/addons/lines/Line2.js';
 import {LineGeometry} from 'three/addons/lines/LineGeometry.js';
@@ -91,6 +92,7 @@ const yearRow=y=>cfg.years.find(r=>r.year===y);
 function updateUI(){const date=$('#date');date.textContent=stack?'1950—2026':year===2026?'2026':String(year);
 $('#source').textContent=stack?('Exploded comparison · '+stackEntries.filter(e=>e.kind==='preview').length+' preview layers · spacing illustrative'):year===2026?(kind==='local'?'Local preview · source date unverified':kind==='detail'?'Current detail · source date unverified':'Current terrain · source date unverified'):'Historical reconstruction · inferred elevations'+(kind==='preview'?' · low-resolution preview':'');
 if(!stack&&year===2026&&kind!=='local'&&industrialEnabled&&enabled.has('buildings'))$('#source').textContent+=' · industrial additions estimated';
+if(!stack&&year===2026&&kind!=='local'&&viewingEnabled)$('#source').textContent+=' · viewing structure estimated';
 if(mode==='geology'&&year===2026)$('#source').textContent='Geological section · 2024 REGIS reference / inferred contacts';else if(!stack&&active?.userData?.atlasNote)$('#source').textContent=active.userData.atlasNote;
 $('#detail').hidden=stack||year!==2026||kind==='local'||!detailAvailable;$('#detail').classList.toggle('active',detail);$('#detail').textContent=detail?'Overview':'Detail';
 $('#stack').classList.toggle('active',stack);$('#stack-spacing').hidden=!stack;$('#stack-labels').hidden=!stack;$('#stack').textContent=stack?'Single':'Stack';
@@ -155,6 +157,7 @@ if(l.id==='water'&&enabled.has('water')&&contextInfo.water&&/error|failed|no cla
 if(l.id==='buildings'){const use=checkOption('Building use',buildingUse,v=>{buildingUse=v;if(v)enabled.add('buildings');renderDrawer();renderContext()});use.classList.add('use-option');p.append(use);if(buildingUse&&buildingUseSummary)p.append(sub(buildingUseSummary))}
 }
 if(year===2026&&enabled.has('buildings')&&kind!=='local'){p.append(checkOption('Industrial mesh additions',industrialEnabled,v=>{industrialEnabled=v;updateUI();renderContext();renderDrawer()}));if(industrialEnabled){p.append(sub('Photo / heritage plan reconstruction · approximate geometry'),option('Export industrial OBJ',()=>downloadIndustrialOBJ(),false,'↓'))}}
+if(year===2026&&kind!=='local'){p.append(checkOption('Viewing deck & stairs',viewingEnabled,v=>{viewingEnabled=v;updateUI();renderContext();renderDrawer()}));if(viewingEnabled)p.append(option('Export viewing deck OBJ',()=>downloadViewingOBJ(),false,'↓'))}
 if(networkBusy)p.append(sub('Loading saved road data…'));if(networkError)p.append(sub(networkError),option('Reload road data',()=>{networkError='';refreshNetwork()},false,'↻'));if(year===2026)mobilityPanel(p);}
 if(mode==='sections')renderSectionControls(p);
 if(mode==='views')photoArchive.render(p);}
@@ -258,6 +261,7 @@ for(const mark of data.markers||[]){const q=point(mark.xy),r=mark.type==='bus'?8
 const tx=new THREE.CanvasTexture(canvas);tx.colorSpace=THREE.SRGBColorSpace;if(data.rasterCanvas){tx.magFilter=THREE.NearestFilter;tx.minFilter=THREE.NearestFilter;tx.generateMipmaps=false;}const mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-6,side:THREE.DoubleSide,uniforms:{map:{value:tx},mask:{value:maskTexture()||tx},outsideFade:{value:data.networkFade?roadFade:0},bounds:{value:new THREE.Vector4(xmin,ymin,xmax,ymax)}},vertexShader:'varying vec3 w;void main(){w=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(w,1.);}',fragmentShader:'uniform sampler2D map;uniform sampler2D mask;uniform float outsideFade;uniform vec4 bounds;varying vec3 w;void main(){vec2 uv=(vec2(w.x,-w.z)-bounds.xy)/(bounds.zw-bounds.xy);if(any(lessThan(uv,vec2(0.)))||any(greaterThan(uv,vec2(1.))))discard;vec4 c=texture2D(map,uv);if(c.a<.03)discard;gl_FragColor=vec4(c.rgb,c.a*.92*(1.-outsideFade*texture2D(mask,uv).r));\n#include <colorspace_fragment>\n}'});
 const group=new THREE.Group();group.userData.atlasShared=true;group.userData.projectionMaterial=mat;group.userData.atlasDispose=()=>{tx.dispose();mat.dispose()};active.updateMatrixWorld(true);active.traverse(n=>{if(n.isMesh){const m=new THREE.Mesh(n.geometry,mat);m.matrixAutoUpdate=false;m.matrix.copy(n.matrixWorld);m.renderOrder=order;group.add(m)}});return group}
 async function renderContext(){const token=++contextSerial;clearFocus();clear(context);buildingUseCounts=null;buildingUseSummary=buildingUse?'Loading registered uses…':'';if(!active||stack)return;context.visible=mode!=='geology'&&!(mode==='sections'&&cliffCutaway&&selectedCut);walkingOverlays();refreshFocus();contextInfo={};const current=year===2026;
+if(current&&viewingEnabled&&kind!=='local'){try{const g=buildViewingMeshes(active);if(g.children.length){context.add(g);contextInfo.viewing='Viewing deck and stairs · approximate';makeDirty()}}catch(e){console.warn('Viewing structure:',e);contextInfo.viewing='Viewing structure unavailable: '+e.message}}
 if(current&&enabled.has('buildings')&&industrialEnabled&&kind!=='local'){try{const g=buildIndustrialMeshes(active);if(g.children.length){context.add(g);contextInfo.industrial='Approximate industrial massing';makeDirty()}}catch(e){console.warn('Industrial mesh:',e);contextInfo.industrial='Approximate mesh unavailable: '+e.message}}
 
 for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads'&&enabled.has(x.id))){let o=null;try{
@@ -271,6 +275,7 @@ else {contextInfo[l.id]=layerOverrides[l.id]?'No compatible geometry in selected
 if(token!==contextSerial){if(o)dispose(o);return}if(o&&l.id==='buildings'&&buildingUse){try{const dataset=await loadBuildingUses(envManifest,localXY);if(token!==contextSerial){dispose(o);return}const result=applyBuildingUses(o,dataset);buildingUseCounts=result.counts;buildingUseSummary=result.matched+' / '+result.total+' meshes matched · ID or footprint location';}catch(e){if(token!==contextSerial){dispose(o);return}buildingUseSummary='BAG unavailable: '+e.message;console.warn(e)}}if(token!==contextSerial){if(o)dispose(o);return}if(o){if(l.id==='buildings')o.userData.atlasBuildingContext=true;context.add(o)}makeDirty();
 }catch(e){if(token!==contextSerial){if(o)dispose(o);return}contextInfo[l.id]=e.message;console.warn(e)}}
 if(token===contextSerial){refreshFocus();if(mode==='access')renderDrawer();const errors=Object.values(contextInfo).filter(s=>/HTTP|error|failed|not found|not available/i.test(s));if(errors.length)say(errors[0]);else if($('#status').textContent.startsWith('Loading Dutch'))say('')}}
+function downloadViewingOBJ(){const group=context.children.find(o=>o.userData.atlasViewing);if(!group){say('Viewing structure not loaded.');return}const offset=Number(cfg.rhino?.presentZOffset||0),data=industrialOBJ(group,offset)?.replace('industrial massing','viewing deck and stairs');if(!data)return;const url=URL.createObjectURL(new Blob([data],{type:'text/plain'})),a=el('a');a.href=url;a.download='ENCI-Luikerweg-viewing-deck-Rhino-source.obj';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
 function downloadIndustrialOBJ(){const group=context.children.find(o=>o.userData.atlasIndustrial);if(!group){say('Industrial mesh not loaded.');return}const offset=Number(cfg.rhino?.presentZOffset||0);const data=industrialOBJ(group,offset);if(!data)return;const url=URL.createObjectURL(new Blob([data],{type:'text/plain'})),a=el('a');a.href=url;a.download='ENCI-industrial-approximate-Rhino-source.obj';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
 function gridHeight(y,x,v){const g=grids.get(y);if(!g)return null;let u=(x-xmin)/(xmax-xmin)*(nx-1),w=(v-ymin)/(ymax-ymin)*(ny-1);if(u<0||w<0||u>nx-1||w>ny-1)return null;const i=Math.min(nx-2,Math.floor(u)),j=Math.min(ny-2,Math.floor(w)),a=u-i,b=w-j;
 return (1-a)*(1-b)*g[j*nx+i]+a*(1-b)*g[j*nx+i+1]+(1-a)*b*g[(j+1)*nx+i]+a*b*g[(j+1)*nx+i+1]}
