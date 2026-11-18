@@ -19,10 +19,6 @@
       "url": "assets/terrain/1970.glb"
     },
     {
-      "year": 1975,
-      "url": "assets/terrain/1975.glb"
-    },
-    {
       "year": 1980,
       "url": "assets/terrain/1980.glb"
     },
@@ -104,7 +100,7 @@
       "label": "Roads / paths",
       "url": "assets/context/roads.json",
       "type": "lines",
-      "color": "#333333",
+      "color": "#ed008c",
       "year": 2026
     },
     {
@@ -222,6 +218,7 @@
   ],
   "rhino": {
     "history": "assets/terrain/ENCI_Historical_Maps.3dm",
-    "present": "assets/terrain/reduced_site.3dm"
+    "present": "assets/terrain/reduced_site.3dm",
+    "presentZOffset": 995.425
   }
 }

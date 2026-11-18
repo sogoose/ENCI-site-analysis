@@ -15,7 +15,7 @@ function getMaterial(mesh){return (Array.isArray(mesh.material)?mesh.material:[m
 function hasRelief(mesh){const b=geometryBox(mesh),s=b.getSize(new THREE.Vector3());return s.z>1&&s.x>30&&s.y>30}
 function category(layer,name=''){const s=(layer+' '+name).toLowerCase();if(/wegdeel|wegen|weg[_ -]|roads?|roadway|street|footpath|cycleway|paths?|fiets|voetpad|도로|보행/.test(s))return 'roads';if(/3dbag|building|bldg|gebouwen|gebouw|(?:^|[^a-z])pand(?:[^a-z]|$)|건물|건축물/.test(s))return 'buildings';if(/waterdeel|waterbod|water[_ -]|수역|수공간/.test(s))return 'water';return null}
 function sharedGroup(meshes,note){const group=new THREE.Group();group.rotation.x=-Math.PI/2;group.userData.atlasShared=true;group.userData.atlasNote=note;
- for(const m of meshes){const c=new THREE.Mesh(m.geometry,m.material);c.matrixAutoUpdate=false;c.matrix.copy(m.matrixWorld);c.frustumCulled=true;c.name=m.name;group.add(c)}
+ for(const m of meshes){const c=new THREE.Mesh(m.geometry,m.material);c.matrixAutoUpdate=false;c.matrix.copy(m.matrixWorld);c.frustumCulled=true;c.name=m.name;c.userData.sourceAttributes=m.userData?.attributes||{};group.add(c)}
  return group;
 }
 function setPhotoMaterial(mesh){for(const m of Array.isArray(mesh.material)?mesh.material:[mesh.material])if(m){if(m.map){m.map.colorSpace=THREE.SRGBColorSpace;m.map.needsUpdate=true;m.color?.set(0xffffff);m.metalness=0;m.roughness=1} else if(m.isMeshStandardMaterial||m.isMeshPhysicalMaterial){m.metalness=0;m.roughness=1}}}
@@ -67,7 +67,7 @@ export function createRhinoAssets(config,onChange,onProgress){
    const relief=rows.filter(r=>hasRelief(r.obj));
    // Preserve visible meshes including separately modelled buildings, but not flat map planes covering the site.
    const filtered=relief.length?rows.filter(r=>{const size=geometryBox(r.obj).getSize(new THREE.Vector3());return !(size.z<.1&&size.x>100&&size.y>100)}):rows;
-   const g=sharedGroup(filtered.map(r=>r.obj),'Uploaded Rhino terrain · source date unverified');
+   const g=sharedGroup(filtered.map(r=>r.obj),'Uploaded Rhino terrain · Z corrected +995.425 m');g.position.y+=Number(config.presentZOffset||0);
    if(!filtered.some(r=>getMaterial(r.obj)))g.userData.atlasNote+=' · no embedded diffuse map';
    return g;
  }
@@ -75,7 +75,7 @@ export function createRhinoAssets(config,onChange,onProgress){
  async function nativeContext(kind,override=null){
   const d=await load(config.present),match=r=>override?r.layer===override:r.category===kind;
   if(kind==='buildings'){const rows=d.meshRows.filter(r=>match(r)&&r.height>.05);if(!rows.length)return null;
-   const g=sharedGroup(rows.map(r=>r.obj),'Rhino buildings');g.userData.atlasCount=rows.length;return g}
+   const g=sharedGroup(rows.map(r=>r.obj),'Rhino buildings');g.position.y+=Number(config.presentZOffset||0);g.userData.atlasCount=rows.length;return g}
   const rows=[...d.curveRows,...d.meshRows].filter(match);if(!rows.length)return null;
   const paths=[],triangles=[],v=new THREE.Vector3();
   for(const r of rows){const o=r.obj,geo=o.geometry,pos=geo.getAttribute('position');const xy=i=>{v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld);return [v.x,v.y]};
