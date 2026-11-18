@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createDsmStyle} from './cliff-dsm-style.js?v=46';
+import {createDsmStyle} from './cliff-dsm-style.js?v=48';
 import {waterLayer,createWaterMap,waterSource} from './water-map.js?v=36';
 import {cleanFactoryMeshes} from './mesh-cleanup.js?v=34';
 import {reportLayers,reportCanvas,levels as reportLevels,ecologyNotes,elevationColors,elevationLimits,terrainGrid,floodIntervals} from './quarry-analysis.js?v=35';
@@ -67,7 +67,7 @@ let year=2026,mode='terrain',stack=false,detail=false,active=null,kind='',localF
 const enabled=new Set(['buildings']), grids=new Map();
 let buildingUse=false,buildingUseMode='former',buildingUseSummary='',buildingUseCounts=null,formerSelected=null,detailAvailable=false;
 let studyBoundary=true,networkData=null,networkError='',networkBusy=false,networkModel=null;
-const dsmLayer=new THREE.Group();scene.add(dsmLayer);let dsmResolution='off',dsmWorker=null,dsmStatus='',dsmCount=0,dsmExpected=0,dsmBackground=.7,dsmDrawing=false,dsmDraft=[],dsmRegions=[];
+const dsmLayer=new THREE.Group();scene.add(dsmLayer);let dsmResolution='off',dsmWorker=null,dsmStatus='',dsmCount=0,dsmExpected=0,dsmBackground=.7,dsmDrawing=false,dsmRegions=[],dsmStrokes=[],dsmDraft=[],dsmGesture=null,dsmHover=null,dsmBrushPx=34;
 const networkLayer=new THREE.Group(),focusLayer=new THREE.Group(),mobilityLayer=new THREE.Group();scene.add(networkLayer,focusLayer,mobilityLayer);let roadFade=cfg.focus?.roadFade??.35,mobilityEnabled=false,mobilityData=null,mobilityBusy=false,mobilityError='',mobilityModel=null;const terrainFadeOriginals=new Map(),terrainFadeVariants=new Map();let terrainFade=0,outsideFade=cfg.focus?.outsideFade??.72,buildingFade=cfg.focus?.buildingFade??.35,focusMaterial=null,focusBuildingMaterial=null,focusTexture=null;
 const geologyLayer=new THREE.Group();scene.add(geologyLayer);let cliffCutaway=false,selectedCut=null,cliffMode=true,cliffData=null,cliffPromise=null,cliffSelected=null,cliffLength=240,showStrata=true,sectionToken=0,sectionBusy=false,sectionMessage='',sectionIndex=null,sectionModel=null;const cliffOverlay=new THREE.Group(),sectionFace=new THREE.Group();scene.add(cliffOverlay);const cutScene=new THREE.Scene();cutScene.add(sectionFace);const fadeScene=new THREE.Scene(),fadeCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,2);fadeCamera.position.z=1;const fadeMaterial=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.78,depthTest:false,depthWrite:false});fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fadeMaterial));let sectionBackground=.78,sectionInfo=null,sectionLast=null,dxfDatum='source';let sectionPins=[],sectionExpanded=false,sectionCameraPending=false,sectionFlip=false,sectionSlopeVisible=true;let geologyY=-840,geologyCut=true,geologyMessage='',geologyModel=null,geologyLastY=null;let legendOpen=true;const legendSections=new Map();let stackGap=650,stackEntries=[],stackLoading=false,nativeLayers=[],layerOverrides={},contextInfo={},roadCache=null;
 const preview=await json('./assets/terrain/preview-grid.json');
@@ -395,13 +395,20 @@ function sectionList(){return cliffMode?(cliffData?.candidates||[]):cfg.sections
 function sectionSelect(id,cut=true){cancelDsmDraw();if(cliffMode)cliffSelected=id;else section=id;cliffCutaway=cut;sectionCameraPending=cut;sectionFlip=false;drawSection()}
 function sectionOverview(plan=false){if(mode!=='sections')return;cancelDsmDraw();cliffCutaway=false;sectionExpanded=false;sectionCameraPending=false;sectionFlip=false;sectionInfo=null;sectionLast=null;renderer.clippingPlanes=[];context.visible=true;setSectionLock(false);$('#profile').hidden=true;$('#profile').classList.remove('expanded');fit(plan===true);drawSection()}
 
-function setSectionLock(on){controls.enableRotate=!on;controls.maxPolarAngle=on?Math.PI/2:Math.PI/2-.003;document.body.classList.toggle('section-cut-active',on);for(const id of ['rotate-left','rotate-right'])$('#'+id).disabled=on;$('#axo').disabled=on;renderer.domElement.setAttribute('aria-label',on?'Section drawing: pan and zoom; rotation locked':'3D terrain: drag to rotate, scroll to zoom')}
+function setSectionLock(on){if(!on&&dsmDrawing)return;controls.enableRotate=!on;controls.maxPolarAngle=on?Math.PI/2:Math.PI/2-.003;document.body.classList.toggle('section-cut-active',on);for(const id of ['rotate-left','rotate-right'])$('#'+id).disabled=on;$('#axo').disabled=on;renderer.domElement.setAttribute('aria-label',on?'Section drawing: pan and zoom; rotation locked':'3D terrain: drag to rotate, scroll to zoom')}
 function backgroundControl(){const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(sectionBackground*100)+'%','focus-value');head.append(el('span','Background fade'),value);const range=el('input');range.type='range';range.min=0;range.max=100;range.step=5;range.value=Math.round(sectionBackground*100);range.setAttribute('aria-label','Background fade');range.oninput=()=>{sectionBackground=+range.value/100;fadeMaterial.opacity=sectionBackground;value.textContent=range.value+'%';makeDirty()};box.append(head,range);return box}
 const dsmStyle=createDsmStyle({renderer,bounds:envManifest?.model_bounds||cfg.bounds,manifest:envManifest,getBuildings:()=>getGLB('assets/context/buildings.glb'),dispose,onChange:()=>{if(mode==='sections'&&dsmResolution!=='off')refreshDsmDrawer();else makeDirty()}});
 function readDsmRegions(){try{const x=JSON.parse(localStorage.getItem('enci-cliff-regions-v1')||'[]');return Array.isArray(x)?x.filter(r=>Array.isArray(r)&&r.length>=3&&r.length<=500&&r.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))).slice(0,50):[]}catch{return []}}
-dsmRegions=readDsmRegions();dsmStyle.setRegions(dsmRegions);
+function readDsmSelection(){
+ try{const data=JSON.parse(localStorage.getItem('enci-cliff-brush-v2')||'null');
+ if(data&&Array.isArray(data.regions)&&Array.isArray(data.strokes)){
+ dsmRegions=data.regions.filter(r=>Array.isArray(r)&&r.length>=3&&r.length<=500&&r.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))).slice(0,50);
+ dsmStrokes=data.strokes.filter(s=>Number.isFinite(s.width)&&s.width>0&&Array.isArray(s.points)&&s.points.length>0&&s.points.length<=3000&&s.points.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite))).slice(0,200);return;
+ }}catch{}dsmRegions=readDsmRegions();
+}
+readDsmSelection();dsmStyle.setRegions(dsmRegions,dsmStrokes);
 function dsmVisible(){return !!active&&!stack&&year===2026&&kind!=='local'&&mode==='sections'&&!cliffCutaway&&dsmResolution!=='off'}
-function refreshDsmDrawer(){if(mode==='sections')renderDrawer();makeDirty()}
+function refreshDsmDrawer(){if(mode==='sections'){const d=$('#drawer'),y=d.scrollTop;renderDrawer();d.scrollTop=y}makeDirty()}
 function loadDsm(res){
  if(dsmWorker){dsmWorker.terminate();dsmWorker=null}
  clear(dsmLayer);dsmResolution=res;dsmCount=0;dsmExpected=0;dsmStatus='';cancelDsmDraw();
@@ -428,23 +435,111 @@ function loadDsm(res){
 }
 function zoomDsm(){const box=new THREE.Box3().setFromObject(dsmLayer);if(box.isEmpty())return;const c=box.getCenter(new THREE.Vector3()),offset=camera.position.clone().sub(controls.target);controls.target.copy(c);camera.position.copy(c).add(offset);camera.lookAt(c);camera.updateMatrixWorld(true);let mx=0,my=0;for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){const v=new THREE.Vector3(x,y,z).applyMatrix4(camera.matrixWorldInverse);mx=Math.max(mx,Math.abs(v.x));my=Math.max(my,Math.abs(v.y))}camera.zoom=Math.min(controls.maxZoom,(camera.right-camera.left)*.38/Math.max(mx,1),(camera.top-camera.bottom)*.36/Math.max(my,1));camera.updateProjectionMatrix();controls.update();makeDirty()}
 function dsmBackgroundControl(){const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(dsmBackground*100)+'%','focus-value'),r=el('input');head.append(el('span','Point cloud background fade'),value);r.type='range';r.min=0;r.max=100;r.step=5;r.value=Math.round(dsmBackground*100);r.setAttribute('aria-label','Point cloud background fade');r.oninput=()=>{dsmBackground=+r.value/100;value.textContent=r.value+'%';makeDirty()};box.append(head,r);return box}
-function setDsmRegions(rings){dsmRegions=rings;try{localStorage.setItem('enci-cliff-regions-v1',JSON.stringify(rings))}catch{}dsmStyle.setRegions(rings);makeDirty()}
-function startDsmDraw(){if(!dsmVisible()||dsmStyle.flags.buildingReview||dsmRegions.length>=50)return;dsmDrawing=true;dsmDraft=[];fit(true);controls.enableRotate=false;$('#axo').disabled=true;$('#rotate-left').disabled=true;$('#rotate-right').disabled=true;renderer.domElement.style.cursor='crosshair';refreshDsmDrawer()}
-function cancelDsmDraw(){if(!dsmDrawing)return;dsmDrawing=false;dsmDraft=[];if(!cliffCutaway){controls.enableRotate=true;for(const id of ['axo','rotate-left','rotate-right'])$('#'+id).disabled=false}renderer.domElement.style.cursor='';makeDirty()}
-function finishDsmDraw(){if(!dsmDrawing||dsmDraft.length<3)return;let area=0;for(let i=0;i<dsmDraft.length;i++){const a=dsmDraft[i],b=dsmDraft[(i+1)%dsmDraft.length];area+=a[0]*b[1]-b[0]*a[1]}if(Math.abs(area)<2)return;const region=dsmDraft.map(p=>p.slice());cancelDsmDraw();setDsmRegions([...dsmRegions,region]);refreshDsmDrawer()}
-function projectDsmRegions(){const host=$('#dsm-region-lines');host.hidden=!dsmDrawing||!dsmVisible();if(host.hidden)return;host.replaceChildren();const ns='http://www.w3.org/2000/svg',project=p=>{const q=new THREE.Vector3(p[0],80,-p[1]).project(camera);return [(q.x+1)*innerWidth/2,(1-q.y)*innerHeight/2]};host.setAttribute('viewBox','0 0 '+innerWidth+' '+innerHeight);function draw(ring,closed,color){if(!ring.length)return;const p=document.createElementNS(ns,closed?'polygon':'polyline');p.setAttribute('points',ring.map(project).map(p=>p.join(',')).join(' '));p.setAttribute('fill',closed?'#0033ff16':'none');p.setAttribute('stroke',color);p.setAttribute('stroke-width','1.5');host.append(p);if(!closed)for(const v of ring.map(project)){const c=document.createElementNS(ns,'circle');c.setAttribute('cx',v[0]);c.setAttribute('cy',v[1]);c.setAttribute('r','3');c.setAttribute('fill',color);host.append(c)}}for(const ring of dsmRegions)draw(ring,true,'#0033ff');draw(dsmDraft,false,'#0033ff')}
-function addDsmVertex(e){if(!dsmDrawing||!dsmVisible()||e.button!==0)return;const rect=renderer.domElement.getBoundingClientRect(),r=new THREE.Raycaster();camera.updateMatrixWorld(true);r.setFromCamera(new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1),camera);const p=r.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0),-80),new THREE.Vector3());if(!p||dsmDraft.length>=500)return;const xy=[p.x,-p.z];if(dsmDraft.length&&Math.hypot(xy[0]-dsmDraft.at(-1)[0],xy[1]-dsmDraft.at(-1)[1])<1)return;dsmDraft.push(xy);refreshDsmDrawer()}
-renderer.domElement.addEventListener('click',addDsmVertex);
-function exportDsmRegions(){const blob=new Blob([JSON.stringify({coordinate_system:'Atlas local XY metres',origin_rd:[176269.00991889625,315430.72517179325],regions:dsmRegions},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='ENCI_cliff_regions.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
-function dsmSelectionControls(p){if(dsmStyle.flags.buildingReview)return;if(dsmDrawing){p.append(sub('Click vertices in plan · 3 or more · '+dsmDraft.length+' added'),option('Finish region',finishDsmDraw,false,'✓'),option('Undo vertex',()=>{dsmDraft.pop();refreshDsmDrawer()},false,'↶'),option('Cancel selection',()=>{cancelDsmDraw();refreshDsmDrawer()},false,'×'))}else{p.append(option(dsmRegions.length?'Add cliff region':'Select cliff region',startDsmDraw,false,'+'));if(dsmRegions.length)p.append(sub(dsmRegions.length+' selected region(s) · saved in this browser'),option('Clear regions',()=>setDsmRegions([]),false,'×'),option('Export regions JSON',exportDsmRegions,false,'↓'))}}
+function setDsmSelection(rings,strokes){
+ dsmRegions=rings;dsmStrokes=strokes;
+ try{localStorage.setItem('enci-cliff-brush-v2',JSON.stringify({regions:rings,strokes}))}catch{say('Regions applied but browser storage is full · export JSON to keep a copy.')}
+ dsmStyle.setRegions(rings,strokes);makeDirty();
+}
+function startDsmDraw(){
+ if(!dsmVisible()||dsmDrawing)return;
+ dsmDrawing=true;dsmDraft=[];dsmGesture=null;dsmHover=null;
+ // North-up plan with the current zoom and target retained.
+ const c=controls.target.clone(),d=Math.max(100,camera.position.distanceTo(c));
+ camera.position.copy(c).add(new THREE.Vector3(0,d,.01));camera.lookAt(c);camera.updateMatrixWorld(true);
+ controls.enableRotate=false;controls.mouseButtons.RIGHT=THREE.MOUSE.PAN;controls.update();
+ for(const id of ['axo','rotate-left','rotate-right','plan'])$('#'+id).disabled=true;
+ renderer.domElement.style.cursor='crosshair';
+ // Reveal the static source points only once; no point picking or filtering during a stroke.
+ dsmStyle.setRegions([],[]);refreshDsmDrawer();
+}
+function cancelDsmDraw(){
+ if(!dsmDrawing)return;
+ const g=dsmGesture;dsmDrawing=false;dsmDraft=[];dsmGesture=null;dsmHover=null;
+ if(g&&renderer.domElement.hasPointerCapture(g.id))renderer.domElement.releasePointerCapture(g.id);
+ controls.mouseButtons.RIGHT=THREE.MOUSE.ROTATE;
+ if(!cliffCutaway){controls.enableRotate=true;for(const id of ['axo','rotate-left','rotate-right','plan'])$('#'+id).disabled=false}
+ renderer.domElement.style.cursor='';dsmStyle.setRegions(dsmRegions,dsmStrokes);makeDirty();
+}
+function finishDsmDraw(){
+ if(!dsmDrawing||dsmGesture)return;
+ const strokes=[...dsmStrokes,...dsmDraft];cancelDsmDraw();setDsmSelection(dsmRegions,strokes);refreshDsmDrawer();
+}
+function dsmScreen(p){const q=new THREE.Vector3(p[0],80,-p[1]).project(camera);return [(q.x+1)*innerWidth/2,(1-q.y)*innerHeight/2]}
+function dsmXY(x,y){
+ const rect=renderer.domElement.getBoundingClientRect(),r=new THREE.Raycaster();camera.updateMatrixWorld(true);
+ r.setFromCamera(new THREE.Vector2((x-rect.left)/rect.width*2-1,-(y-rect.top)/rect.height*2+1),camera);
+ const p=r.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,1,0),-80),new THREE.Vector3());return p?[Math.round(p.x*100)/100,Math.round(-p.z*100)/100]:null;
+}
+function dsmPxPerMetre(){return renderer.domElement.clientHeight*camera.zoom/(camera.top-camera.bottom)}
+function projectDsmRegions(){
+ const host=$('#dsm-region-lines');host.hidden=!dsmDrawing||!dsmVisible();if(host.hidden)return;
+ host.replaceChildren();host.setAttribute('viewBox','0 0 '+innerWidth+' '+innerHeight);
+ const ns='http://www.w3.org/2000/svg';
+ function shape(tag,attrs){const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);host.append(e)}
+ for(const ring of dsmRegions)shape('polygon',{points:ring.map(dsmScreen).map(p=>p.join(',')).join(' '),fill:'#0033ff22',stroke:'#0033ff','stroke-width':1,'stroke-dasharray':'4 4'});
+ // Use a single transparent group so overlapping marks do not darken.
+ const group=document.createElementNS(ns,'g');group.setAttribute('opacity','.27');host.append(group);
+ for(const st of [...dsmStrokes,...dsmDraft,...(dsmGesture?[dsmGesture.stroke]:[])]){
+  const w=st.width*dsmPxPerMetre(),pts=st.points.map(dsmScreen),single=pts.length===1;
+  const e=document.createElementNS(ns,single?'circle':'polyline');
+  const attrs=single?{cx:pts[0][0],cy:pts[0][1],r:w/2,fill:'#0033ff'}:{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#0033ff','stroke-width':w,'stroke-linecap':'round','stroke-linejoin':'round'};
+  for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);group.append(e);
+ }
+ if(dsmHover){const r=dsmGesture?dsmGesture.stroke.width*dsmPxPerMetre()/2:dsmBrushPx/2;shape('circle',{cx:dsmHover[0],cy:dsmHover[1],r,fill:'none',stroke:'#0033ff','stroke-width':1.5})}
+}
+const dsmCanvas=renderer.domElement;
+function dsmSample(e,force=false){
+ const p=dsmXY(e.clientX,e.clientY);if(!p||!dsmGesture)return;
+ const st=dsmGesture.stroke,last=st.points.at(-1);
+ if(!last||Math.hypot(p[0]-last[0],p[1]-last[1])>=Math.max(.1,st.width*.12)||force&&Math.hypot(p[0]-last[0],p[1]-last[1])>.01){
+  if(st.points.length<3000)st.points.push(p);else st.points[2999]=p;
+ }
+}
+dsmCanvas.addEventListener('pointerdown',e=>{
+ if(!dsmDrawing||!dsmVisible()||e.button!==0)return;
+ e.preventDefault();e.stopImmediatePropagation();if(dsmGesture||dsmStrokes.length+dsmDraft.length>=200)return;
+ dsmGesture={id:e.pointerId,stroke:{width:dsmBrushPx/dsmPxPerMetre(),points:[]}};dsmHover=[e.clientX,e.clientY];
+ dsmCanvas.setPointerCapture(e.pointerId);dsmSample(e);projectDsmRegions();
+},true);
+dsmCanvas.addEventListener('pointermove',e=>{
+ if(!dsmDrawing)return;
+ if(dsmGesture&&e.pointerId===dsmGesture.id){e.preventDefault();e.stopImmediatePropagation();dsmSample(e)}
+ dsmHover=[e.clientX,e.clientY];projectDsmRegions();
+},true);
+function dsmEnd(e,commit){
+ if(!dsmGesture||e.pointerId!==dsmGesture.id)return;
+ e.preventDefault();e.stopImmediatePropagation();if(commit)dsmSample(e,true);
+ const g=dsmGesture;dsmGesture=null;if(commit&&g.stroke.points.length)dsmDraft.push(g.stroke);
+ if(dsmCanvas.hasPointerCapture(e.pointerId))dsmCanvas.releasePointerCapture(e.pointerId);
+ projectDsmRegions();refreshDsmDrawer();
+}
+dsmCanvas.addEventListener('pointerup',e=>dsmEnd(e,true),true);
+dsmCanvas.addEventListener('pointercancel',e=>dsmEnd(e,false),true);
+dsmCanvas.addEventListener('lostpointercapture',e=>{if(dsmGesture?.id===e.pointerId){dsmGesture=null;projectDsmRegions();refreshDsmDrawer()}});
+dsmCanvas.addEventListener('pointerleave',()=>{if(dsmDrawing&&!dsmGesture){dsmHover=null;projectDsmRegions()}});
+dsmCanvas.addEventListener('click',e=>{if(dsmDrawing){e.preventDefault();e.stopImmediatePropagation()}},true);
+dsmCanvas.addEventListener('wheel',e=>{if(dsmGesture){e.preventDefault();e.stopImmediatePropagation()}},{capture:true,passive:false});
+function exportDsmRegions(){const blob=new Blob([JSON.stringify({coordinate_system:'Atlas local XY metres',origin_rd:[176269.00991889625,315430.72517179325],regions:dsmRegions,brush_strokes:dsmStrokes,brush_width_units:'metres (full diameter), round caps and joins'},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download='ENCI_cliff_regions.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
+function dsmSelectionControls(p){
+ if(dsmDrawing){
+  const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',dsmBrushPx+' px','focus-value'),r=el('input');
+  head.append(el('span','Brush size'),value);r.type='range';r.min=8;r.max=120;r.step=2;r.value=dsmBrushPx;r.setAttribute('aria-label','Brush size');r.oninput=()=>{dsmBrushPx=+r.value;value.textContent=r.value+' px';projectDsmRegions()};box.append(head,r);
+  const done=option('Apply painted regions',finishDsmDraw,false,'✓'),undo=option('Undo stroke',()=>{dsmDraft.pop();refreshDsmDrawer()},false,'↶');
+  undo.disabled=!dsmDraft.length;done.disabled=!dsmDraft.length;
+  p.append(box,sub('Drag left: paint · right / middle drag: pan · wheel: zoom. '+dsmDraft.length+' new stroke(s). Points stay static until Apply.'),done,undo,option('Cancel brush',()=>{cancelDsmDraw();refreshDsmDrawer()},false,'×'));
+ }else{
+  p.append(option(dsmRegions.length||dsmStrokes.length?'Paint more cliff regions':'Paint cliff region',startDsmDraw,false,'+'),option('Zoom to scan',zoomDsm,false,'↗'));
+  if(dsmRegions.length||dsmStrokes.length)p.append(sub((dsmRegions.length+dsmStrokes.length)+' saved mark(s) · stored in this browser'),option('Clear regions',()=>setDsmSelection([],[]),false,'×'),option('Export regions JSON',exportDsmRegions,false,'↓'));
+ }
+}
 function dsmControls(p){
  if(year!==2026||kind==='local'||cliffCutaway)return;
  p.append(el('div','CLIFF DETAIL · PDOK DSM','env-group-label'));
  p.append(checkOption('Cliff point cloud · 40 cm',dsmResolution!=='off',v=>loadDsm(v?'40':'off')));
  if(dsmResolution!=='off'){
   if(dsmStatus)p.append(sub(dsmStatus));
-  p.append(dsmBackgroundControl());if(!dsmStyle.flags.buildingReview){p.append(checkOption('Project terrain texture',dsmStyle.flags.texture,v=>{dsmStyle.flags.texture=v;dsmStyle.change()}),checkOption('Cliff focus · exclude buildings / water',dsmStyle.flags.focus,v=>{dsmStyle.flags.focus=v;dsmStyle.change()}));if(dsmStyle.flags.focus)p.append(checkOption('Exclude tree cover',dsmStyle.flags.trees,v=>{dsmStyle.flags.trees=v;dsmStyle.change()}))}if(dsmStyle.status)p.append(sub(dsmStyle.status));
-  if(dsmCount){dsmSelectionControls(p);if(!dsmDrawing)p.append(option('Zoom to scan',zoomDsm,false,'↗'));p.append(checkOption('Building height review',dsmStyle.flags.buildingReview,v=>{cancelDsmDraw();dsmStyle.flags.buildingReview=v;dsmStyle.change()}));if(dsmStyle.flags.buildingReview){const k=el('div');k.append(legendRow('DSM > model +2 m','#d46f54'),legendRow('Within ±2 m','#bfc0b8'),legendRow('DSM < model −2 m','#5079c2'));p.append(k,sub('Sparse DSM samples within registered building footprints only. Roof top elevation difference; not an automatic repair or a full building scan.'))}}
+  p.append(dsmBackgroundControl());p.append(checkOption('Project terrain texture',dsmStyle.flags.texture,v=>{dsmStyle.flags.texture=v;dsmStyle.change()}),checkOption('Cliff focus · exclude buildings / water',dsmStyle.flags.focus,v=>{dsmStyle.flags.focus=v;dsmStyle.change()}));if(dsmStyle.flags.focus)p.append(checkOption('Exclude tree cover',dsmStyle.flags.trees,v=>{dsmStyle.flags.trees=v;dsmStyle.change()}));if(dsmStyle.status)p.append(sub(dsmStyle.status));
+  if(dsmCount)dsmSelectionControls(p);
   p.append(sub('PDOK / Kadaster 2025 DSM · 40 cm samples · DSM ≥30° on 1 m grid + 5 m buffer. Cliff focus: AHN DTM ≥30° + approx. 10 m margin, 3D building footprint & WorldCover 2020. Screening only; source gaps remain. Projected photo colours, not point RGB. Section profiles use original terrain.'))
  }
 }
@@ -581,7 +676,7 @@ json('./assets/sections/profiles.json').then(d=>{profiles=d;drawSection()}).catc
 json('./assets/sections/present.json').then(d=>{presentProfiles=d;drawSection()}).catch(()=>{});
 $('#modes').onclick=e=>{const b=e.target.closest('[data-mode]');if(b)setMode(b.dataset.mode)};
 $('#close').onclick=()=>setMode('terrain');
-$('#axo').onclick=()=>{if(mode==='sections')sectionOverview();else fit(false)};$('#fit').onclick=()=>{if(mode==='sections'&&cliffCutaway&&sectionLast)focusSection(sectionLast.s,sectionLast.rows.at(-1).points);else fit(false)};$('#plan').onclick=()=>{if(mode==='sections')sectionOverview(true);else fit(true)};
+$('#axo').onclick=()=>{if(mode==='sections')sectionOverview();else fit(false)};$('#fit').onclick=()=>{if(dsmDrawing){zoomDsm();return}if(mode==='sections'&&cliffCutaway&&sectionLast)focusSection(sectionLast.s,sectionLast.rows.at(-1).points);else fit(false)};$('#plan').onclick=()=>{if(mode==='sections')sectionOverview(true);else fit(true)};
 $('#stack').onclick=()=>{if(stackLoading)return;return stack?selectYear(year,false).then(()=>fit()):showStack()};
 $('#spacing').oninput=e=>{stackGap=+e.target.value;placeStack();fit()};
 function turn(a){if(dsmDrawing||mode==='sections'&&cliffCutaway)return;const offset=camera.position.clone().sub(controls.target).applyAxisAngle(new THREE.Vector3(0,1,0),a);camera.position.copy(controls.target).add(offset);controls.update();makeDirty()}
@@ -589,7 +684,7 @@ $('#rotate-left').onclick=()=>turn(Math.PI/12);$('#rotate-right').onclick=()=>tu
 $('#detail').onclick=()=>selectYear(2026,!detail);$('#local').onclick=()=>$('#file').click();
 $('#file').onchange=e=>{const f=e.target.files[0];if(f)selectYear(2026,false,f).then(()=>{if(!(mode==='sections'&&cliffCutaway))fit()});e.target.value=''};
 $('#fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen()}catch(e){say('Fullscreen not available.')}};
-addEventListener('keydown',e=>{if(e.key==='Escape'&&dsmDrawing){cancelDsmDraw();refreshDsmDrawer();return}if(e.key==='Escape'&&mode!=='terrain'&&!document.querySelector('.archive-lightbox[open]'))setMode('terrain')});
+addEventListener('keydown',e=>{if(dsmDrawing&&!/INPUT|TEXTAREA|SELECT/.test(e.target?.tagName||'')){if(e.key==='Enter'){e.preventDefault();finishDsmDraw();return}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(!dsmGesture){dsmDraft.pop();refreshDsmDrawer()}return}}if(e.key==='Escape'&&dsmDrawing){cancelDsmDraw();refreshDsmDrawer();return}if(e.key==='Escape'&&mode!=='terrain'&&!document.querySelector('.archive-lightbox[open]'))setMode('terrain')});
 renderer.setAnimationLoop(()=>{controls.update();if(dirty){updateMobilitySymbolSizes();updateMapMeasure();renderAtlas();projectStackLabels();projectSectionPins();projectDsmRegions();photoArchive.project();waterMap.project();dirty=false}});
 $('#export-layer').onclick=async()=>{if(!active||stack)return;say('Exporting selected terrain…');try{await rhino.exportGLB(active,(year===2026?'present':year)+'.glb');say('')}catch(e){say('GLB export failed: '+e.message)}};
 $('#inspect-layers').onclick=async()=>{const report=await rhino.reports();const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=el('a');a.href=u;a.download='ENCI_rhino_layers.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),30000)};
