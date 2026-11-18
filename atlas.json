@@ -105,19 +105,11 @@
     },
     {
       "id": "water",
-      "label": "Water bodies",
-      "url": "assets/context/water.json",
-      "type": "lines",
-      "color": "#197caa",
+      "label": "Water bodies · 2020",
+      "url": "assets/environment/Land_Cover_2020.png",
+      "type": "watermask",
+      "color": "#0099ff",
       "year": 2026
-    },
-    {
-      "id": "water-2010",
-      "label": "Water / 2010",
-      "url": "assets/context/water-2010.json",
-      "type": "lines",
-      "color": "#197caa",
-      "year": 2010
     }
   ],
   "sections": [
@@ -231,6 +223,7 @@
     }
   },
   "focus": {
-    "outsideFade": 0.72
+    "outsideFade": 0.72,
+    "buildingFade": 0.35
   }
 }

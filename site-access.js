@@ -25,3 +25,11 @@ async function run(m,ring,opts,toLocal){
  if(!paths.length)throw Error('No relevant ways returned');const result={schema:2,timestamp:Date.now(),source:'OpenStreetMap contributors / ODbL',bufferM:buffer,counts,paths};try{localStorage.setItem(key,JSON.stringify(result))}catch{}return result;
  }catch(e){if(valid(old))return {...old,cached:true,stale:true};throw e}
 }
+
+ // Browser: read persisted snapshots only. Never call a live map API.
+export async function loadStoredNetwork(){
+ const urls=['./assets/context/site-access.json','https://raw.githubusercontent.com/sogoose/ENCI-site-analysis/main/assets/context/site-access.json'];
+ let last='snapshot not published';
+ for(const url of urls){try{const r=await fetch(url,{cache:'no-cache',signal:AbortSignal.timeout(8000)});if(!r.ok){last='snapshot HTTP '+r.status;continue}const d=await r.json();if(d.schema!==2||!Array.isArray(d.paths)||!d.paths.length||!d.paths.every(p=>categories[p.type]&&Array.isArray(p.points)&&p.points.length>=2))throw Error('Invalid saved geometry');return {...d,stored:true,cached:true}}catch(e){last=e.message}}
+ throw Error(last);
+}

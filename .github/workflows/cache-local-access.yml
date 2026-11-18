@@ -1,0 +1,42 @@
+name: Cache local access
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cache-local-access.yml'
+permissions:
+  contents: write
+concurrency:
+  group: enci-local-access
+  cancel-in-progress: false
+jobs:
+  cache:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Obtain and validate actual mapped geometry
+        run: |
+          if ! test -s assets/context/site-access.json; then node scripts/cache-access.mjs; fi
+          node -e 'const d=require("./assets/context/site-access.json"); if(d.schema!==2||!d.paths?.length||!d.paths.every(p=>["road","path","steps"].includes(p.type)&&p.points.length>=2&&p.points.every(q=>q.length===2&&q.every(Number.isFinite))))process.exit(1); console.log(JSON.stringify({counts:d.counts,segments:d.paths.length}));'
+      - name: Publish snapshot immediately
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/context/site-access.json
+          if git diff --cached --quiet; then echo "Snapshot already saved"; exit 0; fi
+          git commit -m "Store local ENCI access snapshot"
+          for i in 1 2 3; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: site-access
+          path: assets/context/site-access.json
+          if-no-files-found: warn
