@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {mergeVertices} from 'three/addons/utils/BufferGeometryUtils.js';
+import {mergeVertices,toCreasedNormals} from 'three/addons/utils/BufferGeometryUtils.js';
 // Non-destructive mesh repair. No remeshing of registered footprints or sawtooth roofs.
 export function cleanFactoryMeshes(root){
  root.updateMatrixWorld(true);const replaced=new Set(),oldSet=new Set();let meshes=0,removed=0;
@@ -17,7 +17,7 @@ export function cleanFactoryMeshes(root){
   const n=idx?.count||p.count;
   for(let i=0;i+2<n;i+=3){const a=idx?idx.getX(i):i,b=idx?idx.getX(i+1):i+1,c=idx?idx.getX(i+2):i+2;const key=[a,b,c].sort((a,b)=>a-b).join(',');A.fromBufferAttribute(p,a);B.fromBufferAttribute(p,b);C.fromBufferAttribute(p,c);ab.subVectors(B,A);ac.subVectors(C,A);if(a===b||b===c||a===c||!Number.isFinite(ab.cross(ac).lengthSq())||ab.lengthSq()<1e-14||seen.has(key)){removed++;continue}seen.add(key);ids.push(a,b,c)}
   if(!ids.length){w.dispose();return}
-  w.clearGroups();w.setIndex(ids);if(!textured)w.computeVertexNormals();w.computeBoundingBox();w.computeBoundingSphere();m.geometry=w;oldSet.add(old);replaced.add(w);meshes++;
+  w.clearGroups();w.setIndex(ids);let repaired=w;if(!textured){repaired=toCreasedNormals(w,Math.PI/5);if(repaired!==w)w.dispose()}repaired.computeBoundingBox();repaired.computeBoundingSphere();m.geometry=repaired;oldSet.add(old);replaced.add(repaired);meshes++;
  });
  // Keep geometries used by other scene objects or by shared Rhino cache untouched.
  if(!root.userData.atlasShared){const live=new Set();root.traverse(m=>{if(m.geometry)live.add(m.geometry)});for(const g of oldSet)if(!live.has(g))g.dispose()}
