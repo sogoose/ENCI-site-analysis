@@ -396,7 +396,7 @@ else if(current&&l.id==='roads'&&!layerOverrides.roads){say('Loading Dutch BGT r
 else {contextInfo[l.id]=layerOverrides[l.id]?'No compatible geometry in selected layer':l.id==='buildings'?'No named building mesh layer found; existing unclassified geometry stays in terrain.':'Source layer not found';}
 if(token!==contextSerial){if(o)dispose(o);return}if(o&&l.id==='buildings'&&factoryClean){try{const repair=cleanFactoryMeshes(o);contextInfo.meshRepair=repair.meshes+' factory meshes cleaned · '+repair.removed+' duplicate / invalid faces removed'}catch(e){console.warn('Factory mesh cleanup:',e)}}if(o&&l.id==='buildings'&&buildingUse&&buildingUseMode==='former'){const result=applyFormerFunctions(o);buildingUseCounts=result.counts;buildingUseSummary=result.matched+' / '+result.total+' base meshes matched to former functions · approximate placement';}else if(o&&l.id==='buildings'&&buildingUse){try{const dataset=await loadBuildingUses(envManifest,localXY);if(token!==contextSerial){dispose(o);return}const result=applyBuildingUses(o,dataset);buildingUseCounts=result.counts;buildingUseSummary=result.matched+' / '+result.total+' meshes matched · ID or footprint location';}catch(e){if(token!==contextSerial){dispose(o);return}buildingUseSummary='BAG unavailable: '+e.message;console.warn(e)}}if(token!==contextSerial){if(o)dispose(o);return}if(o){if(l.id==='buildings')o.userData.atlasBuildingContext=true;context.add(o)}makeDirty();
 }catch(e){if(token!==contextSerial){if(o)dispose(o);return}contextInfo[l.id]=e.message;console.warn(e)}}
-if(token===contextSerial){refreshFocus();if(mode==='access')renderDrawer();const errors=Object.values(contextInfo).filter(s=>/HTTP|error|failed|not found|not available/i.test(s));if(errors.length)say(errors[0]);else if($('#status').textContent.startsWith('Loading Dutch'))say('')}}
+if(token===contextSerial){refreshFocus();if(mode==='sections'&&cliffCutaway&&selectedCut)drawSection();if(mode==='access')renderDrawer();const errors=Object.values(contextInfo).filter(s=>/HTTP|error|failed|not found|not available/i.test(s));if(errors.length)say(errors[0]);else if($('#status').textContent.startsWith('Loading Dutch'))say('')}}
 function downloadViewingOBJ(){const group=context.children.find(o=>o.userData.atlasViewing);if(!group){say('Viewing structure not loaded.');return}const offset=Number(cfg.rhino?.presentZOffset||0),data=industrialOBJ(group,offset)?.replace('industrial massing','viewing deck and stairs');if(!data)return;const url=URL.createObjectURL(new Blob([data],{type:'text/plain'})),a=el('a');a.href=url;a.download='ENCI-Luikerweg-viewing-deck-Rhino-source.obj';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
 function downloadIndustrialOBJ(){const group=context.children.find(o=>o.userData.atlasIndustrial);if(!group){say('Industrial mesh not loaded.');return}const offset=Number(cfg.rhino?.presentZOffset||0);const data=industrialOBJ(group,offset);if(!data)return;const url=URL.createObjectURL(new Blob([data],{type:'text/plain'})),a=el('a');a.href=url;a.download='ENCI-industrial-approximate-Rhino-source.obj';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
 function gridHeight(y,x,v){const g=grids.get(y);if(!g)return null;let u=(x-xmin)/(xmax-xmin)*(nx-1),w=(v-ymin)/(ymax-ymin)*(ny-1);if(u<0||w<0||u>nx-1||w>ny-1)return null;const i=Math.min(nx-2,Math.floor(u)),j=Math.min(ny-2,Math.floor(w)),a=u-i,b=w-j;
@@ -460,7 +460,7 @@ function renderSectionControls(p){
  if(!dgm&&year===2026){const upload=el('input');upload.type='file';upload.accept='.json,application/json';upload.hidden=true;upload.onchange=async()=>{const file=upload.files?.[0];if(!file)return;try{dgm=validateDgm(JSON.parse(await file.text()));dgmStatus='Local DGM data loaded · session only';showStrata=true;sectionCameraPending=cliffCutaway;await drawSection()}catch(e){dgmStatus='DGM import failed: '+e.message}renderDrawer()};p.append(upload,option('Load DGM JSON',()=>upload.click(),false,'↥'),sub(dgmStatus))}
  if(!cliffCutaway&&list.length&&(!cliffMode||year===2026)){p.append(option('Export all section guides DXF',()=>downloadGuidesDxf(),false,'↓'),dxfDatumControl())}if(sectionMessage)p.append(sub(sectionMessage));p.append(walkingLink('Sources ↗','./sources.html#geology'));
 }
-function focusSection(s,points){const dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),len=Math.hypot(dx,dz);if(len<1)return;const vals=points.map(p=>p[1]).filter(Number.isFinite),top=Math.max(...vals),floor=sectionBands(s,len,points).floor,span=Math.max(45,top-floor),unit=Math.max(len,span),pad=unit*.13;const W=camera.right-camera.left,H=camera.top-camera.bottom;const mobile=innerWidth<780,usable=mobile?.79:Math.min(.68,Math.max(.35,(innerWidth-590)/innerWidth));camera.zoom=Math.max(.08,Math.min(15,W*usable/(len+pad*2),H*.64/(span+pad*2)));const normal=new THREE.Vector3(-dz,0,dx).normalize().multiplyScalar(sectionFlip?-1:1),right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),normal).normalize();const center=new THREE.Vector3((s.a[0]+s.b[0])/2,(top+floor)/2,-(s.a[1]+s.b[1])/2);if(!mobile)center.addScaledVector(right,W/camera.zoom*.015);center.y-=H/camera.zoom*.025;setSectionLock(true);controls.target.copy(center);camera.position.copy(center).addScaledVector(normal,3500);camera.lookAt(center);camera.updateProjectionMatrix();controls.update();makeDirty()}
+function focusSection(s,points,extra=[]){const dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),len=Math.hypot(dx,dz);if(len<1)return;const vals=[...points.map(p=>p[1]),...extra].filter(Number.isFinite),top=Math.max(...vals),floor=sectionBands(s,len,points).floor,span=Math.max(45,top-floor),unit=Math.max(len,span),pad=unit*.13;const W=camera.right-camera.left,H=camera.top-camera.bottom;const mobile=innerWidth<780,usable=mobile?.79:Math.min(.68,Math.max(.35,(innerWidth-590)/innerWidth));camera.zoom=Math.max(.08,Math.min(15,W*usable/(len+pad*2),H*.64/(span+pad*2)));const normal=new THREE.Vector3(-dz,0,dx).normalize().multiplyScalar(sectionFlip?-1:1),right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),normal).normalize();const center=new THREE.Vector3((s.a[0]+s.b[0])/2,(top+floor)/2,-(s.a[1]+s.b[1])/2);if(!mobile)center.addScaledVector(right,W/camera.zoom*.015);center.y-=H/camera.zoom*.025;setSectionLock(true);controls.target.copy(center);camera.position.copy(center).addScaledVector(normal,3500);camera.lookAt(center);camera.updateProjectionMatrix();controls.update();makeDirty()}
 function applySectionCut(){renderer.clippingPlanes=[];context.visible=true;sectionFace.visible=false;cliffOverlay.visible=sectionSlopeVisible&&!cliffCutaway;if(mode!=='sections'||!cliffCutaway||!selectedCut||!active){setSectionLock(false);return}const s=selectedCut,dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),n=new THREE.Vector3(-dz,0,dx).normalize(),anchor=new THREE.Vector3(s.a[0],0,-s.a[1]);if(n.dot(camera.position.clone().sub(anchor))>0)n.negate();renderer.clippingPlanes=[new THREE.Plane().setFromNormalAndCoplanarPoint(n,anchor)];context.visible=false;sectionFace.visible=true;setSectionLock(true);makeDirty()}
 function renderAtlas(){renderer.autoClear=true;renderer.render(scene,camera);if(mode!=='sections'||!cliffCutaway||!selectedCut||!sectionFace.visible)return;const planes=renderer.clippingPlanes;renderer.autoClear=false;renderer.clippingPlanes=[];try{if(sectionBackground>0){fadeMaterial.opacity=sectionBackground;renderer.render(fadeScene,fadeCamera)}renderer.clearDepth();renderer.render(cutScene,camera)}finally{renderer.clippingPlanes=planes;renderer.autoClear=true}}
 function cliffSelection(){const c=cliffData?.candidates.find(c=>c.id===cliffSelected)||cliffData?.candidates[0];return c?lineFor(c,cliffLength,cfg.bounds):null}
@@ -552,6 +552,43 @@ function buildSectionFace(s,points,len){clear(sectionFace);const {spans,floor,ge
  for(const [color,arr] of buckets){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(arr,3));const mat=new THREE.MeshBasicMaterial({color,side:THREE.DoubleSide,depthTest:false,depthWrite:false,polygonOffset:false});const mesh=new THREE.Mesh(g,mat);mesh.userData.baseFace=color==='#dedbd3'||color==='#c8c4ba';mesh.renderOrder=mesh.userData.baseFace?2:3;mesh.position.copy(normal).multiplyScalar(.25);sectionFace.add(mesh)}sectionFace.visible=cliffCutaway;
 }
 
+
+// Geometry in the cutScene uses exactly the same plane and section coordinates as the DXF.
+function cutPosition(s,len,d,h,shift=0){
+ const ux=(s.b[0]-s.a[0])/len,uy=(s.b[1]-s.a[1])/len;
+ const normal=new THREE.Vector3(uy,0,ux),anchor=new THREE.Vector3(s.a[0],0,-s.a[1]);
+ if(normal.dot(camera.position.clone().sub(anchor))<0)normal.negate();
+ return new THREE.Vector3(s.a[0]+ux*d,h,-s.a[1]-uy*d).addScaledVector(normal,shift);
+}
+function drawBuildingSection(s,data,len){
+ if(!data)return;
+ for(const part of data.polygons){
+  if(part.points.length<3)continue;
+  const shape=new THREE.Shape();part.points.forEach(([d,h],i)=>i?shape.lineTo(d,h):shape.moveTo(d,h));shape.closePath();
+  const geo=new THREE.ShapeGeometry(shape),attr=geo.attributes.position,positions=[];
+  for(let i=0;i<attr.count;i++)positions.push(...cutPosition(s,len,attr.getX(i),attr.getY(i),.6).toArray());
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.computeBoundingSphere();
+  const material=new THREE.MeshBasicMaterial({color:part.kind==='approximate'?'#d9c9b6':'#cbd1d6',side:THREE.DoubleSide,depthTest:false,depthWrite:false});
+  const mesh=new THREE.Mesh(geo,material);mesh.renderOrder=16;sectionFace.add(mesh);
+ }
+ const segments=[];const paths=[...data.polygons.map(p=>[...p.points,p.points[0]]),...data.lines.map(p=>p.points)];
+ for(const pts of paths)for(let i=1;i<pts.length;i++)segments.push(...cutPosition(s,len,pts[i-1][0],pts[i-1][1],.86).toArray(),...cutPosition(s,len,pts[i][0],pts[i][1],.86).toArray());
+ if(segments.length){const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(segments,3));
+ const edges=new THREE.LineSegments(geo,new THREE.LineBasicMaterial({color:'#242628',depthTest:false,depthWrite:false}));edges.renderOrder=19;sectionFace.add(edges)}
+}
+function drawDsmSection(s,entry,len){
+ if(entry?.status!=='ready'||!entry.samples?.length)return;
+ const source=entry.samples,positions=[],skip=Math.max(1,Math.ceil(source.length/2/8500));
+ for(let i=0;i+1<source.length;i+=2*skip)positions.push(...cutPosition(s,len,source[i],source[i+1],1.3).toArray());
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+ const cloud=new THREE.Points(g,new THREE.PointsMaterial({color:'#b4513a',size:2.4,sizeAttenuation:false,transparent:true,opacity:.82,depthTest:false,depthWrite:false}));cloud.renderOrder=21;sectionFace.add(cloud);
+ const envelope=dsmEnvelope(source,len),segments=[];
+ for(let i=1;i<envelope.length;i++)if(envelope[i-1]&&envelope[i]){
+  segments.push(...cutPosition(s,len,...envelope[i-1],1.2).toArray(),...cutPosition(s,len,...envelope[i],1.2).toArray());
+ }
+ if(segments.length){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(segments,3));
+ const line=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:'#ac422e',transparent:true,opacity:.78,depthTest:false,depthWrite:false}));line.renderOrder=20;sectionFace.add(line)}
+}
 function drawCutAnnotations(s,rows,len){
  const points=rows.at(-1).points,{geo,spans,floor}=sectionBands(s,len,points),vals=points.map(p=>p[1]).filter(Number.isFinite),top=Math.max(...vals),span=Math.max(45,top-floor),unit=Math.max(len,span),mark=Math.max(1.5,unit*.003),textH=unit*.023;
  const landscape=year===2026?sectionLandscape(s,len,points,envManifest.model_bounds,landscapeRaster,landscapePolygons):null;sectionInfo={geo,spans,landscape};
@@ -584,7 +621,22 @@ async function drawSection(){if(mode!=='sections'||!active||stack)return;prepare
  const len=Math.hypot(s.b[0]-s.a[0],s.b[1]-s.a[1]),rows=[];if(compare)for(const y of cfg.years.map(v=>v.year))if(y!==2026&&y!==year)rows.push({y,points:(!cliffMode&&profiles[section]?.[y])||sampled(s,y),inferred:true});
  const points=year===2026?meshProfile(sectionIndex,s,2):(!cliffMode&&profiles[section]?.[year])||sampled(s,year);if(!points.some(p=>Number.isFinite(p[1])))throw Error('No terrain samples at selected cut');
  rows.push({y:year,points});if(cliffMode)showCandidates(sectionIndex);else if(!cliffCutaway){for(const cut of cfg.sections){const p=year===2026?meshProfile(sectionIndex,cut,10):sampled(cut,year);if(cut.id!==s.id)sectionLine(cut,p,'#5672e8');pinSectionEndpoint(cut,p,cut.id===s.id)}}
- if(!cliffCutaway)sectionLine(s,points,'#0033ff',true);selectedCut=s;if(cliffCutaway){if(sectionCameraPending||!sectionLast){focusSection(s,points);sectionCameraPending=false}buildSectionFace(s,points,len);drawCutAnnotations(s,rows,len);sectionLast={s,rows,len};}else{sectionInfo=null;sectionLast=null}applySectionCut();sectionMessage='';renderDrawer();makeDirty();
+ if(!cliffCutaway)sectionLine(s,points,'#0033ff',true);
+ selectedCut=s;
+ if(cliffCutaway){
+  const buildings=buildingSurvey(s),measurement=sectionSurvey(s);
+  if(sectionCameraPending||!sectionLast){
+   const extra=buildings?[...buildings.polygons.flatMap(p=>p.points.map(v=>v[1])),...buildings.lines.flatMap(p=>p.points.map(v=>v[1]))]:[];
+   if(measurement?.status==='ready')for(let i=1;i<measurement.samples.length;i+=2)extra.push(measurement.samples[i]);
+   focusSection(s,points,extra);sectionCameraPending=false;
+  }
+  buildSectionFace(s,points,len);
+  drawCutAnnotations(s,rows,len);
+  if(buildings)drawBuildingSection(s,buildings,len);
+  if(measurement)drawDsmSection(s,measurement,len);
+  sectionLast={s,rows,len,buildings,dsm:measurement};
+ }else{sectionInfo=null;sectionLast=null}
+ applySectionCut();sectionMessage='';renderDrawer();makeDirty();
  }catch(e){if(token!==sectionToken||mode!=='sections')return;sectionMessage=e.message;sectionInfo=null;sectionLast=null;setSectionLock(false);renderer.clippingPlanes=[];panel.replaceChildren(sub(e.message));renderDrawer();makeDirty()}
 }
 
