@@ -224,6 +224,10 @@
   },
   "focus": {
     "outsideFade": 0.72,
-    "buildingFade": 0.35
+    "buildingFade": 0.35,
+    "roadFade": 0.35
+  },
+  "mobility": {
+    "url": "assets/context/mobility.json"
   }
 }
