@@ -10,6 +10,8 @@ export const industrialSpec={
   mengbed:{xy:[-62.8,-1191.3],radius:39.5,wall:5.5,roof:14,segments:32},
   klinkerhal:{xy:[143.3,-771.0],radius:43,wall:8,roof:15,segments:16},
   chimney:{xy:[7.452,-1135.051],height:150,radiusBase:4.5,radiusTop:2.5},
+  silos:[{xy:[219.9,-775.6],radius:11.5,height:40,cap:4},{xy:[231.21,-751.25],radius:5.5,height:36,cap:2.5}],
+  conveyors:[{name:'Klinker_silo_to_riverside_hall',a:[229,-778],b:[444,-835],ha:35,hb:14,width:3.2},{name:'Oven_8_auxiliary_transfer',a:[68,-1093],b:[154,-1093],ha:17,hb:12,width:2.8}],
   kiln:{a:[73.8,-1062.1],b:[135.5,-893.0],length:180,radius:2.8,axisHeightA:12,axisHeightB:5.5}
 };
 export function buildIndustrialMeshes(terrain,spec=industrialSpec){
@@ -43,6 +45,27 @@ export function buildIndustrialMeshes(terrain,spec=industrialSpec){
   tube('Kiln_shell',a,b,k.radius);
   for(const t of [.2,.5,.8]){const p=a.clone().lerp(b,t);tube('Kiln_tyre',p.clone().addScaledVector(axis,-.65),p.clone().addScaledVector(axis,.65),k.radius+.45);const ground=z([p.x,-p.z]),h=p.y-k.radius-ground;if(Number.isFinite(ground)&&h>0.5)mesh(kg,'Kiln_support',new THREE.BoxGeometry(5,h,5),p.x,ground+h/2,-(-p.z))}
  }
+
+ // Visually reconstructed silo pair and elevated material links. Footprints from approximate
+ // registration of RCE concept plan and annotated screenshot; fine dimensions are estimates.
+ for(const [i,p] of (spec.silos||[]).entries()){
+  const g=assembly('Klinker_silo_'+(i+1),p.xy);if(!g)continue;
+  cylinder(g,'Silo_body',p.radius,p.radius,p.height,p.height/2,32);
+  cylinder(g,'Silo_roof',p.radius*.12,p.radius+.18,p.cap,p.height+p.cap/2,32);
+  cylinder(g,'Silo_top_vent',p.radius*.12,p.radius*.12,1.4,p.height+p.cap+.7,16);
+  g.userData={...g.userData,heritageId:5,formerCategory:'storage',formerName:'Clinker silo (approximate)'};
+ }
+ for(const c of spec.conveyors||[]){
+  const ga=z(c.a),gb=z(c.b);if(!Number.isFinite(ga)||!Number.isFinite(gb))continue;
+  const g=new THREE.Group();g.name=c.name;g.userData={heritageId:5,formerCategory:'transport',formerName:'Elevated transfer conveyor (approximate)'};group.add(g);
+  const a=new THREE.Vector3(c.a[0],ga+c.ha,-c.a[1]),b=new THREE.Vector3(c.b[0],gb+c.hb,-c.b[1]);
+  const beam=(name,p,q,w,h)=>{const v=q.clone().sub(p),L=v.length();if(L<.01)return;const m=mesh(g,name,new THREE.BoxGeometry(w,h,L));m.position.copy(p).add(q).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),v.normalize());return m};
+  beam('Covered_conveyor',a,b,c.width,2.5);
+  const d=b.clone().sub(a);d.y=0;const L=d.length(),normal=new THREE.Vector3(-d.z,0,d.x).normalize();
+  for(const sign of [-1,1])beam('Edge_girder',a.clone().addScaledVector(normal,sign*c.width*.4).add(new THREE.Vector3(0,-1.4,0)),b.clone().addScaledVector(normal,sign*c.width*.4).add(new THREE.Vector3(0,-1.4,0)),.28,.55);
+  const n=Math.max(2,Math.ceil(L/38));for(let j=1;j<n;j++){const p=a.clone().lerp(b,j/n),h=z([p.x,-p.z]);if(Number.isFinite(h)&&p.y-h>3){for(const sign of [-1,1]){const q=p.clone().addScaledVector(normal,sign*c.width*.45);beam('Transfer_support',new THREE.Vector3(q.x,h,q.z),q.clone().add(new THREE.Vector3(0,-1.25,0)),.55,.55)}beam('Support_crosshead',p.clone().addScaledVector(normal,-c.width*.64).add(new THREE.Vector3(0,-1.5,0)),p.clone().addScaledVector(normal,c.width*.64).add(new THREE.Vector3(0,-1.5,0)),.5,.6)}}
+ }
+ for(const g of group.children){if(g.userData.formerCategory)continue;const name=g.name;const storage=/Mengbed|Klinkerhal/.test(name);g.userData={...g.userData,heritageId:5,formerCategory:storage?(name==='Mengbed'?'processing':'storage'):'firing',formerName:name.replaceAll('_',' ')}}
  if(!group.children.length)material.dispose();
  group.updateMatrixWorld(true);
  return group;
