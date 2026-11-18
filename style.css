@@ -83,3 +83,12 @@ body.section-cut-active #drawer .subnote{line-height:1.45;margin:8px 0}
 body.section-cut-active #map-legend{width:min(205px,15vw)}
 .atlas-key-swatch.tree{position:relative;height:16px;width:15px;background:none!important}.atlas-key-swatch.tree:before{content:'';position:absolute;left:7px;top:7px;width:1px;height:9px;background:#386949}.atlas-key-swatch.tree:after{content:'';position:absolute;left:3px;top:0;width:9px;height:9px;border:1px solid #386949;background:#fbfdf9;border-radius:50%}
 @media(max-width:780px){body.section-mode #drawer{width:185px;max-height:43dvh;top:99px;padding-right:17px}body.section-mode .section-tabs button{font-size:10px}body.section-mode .section-index button{font-size:10px;min-height:21px}body.section-cut-active #map-legend{width:135px;max-height:27vh}body.section-mode .section-index{gap:3px} .section-current-meta{display:none}}
+
+/* Architectural section notation: black rectangular tags and white keylines. */
+.section-pin{width:25px;height:25px;border-radius:0;background:#161616;color:white;border:2px solid white;box-shadow:0 0 0 .6px #161616;font-size:11px;font-weight:500;line-height:1}
+.section-pin:hover,.section-pin.active{width:29px;height:29px;background:#161616;color:white;border-color:white;box-shadow:0 0 0 1px #161616,0 0 0 4px #ffffffb3;z-index:1}
+body.section-mode .section-index button.active{background:#161616;color:white;border-color:#161616}
+.dxf-datum{display:grid;gap:5px;padding:9px 0 10px;border-bottom:1px solid #ddd;font-size:10px;color:#555}
+.dxf-datum select{width:100%;border:1px solid #d4d4d4;background:#fff;color:#222;border-radius:0;padding:6px 3px;font:inherit}
+.dxf-datum small{font-size:9px;color:#777;line-height:1.4}
+@media(max-width:780px){.section-pin{width:23px;height:23px;font-size:10px}.section-pin:hover,.section-pin.active{width:26px;height:26px}}
