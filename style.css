@@ -92,3 +92,8 @@ body.section-mode .section-index button.active{background:#161616;color:white;bo
 .dxf-datum select{width:100%;border:1px solid #d4d4d4;background:#fff;color:#222;border-radius:0;padding:6px 3px;font:inherit}
 .dxf-datum small{font-size:9px;color:#777;line-height:1.4}
 @media(max-width:780px){.section-pin{width:23px;height:23px;font-size:10px}.section-pin:hover,.section-pin.active{width:26px;height:26px}}
+
+/* Compact endpoint tags: no enlargement on hover. */
+.section-pin,.section-pin:hover,.section-pin.active{width:19px;height:19px;font-size:9px;border-width:1.5px;box-shadow:0 0 0 .5px #161616}
+.section-pin:hover,.section-pin:focus-visible,.section-pin.active{box-shadow:0 0 0 .5px #161616,0 0 0 2px #ffffffc9}
+@media(max-width:780px){.section-pin,.section-pin:hover,.section-pin.active{width:18px;height:18px;font-size:9px}}
