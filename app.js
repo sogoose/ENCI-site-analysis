@@ -572,7 +572,76 @@ function sectionLine(s,pts,color,highlight=false){
  function flush(){if(run.length>1){for(const [ink,width,order] of [['#ffffff',highlight?5.4:3.8,11],['#171717',highlight?2.5:1.35,12]]){const g=new LineGeometry();g.setPositions(run.flatMap(v=>v.toArray()));const m=new LineMaterial({color:ink,linewidth:width,worldUnits:false,depthTest:true,depthWrite:false,transparent:true,opacity:1,alphaToCoverage:true});m.resolution.set(innerWidth,innerHeight);const line=new Line2(g,m);line.renderOrder=order;sectionMark.add(line)}}run=[]}
  for(const [d,h] of pts){if(!Number.isFinite(h)){flush();continue}const t=d/len;run.push(new THREE.Vector3(s.a[0]+t*(s.b[0]-s.a[0]),h+2.5,-(s.a[1]+t*(s.b[1]-s.a[1]))))}flush()
 }
-function showCandidates(index){if(!cliffMode||!cliffData)return;if(cliffOverlay.userData.model!==active||!cliffOverlay.children.length){clear(cliffOverlay);const projected=textureProjection({rasterCanvas:cliffData.canvas},'#d33c21',2,6);projected.position.y=2.4;const mat=projected.userData.projectionMaterial;mat.polygonOffsetFactor=-6;mat.polygonOffsetUnits=-12;mat.vertexShader=mat.vertexShader.replace('gl_Position=projectionMatrix*viewMatrix*vec4(w,1.);','gl_Position=projectionMatrix*viewMatrix*vec4(w,1.);gl_Position.z-=0.00008*gl_Position.w;');cliffOverlay.add(projected);cliffOverlay.userData.model=active;}cliffOverlay.visible=sectionSlopeVisible&&!cliffCutaway;if(cliffCutaway||!index)return;for(const c of cliffData.candidates){const s=lineFor(c,cliffLength,cfg.bounds);const points=meshProfile(index,s,10);if(c.id!==cliffSelected)sectionLine(s,points,'#5672e8');pinSectionEndpoint(s,points,c.id===cliffSelected)}}
+
+function createSeparatedCliffOverlay(){
+ // Unlike the ordinary atlas projections, the cliff highlight is an opaque,
+ // unlit, depth-biased shell above the actual rock surface. It never mixes
+ // photographic pixels into its red colour.
+ const projected=textureProjection({rasterCanvas:cliffData.canvas},'#dd4029',2,18);
+ const material=projected.userData.projectionMaterial;
+ const texture=material.uniforms.map.value;
+ texture.minFilter=THREE.LinearFilter;texture.magFilter=THREE.LinearFilter;
+ texture.generateMipmaps=false;texture.needsUpdate=true;
+ material.uniforms.cliffColor={value:new THREE.Color('#e1462c')};
+ material.uniforms.cliffLift={value:1.1};
+ material.transparent=false;
+ material.alphaToCoverage=true;
+ material.depthTest=true;
+ material.depthWrite=false;
+ material.polygonOffset=true;
+ material.polygonOffsetFactor=-6;
+ material.polygonOffsetUnits=-12;
+ material.side=THREE.DoubleSide;
+ material.vertexShader=`
+ uniform float cliffLift;
+ varying vec3 originalWorld;
+ void main(){
+  vec4 surface=modelMatrix*vec4(position,1.0);
+  originalWorld=surface.xyz;
+  // A vertical cliff cannot be separated by moving it upward in Y.
+  // Push each face out along its view-facing surface normal instead.
+  vec3 outward=normalize(mat3(modelMatrix)*normal);
+  if(length(outward)<0.001)outward=normalize(cameraPosition-surface.xyz);
+  if(dot(outward,cameraPosition-surface.xyz)<0.0)outward=-outward;
+  vec3 shell=surface.xyz+outward*cliffLift;
+  gl_Position=projectionMatrix*viewMatrix*vec4(shell,1.0);
+  // Fixed screen-depth bias stops the extra shell from flickering into
+  // the original triangulated terrain when the camera rotates or zooms.
+  gl_Position.z-=0.00008*gl_Position.w;
+ }`;
+ material.fragmentShader=`
+ uniform sampler2D map;
+ uniform vec4 bounds;
+ uniform vec3 cliffColor;
+ varying vec3 originalWorld;
+ void main(){
+  vec2 uv=(vec2(originalWorld.x,-originalWorld.z)-bounds.xy)/(bounds.zw-bounds.xy);
+  if(any(lessThan(uv,vec2(0.0)))||any(greaterThan(uv,vec2(1.0))))discard;
+  vec4 mask=texture2D(map,uv);
+  if(mask.a<0.22)discard;
+  float coverage=smoothstep(0.22,0.85,mask.a);
+  gl_FragColor=vec4(cliffColor,coverage);
+  #include <colorspace_fragment>
+ }`;
+ material.needsUpdate=true;
+ projected.traverse(o=>{if(o.isMesh)o.renderOrder=18});
+ return projected;
+}
+function showCandidates(index){
+ if(!cliffMode||!cliffData)return;
+ if(cliffOverlay.userData.model!==active||!cliffOverlay.children.length){
+  clear(cliffOverlay);
+  cliffOverlay.add(createSeparatedCliffOverlay());
+  cliffOverlay.userData.model=active;
+ }
+ cliffOverlay.visible=sectionSlopeVisible&&!cliffCutaway;
+ if(cliffCutaway||!index)return;
+ for(const c of cliffData.candidates){
+  const s=lineFor(c,cliffLength,cfg.bounds),points=meshProfile(index,s,10);
+  if(c.id!==cliffSelected)sectionLine(s,points,'#5672e8');
+  pinSectionEndpoint(s,points,c.id===cliffSelected);
+ }
+}
 function sectionBands(s,len,points){const geo=showStrata&&year===2026&&(dgm||geology);const spans=geo?(dgm?dgmSpans(dgm,s):geology.layers.map(l=>({id:l.id,name:l.name,color:l.color,start:0,end:len,base:l.min,top:l.max??Infinity}))):[];const vals=points.map(p=>p[1]).filter(Number.isFinite);const floor=geo?Math.min(Math.floor(Math.min(...vals)/10)*10-10,...spans.map(l=>l.base)):Math.floor(Math.min(...vals)/10)*10-10;return {geo,spans,floor}}
 function buildSectionFace(s,points,len){clear(sectionFace);const {spans,floor,geo}=sectionBands(s,len,points),buckets=new Map();const point=(d,h)=>[s.a[0]+(s.b[0]-s.a[0])*d/len,h,-(s.a[1]+(s.b[1]-s.a[1])*d/len)];const add=(color,d0,d1,b,h0,h1)=>{if(d1-d0<1e-6||Math.max(h0,h1)<=b)return;let arr=buckets.get(color);if(!arr)buckets.set(color,arr=[]);if(h0<b){d0=d0+(d1-d0)*(b-h0)/(h1-h0);h0=b}if(h1<b){d1=d0+(d1-d0)*(b-h0)/(h1-h0);h1=b}const A=point(d0,b),B=point(d1,b),C=point(d1,h1),D=point(d0,h0);arr.push(...A,...B,...C,...A,...C,...D)};
  for(let i=1;i<points.length;i++){const [d0,h0]=points[i-1],[d1,h1]=points[i];if(!Number.isFinite(h0)||!Number.isFinite(h1)||d1<=d0)continue;add(geo?'#dedbd3':'#c8c4ba',d0,d1,floor,h0,h1);for(const l of spans){const a=Math.max(d0,l.start),b=Math.min(d1,l.end);if(b<=a)continue;const ha=h0+(h1-h0)*(a-d0)/(d1-d0),hb=h0+(h1-h0)*(b-d0)/(d1-d0);add(l.color,a,b,l.base,Math.min(ha,l.top),Math.min(hb,l.top))}}
