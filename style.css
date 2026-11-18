@@ -60,3 +60,6 @@ body.section-mode #profile.expanded svg.section-drawing{max-height:calc(100dvh -
 .section-geokey .atlas-key-row{font-size:10px;line-height:1.35}
 body.section-cut-active #map-measure{display:none}
 @media(max-width:780px){.section-pin{width:26px;height:26px;font-size:11px}.section-index{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}.section-index button{min-height:22px;font-size:10px}body.section-mode #drawer{top:99px;width:190px;max-height:42vh}body.section-mode #profile{left:16px;right:16px;bottom:calc(var(--footer-clearance,150px) + 4px);max-height:37dvh;padding:8px 8px 5px}body.section-mode #profile.expanded{top:124px;z-index:5}.section-number{font-size:18px;margin-right:5px}.section-meta{display:block;font-size:8px}.section-actions{gap:9px}.section-actions button{font-size:9px}body.section-mode #profile svg.section-drawing{max-height:23dvh}}
+
+/* Landscape keys for the 2D drafting layer. */
+.landscape-key{margin-top:4px;gap:4px 18px}.landscape-key .atlas-key-swatch.tree{position:relative;height:16px;width:15px;background:none!important}.landscape-key .atlas-key-swatch.tree:before{content:'';position:absolute;left:6px;top:7px;width:1px;height:9px;background:#386949}.landscape-key .atlas-key-swatch.tree:after{content:'';position:absolute;left:2px;top:0;width:9px;height:9px;border:1px solid #386949;background:#fbfdf9;border-radius:50%}
