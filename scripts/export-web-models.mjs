@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 try{
  const page=await browser.newPage({acceptDownloads:true,viewport:{width:1440,height:900}});page.on('pageerror',e=>console.error(e.message));page.on('console',m=>{if(m.type()==='error')console.error(m.text())});
+ await page.route('https://cdn.jsdelivr.net/npm/**',async route=>{const url=route.request().url(),p=url.replace('https://cdn.jsdelivr.net/npm/','').replace(/^three@0\.170\.0\//,'three/').replace(/^rhino3dm@8\.9\.0\//,'rhino3dm/');if(!/^(three|rhino3dm)\//.test(p)||p.includes('..'))return route.continue();try{const type=p.endsWith('.wasm')?'application/wasm':p.endsWith('.js')?'application/javascript':'application/octet-stream';await route.fulfill({path:'node_modules/'+p,contentType:type,headers:{'access-control-allow-origin':'*'}})}catch{await route.continue()}});
  await page.goto('http://127.0.0.1:8000/?prepare=1',{waitUntil:'domcontentloaded',timeout:90000});
  await page.waitForFunction(()=>typeof window.enciPrepare==='function',{},{timeout:240000});
  await fs.mkdir('build-cache',{recursive:true});const downloads=[];

@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +26,7 @@ jobs:
         id: model
         continue-on-error: true
         run: |
-          npm install --no-save playwright@1.51.1 @gltf-transform/cli@4.1.1
+          npm install --no-save playwright@1.51.1 @gltf-transform/cli@4.1.1 three@0.170.0 rhino3dm@8.9.0
           npx playwright install --with-deps chromium
           python -m http.server 8000 > /tmp/enci-http.log 2>&1 &
           node scripts/export-web-models.mjs
