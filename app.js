@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {createDsmStyle} from './cliff-dsm-style.js?v=44';
 import {waterLayer,createWaterMap,waterSource} from './water-map.js?v=36';
 import {cleanFactoryMeshes} from './mesh-cleanup.js?v=34';
 import {reportLayers,reportCanvas,levels as reportLevels,ecologyNotes,elevationColors,elevationLimits,terrainGrid,floodIntervals} from './quarry-analysis.js?v=35';
@@ -114,7 +115,7 @@ if(!model)throw Error('Asset not uploaded: '+url)}
 if(token!==serial){dispose(model);return}
 clearEnv();clearGeology();sectionToken++;clear(cliffOverlay);clear(sectionFace);clearSectionPins();selectedCut=null;sectionIndex=null;sectionModel=null;contextSerial++;resetNetwork();resetMobility();clearFocus();clear(context);clear(sectionMark);clear(terrain);
 const needsFit=stack||((year===2026)!==(y===2026))||kind==='preview'&&nextKind==='rhino'&&y===2026;year=y;detail=wantDetail;stack=false;stackEntries=[];$('#stack-labels').replaceChildren();kind=nextKind;active=model;terrain.add(model);if(file)localFile=file;
-refreshGeology();updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(mode==='sections'){sectionLast=null;sectionInfo=null;sectionCameraPending=cliffCutaway;drawSection()}if(mode==='environment'&&env)applyEnv();renderContext();refreshReserve();refreshPhotoPins();
+refreshGeology();updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(mode==='sections'){if(dsmResolution!=='off'&&year===2026&&kind!=='local')dsmStyle.prepare(active);sectionLast=null;sectionInfo=null;sectionCameraPending=cliffCutaway;drawSection()}if(mode==='environment'&&env)applyEnv();renderContext();refreshReserve();refreshPhotoPins();
 if((!selectYear.fitted||needsFit)&&!(mode==='sections'&&cliffCutaway)){fit();selectYear.fitted=true}if(mode==='geology'&&year===2026)geologyView();
 else makeDirty();say('');
 const b=new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());if(b.x<100||b.z<100||b.x>12000||b.z>12000)say('Check model units and orientation — expected local metres, Y up.');
@@ -230,7 +231,7 @@ function renderGeologyControls(p){
 }
 function geologyView(){if(!active||mode!=='geology')return;controls.target.set(cx,38,-geologyY);camera.position.copy(controls.target).add(new THREE.Vector3(1100,1000,4800));camera.zoom=1.65;camera.updateProjectionMatrix();controls.update();makeDirty()}
 
-function setMode(m){if(m==='geology'&&year!==2026){openGeology();return}if(stack&&m!=='terrain'){mode=m;document.body.classList.toggle('section-mode',m==='sections');if(m==='sections'){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false}selectYear(year,false).then(()=>{if(m==='sections')fit(false)});return}const entering=m==='sections'&&mode!=='sections',leavingCut=mode==='sections'&&cliffCutaway&&m!=='sections';mode=m;if(entering){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false;setSectionLock(false);fit(false)}document.body.classList.toggle('section-mode',m==='sections');updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(m==='environment'&&env)applyEnv();else clearEnv();$('#profile').hidden=true;refreshGeology();if(m==='sections')drawSection();else {sectionToken++;clear(sectionMark);clear(cliffOverlay);clear(sectionFace);clearSectionPins();selectedCut=null;sectionInfo=null;sectionLast=null;setSectionLock(false);renderer.clippingPlanes=[];context.visible=true;sectionExpanded=false;if(leavingCut&&!stack)fit(false);document.body.classList.remove('section-cut-active');$('#profile').classList.remove('expanded')}if(m==='geology'){renderDrawer();geologyView()}refreshReserve();refreshPhotoPins();makeDirty()}
+function setMode(m){if(m==='geology'&&year!==2026){openGeology();return}if(stack&&m!=='terrain'){mode=m;document.body.classList.toggle('section-mode',m==='sections');if(m==='sections'){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false}selectYear(year,false).then(()=>{if(m==='sections')fit(false)});return}const entering=m==='sections'&&mode!=='sections',leavingCut=mode==='sections'&&cliffCutaway&&m!=='sections';mode=m;if(entering){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false;setSectionLock(false);fit(false)}document.body.classList.toggle('section-mode',m==='sections');updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(m==='environment'&&env)applyEnv();else clearEnv();$('#profile').hidden=true;refreshGeology();if(m==='sections'){if(dsmResolution!=='off'&&active&&year===2026&&kind!=='local')dsmStyle.prepare(active);drawSection()}else {sectionToken++;clear(sectionMark);clear(cliffOverlay);clear(sectionFace);clearSectionPins();selectedCut=null;sectionInfo=null;sectionLast=null;setSectionLock(false);renderer.clippingPlanes=[];context.visible=true;sectionExpanded=false;if(leavingCut&&!stack)fit(false);document.body.classList.remove('section-cut-active');$('#profile').classList.remove('expanded')}if(m==='geology'){renderDrawer();geologyView()}refreshReserve();refreshPhotoPins();makeDirty()}
 function linearRGB(hex){const c=new THREE.Color(hex);return 'vec3('+[c.r,c.g,c.b].map(x=>x.toFixed(6)).join(',')+')'}
 function reportFragment(type){
  const header='uniform sampler2D map;uniform float alpha;uniform vec4 bounds;varying vec3 w;void main(){vec2 uv=(vec2(w.x,-w.z)-bounds.xy)/(bounds.zw-bounds.xy);if(any(lessThan(uv,vec2(0.)))||any(greaterThan(uv,vec2(1.))))discard;';
@@ -396,12 +397,14 @@ function sectionOverview(plan=false){if(mode!=='sections')return;cliffCutaway=fa
 
 function setSectionLock(on){controls.enableRotate=!on;controls.maxPolarAngle=on?Math.PI/2:Math.PI/2-.003;document.body.classList.toggle('section-cut-active',on);for(const id of ['rotate-left','rotate-right'])$('#'+id).disabled=on;$('#axo').disabled=on;renderer.domElement.setAttribute('aria-label',on?'Section drawing: pan and zoom; rotation locked':'3D terrain: drag to rotate, scroll to zoom')}
 function backgroundControl(){const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(sectionBackground*100)+'%','focus-value');head.append(el('span','Background fade'),value);const range=el('input');range.type='range';range.min=0;range.max=100;range.step=5;range.value=Math.round(sectionBackground*100);range.setAttribute('aria-label','Background fade');range.oninput=()=>{sectionBackground=+range.value/100;fadeMaterial.opacity=sectionBackground;value.textContent=range.value+'%';makeDirty()};box.append(head,range);return box}
+const dsmStyle=createDsmStyle({renderer,bounds:envManifest?.model_bounds||cfg.bounds,manifest:envManifest,getBuildings:()=>getGLB('assets/context/buildings.glb'),dispose,onChange:()=>{if(mode==='sections'&&dsmResolution!=='off')refreshDsmDrawer();else makeDirty()}});
 function dsmVisible(){return !!active&&!stack&&year===2026&&kind!=='local'&&mode==='sections'&&!cliffCutaway&&dsmResolution!=='off'}
 function refreshDsmDrawer(){if(mode==='sections')renderDrawer();makeDirty()}
 function loadDsm(res){
  if(dsmWorker){dsmWorker.terminate();dsmWorker=null}
  clear(dsmLayer);dsmResolution=res;dsmCount=0;dsmExpected=0;dsmStatus='';dsmIsolated=false;
- if(res==='off'){refreshDsmDrawer();return}
+ if(res==='off'){dsmStyle.reset();refreshDsmDrawer();return}
+ if(active)dsmStyle.prepare(active);
  const directory='ENCI_cliffs_40cm_all';
  dsmStatus='Reading manifest…';refreshDsmDrawer();
  const w=new Worker(new URL('./cliff-dsm-worker.js?v=42',import.meta.url),{type:'module'});dsmWorker=w;
@@ -413,7 +416,7 @@ function loadDsm(res){
   else if(m.type==='progress')dsmStatus='Decoding '+m.file+' / '+m.files+' · '+dsmCount.toLocaleString()+' points';
   else if(m.type==='chunk'){
    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(m.positions,3));geo.computeBoundingBox();geo.computeBoundingSphere();
-   const material=new THREE.PointsMaterial({color:'#566c84',size:1.55,sizeAttenuation:false,depthTest:true,depthWrite:true});
+   const material=dsmStyle.material();
    const points=new THREE.Points(geo,material);points.renderOrder=9;dsmLayer.add(points);dsmCount=m.total;dsmStatus=dsmCount.toLocaleString()+' / '+dsmExpected.toLocaleString()+' points';
   }else if(m.type==='done'){dsmStatus=m.total.toLocaleString()+' points · '+m.tiles+' source '+(m.tiles===1?'tile':'tiles');w.terminate();dsmWorker=null}
   else if(m.type==='error'){fail(m.message);return}
@@ -428,8 +431,9 @@ function dsmControls(p){
  p.append(checkOption('Cliff point cloud · 40 cm',dsmResolution!=='off',v=>loadDsm(v?'40':'off')));
  if(dsmResolution!=='off'){
   if(dsmStatus)p.append(sub(dsmStatus));
+  p.append(checkOption('Project terrain texture',dsmStyle.flags.texture,v=>{dsmStyle.flags.texture=v;dsmStyle.change()}),checkOption('Cliff focus · exclude buildings / water',dsmStyle.flags.focus,v=>{dsmStyle.flags.focus=v;dsmStyle.change()}));if(dsmStyle.flags.focus)p.append(checkOption('Exclude tree cover',dsmStyle.flags.trees,v=>{dsmStyle.flags.trees=v;dsmStyle.change()}));if(dsmStyle.status)p.append(sub(dsmStyle.status));
   if(dsmCount){p.append(checkOption('Isolate point cloud',dsmIsolated,v=>{dsmIsolated=v;makeDirty()}),option('Zoom to scan',zoomDsm,false,'↗'))}
-  p.append(sub('PDOK / Kadaster · 2025 DSM · 40 cm samples · slopes ≥45° + 5 m buffer. Includes possible vegetation and buildings. Alignment provisional; section profiles use the original terrain.'))
+  p.append(sub('PDOK / Kadaster 2025 DSM · 40 cm. Cliff focus: AHN DTM ≥30° + approx. 10 m margin, 3D building footprint & WorldCover 2020. Screening only; source gaps remain. Projected photo colours, not point RGB. Section profiles use original terrain.'))
  }
 }
 function renderSectionControls(p){
