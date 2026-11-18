@@ -43,7 +43,7 @@ export function createRhinoAssets(config,onChange,onProgress){
  async function load(url){
    if(!cache.has(url))cache.set(url,loader.loadAsync(url,e=>{if(e.total)onProgress?.(Math.round(e.loaded/e.total*100))}).then(root=>{
      root.updateMatrixWorld(true);const {list,path}=layersFor(root),meshRows=[];
-     root.traverse(obj=>{if(!obj.isMesh||!obj.geometry?.getAttribute('position'))return;const names=path(obj.userData?.attributes?.layerIndex),ys=matches(names);const fallback=matches(obj.name);setPhotoMaterial(obj);meshRows.push({obj,layer:names,year:ys.length===1?ys[0]:ys.length===0&&fallback.length===1?fallback[0]:null,visible:obj.visible,height:geometryBox(obj).getSize(new THREE.Vector3()).z})});
+     root.traverse(obj=>{if(!obj.isMesh||!obj.geometry?.getAttribute('position'))return;const names=path(obj.userData?.attributes?.layerIndex),segments=names.split('::').reverse(),ys=segments.map(matches).find(v=>v.length===1)||matches(names);const fallback=matches(obj.name);setPhotoMaterial(obj);meshRows.push({obj,layer:names,year:ys.length===1?ys[0]:ys.length===0&&fallback.length===1?fallback[0]:null,visible:obj.visible,height:geometryBox(obj).getSize(new THREE.Vector3()).z})});
      const report={url,layers:list.map(l=>l.name),meshes:meshRows.map(r=>({name:r.obj.name,layer:r.layer,year:r.year,visible:r.visible,height:r.height,vertices:r.obj.geometry.getAttribute('position').count,textured:!!getMaterial(r.obj)})),warnings:root.userData.warnings||[]};
      console.info('ENCI Rhino inspection',report);onChange?.();return {root,meshRows,report};
    }).catch(e=>{cache.delete(url);throw e}));
