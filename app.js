@@ -8,7 +8,7 @@ import {createRhinoAssets} from './rhino-assets.js?v=7';
 import {loadBuildingUses,applyBuildingUses,buildingPalette} from './building-use.js?v=7';
 import {loadStoredNetwork,categories as accessCategories} from './site-access.js?v=13';
 import {createGeologicalSection} from './geology.js?v=20';
-import {makeIndex,profile as meshProfile,cliffCandidates,lineFor,inside as inSite} from './cliff-sections.js?v=24';
+import {makeIndex,profile as meshProfile,cliffCandidates,lineFor,inside as inSite} from './cliff-sections.js?v=25';
 import {loadLandscapeRaster,reservePolygons,sectionLandscape,landscapeDrawing} from './section-landscape.js?v=24';
 let landscapeRaster=null,landscapePending=null,landscapePolygons=null,landscapeStatus='Loading mapped landscape…';
 
