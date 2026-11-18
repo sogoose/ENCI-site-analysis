@@ -32,3 +32,31 @@
 .atlas-key-icon{height:14px;width:14px;flex:0 0 14px}.qa-details strong{display:block;font-size:11px;font-weight:500;margin-top:9px;color:#333}
 
 .cliff-select{width:100%;background:#fff;border:0;border-bottom:1px solid #ccc;padding:8px 0;color:#0033ff}.section-title{font-size:11px;color:#333;margin:0 0 3px}#profile{background:rgba(255,255,255,.97);max-height:33vh;overflow:auto}#profile svg{height:clamp(85px,18vh,190px)}#profile .subnote{margin:3px 0;font-size:10px}.section-geokey{display:flex;gap:14px;flex-wrap:wrap}.section-geokey .atlas-key-row{font-size:10px}@media(max-width:780px){#profile{max-height:30vh}.section-geokey{gap:5px}}
+
+/* Drafting workspace: map selection first, scaled cut drawing after selection. */
+.atlas-key-swatch.reserve{height:11px;background:rgba(35,117,77,.16)!important;border:1.5px solid #145a38;box-shadow:0 0 0 1px #fff,0 0 0 2px #ddd}
+#section-pins{position:fixed;inset:0;pointer-events:none;z-index:2;overflow:hidden}
+.section-pin{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;width:29px;height:29px;padding:0;background:#fff;border:1.5px solid #0033ff;color:#0033ff;border-radius:50%;font-size:12px;font-weight:500;line-height:1;pointer-events:auto;box-shadow:0 0 0 2px #fff,0 1px 5px #0003}
+.section-pin:hover,.section-pin.active{background:#0033ff;color:#fff;border-color:#0033ff;z-index:1}
+.section-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;border-bottom:1px solid #ccc}
+.section-tabs button{font-size:11px;padding:9px 1px;text-align:left;border-bottom:2px solid transparent}
+.section-tabs button.active{color:#0033ff;border-color:#0033ff;font-weight:500}
+.section-types{margin-bottom:17px}.section-types button{font-size:11px}
+.section-kicker{font-size:9px;letter-spacing:.11em;color:#777;margin:8px 0}
+.section-index{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:7px}
+.section-index button{border:1px solid #d6d6d6;display:grid;place-items:center;aspect-ratio:1;min-height:26px;padding:0;font-size:11px;font-variant-numeric:tabular-nums}
+.section-index button:hover{border-color:#0033ff}.section-index button.active{background:#0033ff;border-color:#0033ff;color:white}
+body.section-mode:not(.section-cut-active) #profile{display:none!important}
+body.section-mode #drawer{max-height:calc(100dvh - var(--footer-clearance,170px) - 95px)}
+body.section-mode #profile{z-index:3;left:30px;right:340px;bottom:calc(var(--footer-clearance,170px) + 8px);max-height:40dvh;overflow:auto;scrollbar-width:thin;padding:12px 16px 9px;background:rgba(255,255,255,.98);border-top:1.5px solid #242424;border-bottom:1px solid #ddd}
+body.section-mode #profile.expanded{top:88px;bottom:calc(var(--footer-clearance,170px) + 8px);max-height:none}
+.section-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:0 0 8px;border-bottom:1px solid #e3e3e3;margin-bottom:9px}
+.section-number{font-size:22px;font-weight:400;letter-spacing:-.055em;margin-right:12px}
+.section-meta{font-size:9px;letter-spacing:.07em;color:#777}
+.section-actions{display:flex;gap:14px;align-items:center}.section-actions button{font-size:10px;padding:4px 0}
+body.section-mode #profile svg.section-drawing{display:block;width:100%;height:auto;max-height:27dvh;min-height:110px;margin:0 auto}
+body.section-mode #profile.expanded svg.section-drawing{max-height:calc(100dvh - var(--footer-clearance,170px) - 215px)}
+.section-geokey{border-top:1px solid #e5e5e5;padding-top:6px;margin-top:5px;gap:4px 16px}
+.section-geokey .atlas-key-row{font-size:10px;line-height:1.35}
+body.section-cut-active #map-measure{display:none}
+@media(max-width:780px){.section-pin{width:26px;height:26px;font-size:11px}.section-index{grid-template-columns:repeat(6,minmax(0,1fr));gap:3px}.section-index button{min-height:22px;font-size:10px}body.section-mode #drawer{top:99px;width:190px;max-height:42vh}body.section-mode #profile{left:16px;right:16px;bottom:calc(var(--footer-clearance,150px) + 4px);max-height:37dvh;padding:8px 8px 5px}body.section-mode #profile.expanded{top:124px;z-index:5}.section-number{font-size:18px;margin-right:5px}.section-meta{display:block;font-size:8px}.section-actions{gap:9px}.section-actions button{font-size:9px}body.section-mode #profile svg.section-drawing{max-height:23dvh}}
