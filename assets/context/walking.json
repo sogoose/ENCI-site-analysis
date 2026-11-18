@@ -1,0 +1,283 @@
+{
+  "boundary": {
+    "label": "ENCI study boundary",
+    "status": "approximate",
+    "source": "User-annotated 3D viewport, 2026-11-18. Affine estimate; relief and camera distortion not corrected. Not a cadastral or property boundary.",
+    "paths": [
+      [
+        [
+          -376.9,
+          331.7
+        ],
+        [
+          -434.5,
+          321.5
+        ],
+        [
+          -511.4,
+          281
+        ],
+        [
+          -596.5,
+          107.9
+        ],
+        [
+          -719.9,
+          41.2
+        ],
+        [
+          -848.8,
+          -202.5
+        ],
+        [
+          -952,
+          -206.4
+        ],
+        [
+          -994,
+          -242.6
+        ],
+        [
+          -1039.2,
+          -340.4
+        ],
+        [
+          -1039.4,
+          -451.7
+        ],
+        [
+          -930.2,
+          -744.7
+        ],
+        [
+          -889.4,
+          -766.1
+        ],
+        [
+          -748.5,
+          -789.6
+        ],
+        [
+          -738.1,
+          -924.2
+        ],
+        [
+          -695,
+          -1015.3
+        ],
+        [
+          -505.7,
+          -1119.9
+        ],
+        [
+          -485,
+          -1148.5
+        ],
+        [
+          -522.5,
+          -1194.7
+        ],
+        [
+          -679.6,
+          -1294.3
+        ],
+        [
+          -719.4,
+          -1369.6
+        ],
+        [
+          -730,
+          -1586.9
+        ],
+        [
+          -682.9,
+          -1695.2
+        ],
+        [
+          -610,
+          -1736.1
+        ],
+        [
+          -564.4,
+          -1742.4
+        ],
+        [
+          -419.2,
+          -1702.3
+        ],
+        [
+          -355.5,
+          -1649.7
+        ],
+        [
+          -328.8,
+          -1648.6
+        ],
+        [
+          -263.9,
+          -1680.1
+        ],
+        [
+          -208.7,
+          -1742.1
+        ],
+        [
+          -110.7,
+          -1791.2
+        ],
+        [
+          -2.6,
+          -1815.1
+        ],
+        [
+          146.7,
+          -1822.7
+        ],
+        [
+          188.1,
+          -1836.9
+        ],
+        [
+          192,
+          -1854.1
+        ],
+        [
+          189.5,
+          -1754.1
+        ],
+        [
+          206.5,
+          -1697.2
+        ],
+        [
+          425,
+          -1247.4
+        ],
+        [
+          479.6,
+          -1088.7
+        ],
+        [
+          529,
+          -884.3
+        ],
+        [
+          542.3,
+          -655.8
+        ],
+        [
+          579.8,
+          -467.8
+        ],
+        [
+          527.9,
+          -430.4
+        ],
+        [
+          404.8,
+          -416.3
+        ],
+        [
+          330.8,
+          -377.4
+        ],
+        [
+          288.6,
+          -340
+        ],
+        [
+          262.6,
+          -278.2
+        ],
+        [
+          220.6,
+          -228.2
+        ],
+        [
+          121,
+          -175.9
+        ],
+        [
+          88.8,
+          -169
+        ],
+        [
+          52.2,
+          -182.7
+        ],
+        [
+          -36.4,
+          -257.6
+        ],
+        [
+          -93.1,
+          -235.4
+        ],
+        [
+          -216.6,
+          -117.3
+        ],
+        [
+          -236.7,
+          -81.4
+        ],
+        [
+          -256.3,
+          288.5
+        ],
+        [
+          -310.3,
+          322
+        ],
+        [
+          -376.9,
+          331.7
+        ]
+      ]
+    ]
+  },
+  "official": [
+    {
+      "id": "groeve",
+      "name": "Groeve wandelroute",
+      "km": 7,
+      "color": "#e8bc00",
+      "url": "https://www.natuurmonumenten.nl/natuurgebieden/sint-pietersberg/route/groeve-wandelroute-sint-pietersberg-bij-maastricht"
+    },
+    {
+      "id": "green",
+      "name": "Sint-Pietersberg",
+      "km": 5,
+      "color": "#20864d",
+      "url": "https://www.natuurmonumenten.nl/natuurgebieden/sint-pietersberg/route/wandelroute-sint-pietersberg-bij-maastricht"
+    },
+    {
+      "id": "round",
+      "name": "Rondwandeling",
+      "km": 10.8,
+      "color": "#9c3b9b",
+      "url": "https://www.natuurmonumenten.nl/natuurgebieden/sint-pietersberg/route/rondwandeling-sint-pietersberg-bij-maastricht"
+    },
+    {
+      "id": "jekerdal",
+      "name": "Sint-Pietersberg / Jekerdal",
+      "km": 6.3,
+      "color": "#1264c5",
+      "url": "https://www.natuurmonumenten.nl/natuurgebieden/sint-pietersberg/route/wandelroute-sint-pietersberg-en-jekerdal-63km-blauw"
+    },
+    {
+      "id": "views",
+      "name": "Uitzichtenroute",
+      "km": 3.3,
+      "color": "#d46b1b",
+      "url": "https://www.natuurmonumenten.nl/natuurgebieden/sint-pietersberg/route/uitzichtenroute-sint-pietersberg-33km"
+    },
+    {
+      "id": "tijdreis",
+      "name": "Tijdreis door de groeve",
+      "km": 1,
+      "color": "#6d604c",
+      "url": "https://www.natuurmonumenten.nl/natuurgebieden/sint-pietersberg/route/tijdreis-door-de-groeve-van-de-sint-pietersberg"
+    }
+  ]
+}
