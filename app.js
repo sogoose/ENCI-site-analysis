@@ -85,7 +85,7 @@ if(!model&&!wantDetail&&cfg.rhino){try{model=y===2026?await rhino.present():awai
 if(!model&&y!==2026){model=gridMesh(y);nextKind='preview'}
 if(!model)throw Error('Asset not uploaded: '+url)}
 if(token!==serial){dispose(model);return}
-clearEnv();contextSerial++;resetNetwork();clearFocus();clear(context);clear(sectionMark);clear(terrain);
+clearEnv();contextSerial++;resetNetwork();resetMobility();clearFocus();clear(context);clear(sectionMark);clear(terrain);
 const needsFit=stack||((year===2026)!==(y===2026))||kind==='preview'&&nextKind==='rhino'&&y===2026;year=y;detail=wantDetail;stack=false;stackEntries=[];$('#stack-labels').replaceChildren();kind=nextKind;active=model;terrain.add(model);if(file)localFile=file;
 updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(mode==='sections')drawSection();if(mode==='environment'&&env)applyEnv();renderContext();
 if(!selectYear.fitted||needsFit){fit();selectYear.fitted=true}
@@ -112,7 +112,7 @@ async function showStack(){const token=++serial;stackLoading=true;$('#stack').di
 try{for(const row of cfg.years){const {model,kind}=await stackModel(row.year);if(token!==serial){dispose(model);return}
 model.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(model);const group=new THREE.Group();group.userData.atlasShared=true;group.userData.atlasDispose=()=>dispose(model);group.add(model);
 const label=el('div',undefined,'stack-annotation');label.append(el('i'),el('span',String(row.year)+(kind==='preview'?' *':'')));entries.push({group,box,label,year:row.year,kind});say('Loading terrain series · '+entries.length+'/'+cfg.years.length)}
-if(token!==serial)return;contextSerial++;clearEnv();resetNetwork();clearFocus();clear(context);clear(sectionMark);clear(terrain);stack=true;detail=false;active=null;kind='stack';stackEntries=entries;$('#stack-labels').replaceChildren(...entries.map(e=>e.label));for(const e of entries)terrain.add(e.group);placeStack();setMode('terrain');updateUI();fit();say(entries.some(e=>e.kind==='preview')?'* Source layer unavailable — coarse fallback':'');
+if(token!==serial)return;contextSerial++;clearEnv();resetNetwork();resetMobility();clearFocus();clear(context);clear(sectionMark);clear(terrain);stack=true;detail=false;active=null;kind='stack';stackEntries=entries;$('#stack-labels').replaceChildren(...entries.map(e=>e.label));for(const e of entries)terrain.add(e.group);placeStack();setMode('terrain');updateUI();fit();say(entries.some(e=>e.kind==='preview')?'* Source layer unavailable — coarse fallback':'');
 }catch(e){if(token===serial)say('Stack: '+e.message)}finally{if(!stack||stackEntries!==entries)for(const e of entries)dispose(e.group);stackLoading=false;$('#stack').disabled=false}}
 function option(label,fn,on=false,end=''){const b=el('button',undefined,'option'+(on?' active':''));b.append(el('span',label),el('i',end||(on?'●':'')));b.onclick=fn;return b}
 function sub(s){return el('p',s,'subnote')}
@@ -175,7 +175,7 @@ function networkLegend(p){
  box.append(walkingLink('Official walking routes ↗','./sources.html#walking'));p.append(box)
 }
 function walkingOverlays(){if(studyBoundary&&walking.boundary?.paths)context.add(textureProjection({paths:walking.boundary.paths},'#d72632',4,8));makeDirty()}
-function resetNetwork(){clear(networkLayer);networkModel=null;resetMobility()}
+function resetNetwork(){clear(networkLayer);networkModel=null}
 async function refreshNetwork(){
  const visible=mode==='access'&&year===2026&&!stack&&active;networkLayer.visible=!!visible;makeDirty();if(!visible)return;
  if(networkData){if(networkModel!==active){resetNetwork();const styledPaths=networkData.paths.filter(r=>accessCategories[r.type]).map(r=>({points:r.points,...accessCategories[r.type]}));networkLayer.add(textureProjection({styledPaths,networkFade:true},'#ed008c',4,7.8));networkModel=active;makeDirty()}return}
