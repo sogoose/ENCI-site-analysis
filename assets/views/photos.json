@@ -1,6 +1,46 @@
 {
-  "schema": 1,
-  "coordinateSystem": "WGS84 longitude,latitude",
-  "bearing": "degrees clockwise from north",
-  "photos": []
+  "schema": 2,
+  "coordinateSystem": "Local Rhino XY metres; elevation m NAP",
+  "bearing": "degrees clockwise from model/grid north",
+  "photos": [
+    {
+      "path": "assets/image/image10.jpeg"
+    },
+    {
+      "path": "assets/image/image11.png"
+    },
+    {
+      "path": "assets/image/image12.jpeg"
+    },
+    {
+      "path": "assets/image/image13.png"
+    },
+    {
+      "path": "assets/image/image15.jpeg"
+    },
+    {
+      "path": "assets/image/image16.jpeg"
+    },
+    {
+      "path": "assets/image/image17.jpeg"
+    },
+    {
+      "path": "assets/image/image18.jpeg"
+    },
+    {
+      "path": "assets/image/image20.jpeg"
+    },
+    {
+      "path": "assets/image/image4.png"
+    },
+    {
+      "path": "assets/image/image6.jpeg"
+    },
+    {
+      "path": "assets/image/image8.jpeg"
+    },
+    {
+      "path": "assets/image/image9.jpeg"
+    }
+  ]
 }
