@@ -20,7 +20,7 @@
     },
     {
       "year": 1975,
-      "url": "assets/terrain/1970.glb"
+      "url": "assets/terrain/1975.glb"
     },
     {
       "year": 1980,
@@ -219,5 +219,9 @@
       ],
       "photo": "assets/views/04.jpg"
     }
-  ]
+  ],
+  "rhino": {
+    "history": "assets/terrain/ENCI_Historical_Maps.3dm",
+    "present": "assets/terrain/reduced_site.3dm"
+  }
 }
