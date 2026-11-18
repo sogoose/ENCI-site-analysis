@@ -63,3 +63,23 @@ body.section-cut-active #map-measure{display:none}
 
 /* Landscape keys for the 2D drafting layer. */
 .landscape-key{margin-top:4px;gap:4px 18px}.landscape-key .atlas-key-swatch.tree{position:relative;height:16px;width:15px;background:none!important}.landscape-key .atlas-key-swatch.tree:before{content:'';position:absolute;left:6px;top:7px;width:1px;height:9px;background:#386949}.landscape-key .atlas-key-swatch.tree:after{content:'';position:absolute;left:2px;top:0;width:9px;height:9px;border:1px solid #386949;background:#fbfdf9;border-radius:50%}
+
+/* One canvas, one cut. The hidden SVG exists only for export. */
+body.section-mode #profile{display:none!important}
+body.section-mode #drawer{width:min(260px,calc(100vw - 60px));max-height:calc(100dvh - var(--footer-clearance,170px) - 98px);background:rgba(255,255,255,.96);padding:12px 24px 12px 0;scrollbar-width:thin}
+body.section-mode .section-tabs{margin-bottom:7px;gap:12px}
+body.section-mode .section-tabs button{padding:7px 0;font-size:12px}
+body.section-mode .section-types{margin-bottom:14px}
+body.section-mode .section-types button{font-size:11px}
+body.section-mode .section-index{gap:4px;margin-bottom:17px}
+body.section-mode .section-index button{aspect-ratio:1.25;min-height:24px;font-size:11px}
+body.section-mode .section-kicker{font-size:9px;margin:8px 0 7px}
+.section-current{padding:10px 0 13px;border-top:1px solid #d4d4d4;display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.section-current-number{font-size:21px;font-weight:400;letter-spacing:-.05em}
+.section-current-meta{font-size:8px;letter-spacing:.07em;color:#999}
+body.section-cut-active .turn-tools,body.section-cut-active #axo,body.section-cut-active #plan,body.section-cut-active #local,body.section-cut-active #export-layer{display:none}
+body.section-cut-active #drawer .qa-details{margin-top:5px;padding:5px 0 7px;border-top:0}
+body.section-cut-active #drawer .subnote{line-height:1.45;margin:8px 0}
+body.section-cut-active #map-legend{width:min(205px,15vw)}
+.atlas-key-swatch.tree{position:relative;height:16px;width:15px;background:none!important}.atlas-key-swatch.tree:before{content:'';position:absolute;left:7px;top:7px;width:1px;height:9px;background:#386949}.atlas-key-swatch.tree:after{content:'';position:absolute;left:3px;top:0;width:9px;height:9px;border:1px solid #386949;background:#fbfdf9;border-radius:50%}
+@media(max-width:780px){body.section-mode #drawer{width:185px;max-height:43dvh;top:99px;padding-right:17px}body.section-mode .section-tabs button{font-size:10px}body.section-mode .section-index button{font-size:10px;min-height:21px}body.section-cut-active #map-legend{width:135px;max-height:27vh}body.section-mode .section-index{gap:3px} .section-current-meta{display:none}}
