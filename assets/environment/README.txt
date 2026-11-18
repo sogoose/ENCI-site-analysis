@@ -1,0 +1,1 @@
+Upload GIS PNGs matching atlas.json. Local XY bounds must match the terrain.

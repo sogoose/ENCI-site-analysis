@@ -1,0 +1,1 @@
+Upload buildings.glb, roads.json, water.json and optional water-2010.json.

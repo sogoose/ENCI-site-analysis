@@ -1,0 +1,1 @@
+Upload 01.jpg to 04.jpg or edit the viewpoints in atlas.json.

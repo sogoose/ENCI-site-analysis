@@ -1,0 +1,223 @@
+{
+  "bounds": [
+    -1202.08142,
+    -2178.89478,
+    961.90356,
+    840.35016
+  ],
+  "years": [
+    {
+      "year": 1950,
+      "url": "assets/terrain/1950.glb"
+    },
+    {
+      "year": 1960,
+      "url": "assets/terrain/1960.glb"
+    },
+    {
+      "year": 1970,
+      "url": "assets/terrain/1970.glb"
+    },
+    {
+      "year": 1975,
+      "url": "assets/terrain/1970.glb"
+    },
+    {
+      "year": 1980,
+      "url": "assets/terrain/1980.glb"
+    },
+    {
+      "year": 1990,
+      "url": "assets/terrain/1990.glb"
+    },
+    {
+      "year": 2000,
+      "url": "assets/terrain/2000.glb"
+    },
+    {
+      "year": 2010,
+      "url": "assets/terrain/2010.glb"
+    },
+    {
+      "year": 2026,
+      "url": "assets/terrain/present.glb",
+      "detail": "assets/terrain/present-detail.glb"
+    }
+  ],
+  "environment": [
+    {
+      "label": "Slope",
+      "url": "assets/environment/Slope.png",
+      "note": "AHN-derived slope; refer to source legend."
+    },
+    {
+      "label": "Aspect",
+      "url": "assets/environment/Aspect.png",
+      "note": "Downhill direction; refer to source legend."
+    },
+    {
+      "label": "Land cover",
+      "url": "assets/environment/Land_Cover_2020.png",
+      "note": "ESA WorldCover 2020."
+    },
+    {
+      "label": "Forest",
+      "url": "assets/environment/Forest_Cover_2020_V4.png",
+      "note": "JRC forest cover 2020."
+    },
+    {
+      "label": "Surface water",
+      "url": "assets/environment/Surface_Water_Occurrence_1984_2021.png",
+      "note": "JRC water occurrence, 1984–2021; not flood history."
+    },
+    {
+      "label": "NO₂",
+      "url": "assets/environment/Air_NO2_2024_25m.png",
+      "note": "RIVM modelled concentration; not an on-site measurement."
+    },
+    {
+      "label": "PM10",
+      "url": "assets/environment/Air_PM10_2024_25m.png",
+      "note": "RIVM modelled concentration."
+    },
+    {
+      "label": "PM2.5",
+      "url": "assets/environment/Air_PM25_2024_25m.png",
+      "note": "RIVM modelled concentration."
+    },
+    {
+      "label": "Water quality",
+      "url": "assets/environment/Water_Chemical_Status_2022.png",
+      "note": "Reported waterbody status; not a quarry-lake sample."
+    }
+  ],
+  "context": [
+    {
+      "id": "buildings",
+      "label": "Buildings",
+      "url": "assets/context/buildings.glb",
+      "type": "glb",
+      "year": 2026
+    },
+    {
+      "id": "roads",
+      "label": "Roads / paths",
+      "url": "assets/context/roads.json",
+      "type": "lines",
+      "color": "#333333",
+      "year": 2026
+    },
+    {
+      "id": "water",
+      "label": "Water bodies",
+      "url": "assets/context/water.json",
+      "type": "lines",
+      "color": "#197caa",
+      "year": 2026
+    },
+    {
+      "id": "water-2010",
+      "label": "Water / 2010",
+      "url": "assets/context/water-2010.json",
+      "type": "lines",
+      "color": "#197caa",
+      "year": 2010
+    }
+  ],
+  "sections": [
+    {
+      "id": "A",
+      "label": "A—A′",
+      "a": [
+        -1030,
+        -840
+      ],
+      "b": [
+        850,
+        -840
+      ]
+    },
+    {
+      "id": "B",
+      "label": "B—B′",
+      "a": [
+        -350,
+        -1990
+      ],
+      "b": [
+        -350,
+        650
+      ]
+    },
+    {
+      "id": "C",
+      "label": "C—C′",
+      "a": [
+        -1040,
+        -1550
+      ],
+      "b": [
+        850,
+        -1550
+      ]
+    }
+  ],
+  "views": [
+    {
+      "label": "01 — Overview",
+      "position": [
+        3200,
+        2600,
+        3900
+      ],
+      "target": [
+        -110,
+        70,
+        670
+      ],
+      "photo": "assets/views/01.jpg"
+    },
+    {
+      "label": "02 — West rim",
+      "position": [
+        -1150,
+        380,
+        1250
+      ],
+      "target": [
+        -160,
+        45,
+        720
+      ],
+      "photo": "assets/views/02.jpg"
+    },
+    {
+      "label": "03 — Maas / industry",
+      "position": [
+        1150,
+        380,
+        860
+      ],
+      "target": [
+        150,
+        60,
+        650
+      ],
+      "photo": "assets/views/03.jpg"
+    },
+    {
+      "label": "04 — Southern ridge",
+      "position": [
+        250,
+        450,
+        2250
+      ],
+      "target": [
+        -30,
+        110,
+        1450
+      ],
+      "photo": "assets/views/04.jpg"
+    }
+  ]
+}
