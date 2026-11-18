@@ -472,20 +472,20 @@ function dsmXY(x,y){
 }
 function dsmPxPerMetre(){return renderer.domElement.clientHeight*camera.zoom/(camera.top-camera.bottom)}
 function projectDsmRegions(){
- const host=$('#dsm-region-lines');host.hidden=!dsmDrawing||!dsmVisible();if(host.hidden)return;
+ const host=$('#dsm-region-lines'),visible=dsmDrawing&&dsmVisible();host.toggleAttribute('hidden',!visible);if(!visible)return;
  host.replaceChildren();host.setAttribute('viewBox','0 0 '+innerWidth+' '+innerHeight);
  const ns='http://www.w3.org/2000/svg';
  function shape(tag,attrs){const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);host.append(e)}
- for(const ring of dsmRegions)shape('polygon',{points:ring.map(dsmScreen).map(p=>p.join(',')).join(' '),fill:'#0033ff22',stroke:'#0033ff','stroke-width':1,'stroke-dasharray':'4 4'});
+ for(const ring of dsmRegions)shape('polygon',{points:ring.map(dsmScreen).map(p=>p.join(',')).join(' '),fill:'#0033ff55',stroke:'#0033ff','stroke-width':1.5,'stroke-dasharray':'4 4'});
  // Use a single transparent group so overlapping marks do not darken.
- const group=document.createElementNS(ns,'g');group.setAttribute('opacity','.27');host.append(group);
+ const group=document.createElementNS(ns,'g');group.setAttribute('opacity','.48');host.append(group);
  for(const st of [...dsmStrokes,...dsmDraft,...(dsmGesture?[dsmGesture.stroke]:[])]){
   const w=st.width*dsmPxPerMetre(),pts=st.points.map(dsmScreen),single=pts.length===1;
   const e=document.createElementNS(ns,single?'circle':'polyline');
   const attrs=single?{cx:pts[0][0],cy:pts[0][1],r:w/2,fill:'#0033ff'}:{points:pts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#0033ff','stroke-width':w,'stroke-linecap':'round','stroke-linejoin':'round'};
   for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);group.append(e);
  }
- if(dsmHover){const r=dsmGesture?dsmGesture.stroke.width*dsmPxPerMetre()/2:dsmBrushPx/2;shape('circle',{cx:dsmHover[0],cy:dsmHover[1],r,fill:'none',stroke:'#0033ff','stroke-width':1.5})}
+ if(dsmHover){const r=dsmGesture?dsmGesture.stroke.width*dsmPxPerMetre()/2:dsmBrushPx/2,c={cx:dsmHover[0],cy:dsmHover[1],r,fill:'none'};shape('circle',{...c,stroke:'#fff','stroke-width':4});shape('circle',{...c,stroke:'#0033ff','stroke-width':1.8})}
 }
 const dsmCanvas=renderer.domElement;
 function dsmSample(e,force=false){
