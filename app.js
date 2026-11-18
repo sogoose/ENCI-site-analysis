@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createPhotoArchive} from './photo-archive.js?v=29';
-import {buildIndustrialMeshes,industrialOBJ} from './industrial-meshes.js?v=30';
+import {buildIndustrialMeshes,industrialOBJ} from './industrial-meshes.js?v=31';
 let industrialEnabled=true;
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {Line2} from 'three/addons/lines/Line2.js';
