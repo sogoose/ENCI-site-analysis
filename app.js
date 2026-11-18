@@ -6,7 +6,7 @@ import {KTX2Loader} from 'three/addons/loaders/KTX2Loader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {createRhinoAssets} from './rhino-assets.js?v=7';
 import {loadBuildingUses,applyBuildingUses,buildingPalette} from './building-use.js?v=7';
-import {loadStoredNetwork,categories as accessCategories} from './site-access.js?v=10';
+import {loadStoredNetwork,categories as accessCategories} from './site-access.js?v=13';
 
 const $=s=>document.querySelector(s);
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
@@ -125,13 +125,15 @@ if(Number.isFinite(l.min)&&Number.isFinite(l.max)&&l.unit!=='class'){const f=n=>
 if(l.source){const link=el('a','Data source ↗','legend-source');link.href=l.source;link.target='_blank';link.rel='noopener';box.append(link)}
 return box
 }
-function renderDrawer(){const drawer=$('#drawer'),p=$('#options'),key=$('#map-legend');drawer.hidden=mode==='terrain';p.replaceChildren();key.replaceChildren();key.hidden=mode!=='environment'||!env;if(!key.hidden){key.append(el('div',env.label,'legend-title'),legend(env),sub(env.note||''));if(year!==2026)key.append(sub('Overlay dates do not match historical terrain.'));}if(mode==='terrain')return;
+function updateLegendClearance(){const footer=document.querySelector('footer');if(footer)document.documentElement.style.setProperty('--footer-clearance',Math.ceil(footer.getBoundingClientRect().height+24)+'px')}
+if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(updateLegendClearance);observer.observe(document.querySelector('footer'))}addEventListener('resize',updateLegendClearance);updateLegendClearance();
+function renderDrawer(){const drawer=$('#drawer'),p=$('#options'),key=$('#map-legend');drawer.hidden=mode==='terrain';p.replaceChildren();key.replaceChildren();key.classList.toggle('building-legend',mode==='access');key.hidden=mode!=='environment'||!env;if(!key.hidden){key.append(el('div',env.label,'legend-title'),legend(env),sub(env.note||''));if(year!==2026)key.append(sub('Overlay dates do not match historical terrain.'));}if(mode==='terrain')return;
 if(mode==='environment'||mode==='access')p.append(focusControl(false));if((mode==='environment'||mode==='access')&&year===2026&&enabled.has('buildings'))p.append(focusControl(true));if(mode==='access'&&year===2026)p.append(roadFadeControl());
 if(mode==='environment'){p.append(option('Original material',()=>{env=null;clearEnv();renderDrawer();say('')},!env));for(const l of cfg.environment.filter(l=>!l.qa))p.append(option(l.label,()=>{env=l;renderDrawer();applyEnv()},env===l));const qa=cfg.environment.filter(l=>l.qa);if(qa.length){const det=el('details',undefined,'qa-details'),sum=el('summary','2025 regional air data · validation pending');det.append(sum,sub('Uploaded values and units require verification. Active 2024 local maps remain available.'));for(const l of qa)det.append(sub(l.label+' · '+Number(l.min.toPrecision(3))+'–'+Number(l.max.toPrecision(3))+' µg/m³'));det.append(walkingLink('RIVM source ↗','https://www.rivm.nl/gcn-gdn-kaarten/concentratiekaarten/downloaden'));p.append(det)}if(env){const s=el('input');s.type='range';s.min=0;s.max=100;s.value=opacity*100;s.setAttribute('aria-label','Map opacity');s.oninput=()=>{opacity=+s.value/100;if(overlayMaterial)overlayMaterial.uniforms.alpha.value=opacity;makeDirty()};const label=el('label',undefined,'focus-control');label.append(el('span','Map overlay opacity'),s);p.prepend(label)}}
 if(mode==='access'){
 if(year!==2026)p.append(option('Current terrain',()=>selectYear(2026,false),false,'↗'));
 for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads')){const lab=el('label',undefined,'option');const cb=el('input');cb.type='checkbox';cb.checked=enabled.has(l.id);cb.onchange=()=>{cb.checked?enabled.add(l.id):enabled.delete(l.id);renderDrawer();renderContext()};if(l.id==='roads'){const sw=el('span',undefined,'walk-swatch');sw.style.background=l.color;lab.append(sw)}lab.append(el('span',l.label),cb);p.append(lab);
-if(l.id==='water'&&enabled.has('water')){p.append(sub(contextInfo.water||'Loading water mask…'));const wr=el('div',undefined,'network-key'),sw=el('span');sw.style.background=l.color;sw.style.height='9px';wr.append(sw,el('span','Permanent water · ESA 2020 / 10 m'));p.append(wr)}
+if(l.id==='water'&&enabled.has('water')){p.append(sub(contextInfo.water||'Loading water mask…'));const wr=el('div',undefined,'network-key'),sw=el('span');sw.style.background=l.color;sw.style.height='9px';wr.append(sw,el('span','Permanent water extent · ESA 2020'));p.append(wr,sub('10 × 10 m source grid · depth unknown'))}
 if(l.id==='buildings'){const use=checkOption('Building use',buildingUse,v=>{buildingUse=v;if(v)enabled.add('buildings');renderDrawer();renderContext()});use.classList.add('use-option');p.append(use);if(buildingUse&&buildingUseSummary)p.append(sub(buildingUseSummary))}
 }
 if(year===2026&&buildingUse&&enabled.has('buildings')){key.hidden=false;key.append(el('div','Building use','legend-title'));for(const [id,def] of Object.entries(buildingPalette)){const row=el('div',undefined,'legend-row'),sw=el('span',undefined,'legend-swatch');sw.style.background=def.color;row.append(sw,el('span',def.label));if(buildingUseCounts&&buildingUseCounts[id])row.append(el('span',String(buildingUseCounts[id]),'use-count'));key.append(row)}key.append(sub('Kadaster BAG · registered use, Netherlands only. Grey = unknown or unmatched.'),walkingLink('BAG source ↗','https://api.pdok.nl/kadaster/bag/ogc/v2?f=html&lang=en'))}
@@ -171,7 +173,7 @@ async function refreshMobility(){const visible=mode==='access'&&year===2026&&!st
 function networkLegend(p){
  const box=el('div',undefined,'network-legend');const row=(label,color,dashed=false)=>{const r=el('div',undefined,'network-key'),sw=el('span');sw.style.borderTop='3px '+(dashed?'dashed':'solid')+' '+color;r.append(sw,el('span',label));box.append(r)};
  row('ENCI study boundary','#d72632');
- if(year===2026){for(const def of Object.values(accessCategories))row(def.label,def.color);if(networkBusy)box.append(sub('Loading local access…'));else if(networkError){box.append(sub(networkError));box.append(option('Retry',()=>{networkError='';refreshNetwork()},false,'↻'))}else if(networkData){box.append(sub('Site + '+networkData.bufferM+' m · '+(networkData.stored?'stored GIS data':networkData.stale?'cached / older data':'mapped access')))}box.append(walkingLink('© OpenStreetMap contributors','https://www.openstreetmap.org/copyright'))}
+ if(year===2026){for(const def of Object.values(accessCategories))row(def.label,def.color);if(networkBusy)box.append(sub('Loading local access…'));else if(networkError){box.append(sub(networkError));box.append(option('Retry',()=>{networkError='';refreshNetwork()},false,'↻'))}else if(networkData){box.append(sub((networkData.roadScope==='full-model'?'Roads: full model · paths: site + '+networkData.bufferM+' m':'Temporary local-only snapshot · site + '+networkData.bufferM+' m')))}box.append(walkingLink('© OpenStreetMap contributors','https://www.openstreetmap.org/copyright'))}
  box.append(walkingLink('Official walking routes ↗','./sources.html#walking'));p.append(box)
 }
 function walkingOverlays(){if(studyBoundary&&walking.boundary?.paths)context.add(textureProjection({paths:walking.boundary.paths},'#d72632',4,8));makeDirty()}
@@ -196,7 +198,7 @@ const group=new THREE.Group();group.userData.atlasShared=true;group.userData.pro
 async function renderContext(){const token=++contextSerial;clearFocus();clear(context);buildingUseCounts=null;buildingUseSummary=buildingUse?'Loading registered uses…':'';if(!active||stack)return;walkingOverlays();refreshFocus();contextInfo={};const current=year===2026;
 
 for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads'&&enabled.has(x.id))){let o=null;try{
-if(l.type==='watermask'){const w=await loadWaterMask(l);if(token!==contextSerial)return;o=textureProjection({rasterCanvas:w.canvas},l.color,2,5.5);contextInfo[l.id]='ESA WorldCover · '+w.count+' water pixels · 2020, not a current survey';context.add(o);makeDirty();continue;}
+if(l.type==='watermask'){const w=await loadWaterMask(l);if(token!==contextSerial)return;o=textureProjection({rasterCanvas:w.canvas},l.color,2,5.5);contextInfo[l.id]='ESA WorldCover · 2020 · classified surface extent';context.add(o);makeDirty();continue;}
 let native=null;if(l.id==='buildings'&&await exists(l.url)){o=await getGLB(l.url);contextInfo[l.id]='Optimized buildings';}else if(current&&cfg.rhino?.present){try{native=await rhino.nativeContext(l.id,layerOverrides[l.id]||null)}catch(e){console.warn('Native layer:',e)}}
 if(token!==contextSerial)return;
 if(o){/* prebuilt building GLB */}else if(native){o=l.id==='buildings'?native:textureProjection(native,l.color,l.id==='roads'?4.2:2.1);contextInfo[l.id]='Rhino · '+(native.userData?.atlasCount||native.count)+' objects'}

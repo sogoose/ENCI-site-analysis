@@ -15,3 +15,9 @@
 .focus-control+.focus-control{margin-top:-4px}
 
 .qa-details{border-top:1px solid #ddd;margin-top:12px;padding:10px 0;font-size:11px;color:#777}.qa-details summary{cursor:pointer;line-height:1.4}.qa-details .subnote{margin:7px 0}
+
+/* Reserve the actual footer height, even when labels wrap or browser zoom changes. */
+#map-legend{bottom:var(--footer-clearance,170px);max-height:min(47vh,calc(100dvh - var(--footer-clearance,170px) - 110px));z-index:2;scrollbar-width:thin}
+#map-legend.building-legend{top:105px;bottom:auto;max-height:calc(100dvh - var(--footer-clearance,170px) - 105px);width:220px;padding:9px 9px 9px 0;background:rgba(255,255,255,.96)}
+#map-legend.building-legend .legend-row{padding:2px 0}
+@media(max-width:780px){#map-legend{bottom:var(--footer-clearance,150px);max-height:min(30vh,calc(100dvh - var(--footer-clearance,150px) - 130px))}#map-legend.building-legend{top:145px;bottom:auto;width:min(176px,43vw);max-height:min(39vh,calc(100dvh - var(--footer-clearance,150px) - 145px))}}

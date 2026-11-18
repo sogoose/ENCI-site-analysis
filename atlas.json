@@ -105,7 +105,7 @@
     },
     {
       "id": "water",
-      "label": "Water bodies · 2020",
+      "label": "Water extent · 2020",
       "url": "assets/environment/Land_Cover_2020.png",
       "type": "watermask",
       "color": "#0099ff",
@@ -220,7 +220,8 @@
       "road": "#ed008c",
       "path": "#00c7e5",
       "steps": "#ffae00"
-    }
+    },
+    "fullRoadExtent": true
   },
   "focus": {
     "outsideFade": 0.72,

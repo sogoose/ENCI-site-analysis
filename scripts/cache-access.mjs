@@ -11,5 +11,7 @@ const mapFallback=async bbox=>{
 };
 const result=await loadSiteNetwork(manifest,walking.boundary.paths[0],{...config.accessNetwork,mapFallback},toLocal);
 if(!result.paths?.length)throw Error('No network data');
-await fs.writeFile('assets/context/site-access.json',JSON.stringify(result));
+const target=config.accessNetwork.fullRoadExtent?'assets/context/site-access-full.json':'assets/context/site-access.json';
+if(config.accessNetwork.fullRoadExtent&&result.roadScope!=='full-model')throw Error('Expected full model network');
+await fs.writeFile(target,JSON.stringify(result));
 console.log('Stored network:',result.counts, 'bytes:',JSON.stringify(result).length);
