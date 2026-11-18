@@ -1,0 +1,10 @@
+import fs from 'node:fs/promises';
+const read=async p=>JSON.parse(await fs.readFile(p,'utf8'));
+const [manifest,walking,config]=await Promise.all(['assets/environment/manifest.json','assets/context/walking.json','atlas.json'].map(read));
+const code=await fs.readFile('site-access.js','utf8');
+const {loadSiteNetwork}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+const b=manifest.wgs84_bounds,m=manifest.model_bounds,toLocal=(lon,lat)=>[m[0]+(lon-b[0])/(b[2]-b[0])*(m[2]-m[0]),m[1]+(lat-b[1])/(b[3]-b[1])*(m[3]-m[1])];
+const result=await loadSiteNetwork(manifest,walking.boundary.paths[0],config.accessNetwork,toLocal);
+if(!result.paths?.length)throw Error('No network data');
+await fs.writeFile('assets/context/site-access.json',JSON.stringify(result));
+console.log('Stored network:',result.counts, 'bytes:',JSON.stringify(result).length);

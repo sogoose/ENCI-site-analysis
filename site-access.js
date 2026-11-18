@@ -12,8 +12,8 @@ async function run(m,ring,opts,toLocal){
  if(!ring?.length||!m?.model_bounds||!m?.wgs84_bounds)throw Error('Site boundary or georeference missing');
  const buffer=opts.bufferM??150,days=opts.cacheDays??7,key='enci-site-access-v2:'+JSON.stringify([m.wgs84_bounds,ring,buffer]);
  const valid=d=>d?.schema===2&&Array.isArray(d.paths)&&d.paths.length>0;
+ const staticResponse=await fetch('./assets/context/site-access.json',{cache:'default'}).catch(()=>null);if(staticResponse?.ok){try{const d=await staticResponse.json();if(valid(d))return {...d,cached:true,stored:true}}catch{}}
  let old=null;try{old=JSON.parse(localStorage.getItem(key)||'null');if(valid(old)&&Date.now()-old.timestamp<days*86400000)return {...old,cached:true}}catch{}
- const staticResponse=await fetch('./assets/context/site-access.json',{cache:'force-cache'}).catch(()=>null);if(staticResponse?.ok){try{const d=await staticResponse.json();if(valid(d))return {...d,cached:true}}catch{}}
  const [x0,y0,x1,y1]=m.model_bounds,[lon0,lat0,lon1,lat1]=m.wgs84_bounds;
  const minX=Math.max(x0,Math.min(...ring.map(p=>p[0]))-buffer),maxX=Math.min(x1,Math.max(...ring.map(p=>p[0]))+buffer),minY=Math.max(y0,Math.min(...ring.map(p=>p[1]))-buffer),maxY=Math.min(y1,Math.max(...ring.map(p=>p[1]))+buffer);
  const lon=x=>lon0+(x-x0)/(x1-x0)*(lon1-lon0),lat=y=>lat0+(y-y0)/(y1-y0)*(lat1-lat0);

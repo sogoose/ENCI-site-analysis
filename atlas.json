@@ -229,5 +229,8 @@
       "path": "#00c7e5",
       "steps": "#ffae00"
     }
+  },
+  "focus": {
+    "outsideFade": 0.72
   }
 }
