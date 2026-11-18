@@ -8,7 +8,7 @@ async function loadDecoder(){
 async function readFile(url){const r=await fetch(url,{cache:'no-cache'});if(!r.ok)throw Error('HTTP '+r.status+' · '+url);return r.arrayBuffer()}
 self.onmessage=async ({data})=>{
  try{
-  const url=new URL(data.manifest,self.location.href),r=await fetch(url);
+  const url=new URL(data.manifest,self.location.href),r=await fetch(url,{cache:'no-cache'});
   if(!r.ok)throw Error('Manifest HTTP '+r.status);
   const m=await r.json(),origin=m.origin_rd_for_local_xy;
   if(!Array.isArray(origin)||origin.length!==2||!origin.every(Number.isFinite)||!Array.isArray(m.files)||!m.files.length)throw Error('Invalid DSM manifest');
