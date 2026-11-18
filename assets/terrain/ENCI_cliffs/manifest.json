@@ -1,0 +1,43 @@
+{
+  "source": "PDOK DSM (user-supplied LAS/LAZ)",
+  "mode": "cliffs",
+  "coordinate_system": "RD New EPSG:28992 XY, input Z expected m NAP (not transformed)",
+  "origin_rd_for_local_xy": [
+    176269.00991889625,
+    315430.72517179325
+  ],
+  "rhino_original_z_offset_m": 995.425,
+  "study_boundary_status": "Approximate atlas boundary; origin from previous extraction script; alignment requires control-point check",
+  "output_step_m": 0.4,
+  "slope_screening_grid_m": 2.0,
+  "slope_threshold_deg": 45.0,
+  "cliff_buffer_m": 20.0,
+  "region_rd_bounds": [
+    175229.60991889625,
+    313576.6251717933,
+    176848.80991889624,
+    315762.42517179326
+  ],
+  "total_points": 245325,
+  "total_bytes": 1041798,
+  "soft_budget_mib": 200,
+  "files": [
+    {
+      "file": "001_DSM_1757_3152_001.laz",
+      "source": "DSM_1757_3152.laz",
+      "points": 245325,
+      "bytes": 1041798,
+      "rd_bounds": [
+        175750.04000314788,
+        315250.3600031479,
+        175999.64000314788,
+        315499.96000314795
+      ],
+      "z_nap_range": [
+        45.53440866088867,
+        122.74040866088868
+      ]
+    }
+  ],
+  "limitation": "DSM includes vegetation and buildings; slope from cell-average heights and neighboring differences is a screening mask, not measured rock faces or structural stability. XY sampling keeps the first original point per cell; no elevation interpolation. No vertical datum conversion. Missing source tiles are not filled."
+}
