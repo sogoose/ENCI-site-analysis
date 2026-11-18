@@ -160,3 +160,74 @@ body.views-mode #photo>img{max-height:32vh;width:100%;object-fit:contain;object-
 #terrain-focus{position:fixed;top:76px;right:30px;width:210px;z-index:3;background:rgba(255,255,255,.94);border-top:1px solid var(--ink);padding:8px 0 0}#terrain-focus .focus-control{margin:0;padding:2px 0 8px}#terrain-focus .focus-control input{margin-top:8px}@media(max-width:780px){#terrain-focus{top:99px;right:16px;width:142px}#terrain-focus .focus-control{font-size:10px}}
 
 #dsm-region-lines{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}#section-pins{transition:opacity .12s linear}
+
+/* Mobile: keep the terrain readable. Panels are mutually exclusive bottom sheets. */
+#mobile-dock{display:none}
+@media (max-width:780px), (max-width:960px) and (pointer:coarse){
+  #mobile-dock{
+    position:fixed;left:12px;right:12px;
+    bottom:calc(var(--footer-clearance,150px) + 6px);
+    z-index:20;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    height:43px;border-top:1px solid #1b1b1b;border-bottom:1px solid #bdbdbd;
+    background:rgba(255,255,255,.97);box-shadow:0 3px 15px #0000000e;
+  }
+  #mobile-dock button{min-width:0;display:grid;place-items:center;padding:0 5px;
+    border-right:1px solid #e2e2e2;color:#555;font-size:12px;letter-spacing:.015em}
+  #mobile-dock button:last-child{border-right:0}
+  #mobile-dock button.active{color:#0033ff;border-bottom:2px solid #0033ff;font-weight:500}
+  #mobile-dock button:disabled{color:#b7b7b7;cursor:default}
+  #drawer,body.section-mode #drawer,body.views-mode #drawer,
+  #map-legend,#map-legend.building-legend,body.section-cut-active #map-legend,
+  #terrain-focus{
+    position:fixed;left:12px;right:12px;top:auto;
+    bottom:calc(var(--footer-clearance,150px) + 55px);
+    width:auto;max-width:none;
+    max-height:min(45dvh,calc(100dvh - var(--footer-clearance,150px) - 170px));
+    margin:0;padding:12px 15px 13px;
+    background:rgba(255,255,255,.985);
+    border:1px solid #cecece;border-top:1px solid #161616;
+    box-shadow:0 5px 24px #0000001a;
+    overflow-y:auto;overscroll-behavior:contain;z-index:19;
+    scrollbar-width:thin;
+  }
+  #map-legend,#map-legend.building-legend,body.section-cut-active #map-legend{
+    padding:0 15px 9px;max-height:min(45dvh,calc(100dvh - var(--footer-clearance,150px) - 170px));
+    overflow:auto;
+  }
+  #map-legend.legend-collapsed{width:auto;padding:0 15px}
+  #terrain-focus{padding:13px 15px 10px}
+  #drawer:not([hidden]),#map-legend:not([hidden]),#terrain-focus:not([hidden]){display:none!important}
+  body.mobile-panel-controls #drawer:not([hidden]),
+  body.mobile-panel-controls #terrain-focus:not([hidden]){display:block!important}
+  body.mobile-panel-legend #map-legend:not([hidden]){display:block!important}
+  body.mobile-panel-controls #map-legend{display:none!important}
+  body.mobile-panel-legend #drawer,body.mobile-panel-legend #terrain-focus{display:none!important}
+  #map-measure{top:114px;bottom:auto;left:12px;padding:4px 6px;
+    max-width:118px;z-index:2;gap:7px}
+  .tools,body:has(#drawer:not([hidden])) .tools{
+    top:40%;bottom:auto;right:12px;transform:translateY(-50%);gap:5px;
+  }
+  .tools button{font-size:10px}
+  #status{max-width:55vw;font-size:10px}
+  #terrain-focus .focus-control{font-size:11px}
+  .atlas-key-title{min-height:38px;font-size:12px}
+  #map-legend .atlas-key-row{font-size:11px}
+  .section-index{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .section-index button{min-height:31px}
+  #drawer .option{min-height:34px}
+  footer{padding:0 12px calc(7px + env(safe-area-inset-bottom,0px))}
+  .date-line{margin-bottom:4px;gap:10px}
+  #date{font-size:clamp(32px,7vw,44px)}
+  #source{max-width:50vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #timeline button{padding-top:8px;padding-bottom:6px}
+  .footnote{font-size:8px;gap:4px 9px;max-height:21px;overflow:hidden;flex-wrap:nowrap;white-space:nowrap}
+  #profile,body.section-mode #profile{bottom:calc(var(--footer-clearance,150px) + 58px)}
+  body.mobile-panel-controls #photo,body.mobile-panel-legend #photo{display:none!important}
+}
+@media(max-height:520px) and (pointer:coarse){
+ #mobile-dock{height:36px}
+ #drawer,body.section-mode #drawer,body.views-mode #drawer,
+ #map-legend,#map-legend.building-legend,body.section-cut-active #map-legend,
+ #terrain-focus{bottom:calc(var(--footer-clearance,100px) + 45px);
+  max-height:calc(100dvh - var(--footer-clearance,100px) - 90px)}
+}
