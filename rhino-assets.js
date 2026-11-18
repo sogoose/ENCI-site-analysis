@@ -12,7 +12,8 @@ function layersFor(root){
 }
 function geometryBox(mesh){mesh.geometry.computeBoundingBox();return mesh.geometry.boundingBox.clone().applyMatrix4(mesh.matrixWorld)}
 function getMaterial(mesh){return (Array.isArray(mesh.material)?mesh.material:[mesh.material]).find(m=>m?.map&&mesh.geometry.getAttribute('uv'))}
-function hasRelief(mesh){const b=geometryBox(mesh),s=b.getSize(new THREE.Vector3());return s.z>1&&s.x>100&&s.y>100}
+function hasRelief(mesh){const b=geometryBox(mesh),s=b.getSize(new THREE.Vector3());return s.z>1&&s.x>30&&s.y>30}
+function category(layer,name=''){const s=(layer+' '+name).toLowerCase();if(/wegdeel|wegen|weg[_ -]|roads?|roadway|street|footpath|cycleway|paths?|fiets|voetpad|도로|보행/.test(s))return 'roads';if(/3dbag|building|bldg|gebouwen|gebouw|(?:^|[^a-z])pand(?:[^a-z]|$)|건물|건축물/.test(s))return 'buildings';if(/waterdeel|waterbod|water[_ -]|수역|수공간/.test(s))return 'water';return null}
 function sharedGroup(meshes,note){const group=new THREE.Group();group.rotation.x=-Math.PI/2;group.userData.atlasShared=true;group.userData.atlasNote=note;
  for(const m of meshes){const c=new THREE.Mesh(m.geometry,m.material);c.matrixAutoUpdate=false;c.matrix.copy(m.matrixWorld);c.frustumCulled=true;c.name=m.name;group.add(c)}
  return group;
@@ -42,10 +43,10 @@ export function createRhinoAssets(config,onChange,onProgress){
  const cache=new Map();
  async function load(url){
    if(!cache.has(url))cache.set(url,loader.loadAsync(url,e=>{if(e.total)onProgress?.(Math.round(e.loaded/e.total*100))}).then(root=>{
-     root.updateMatrixWorld(true);const {list,path}=layersFor(root),meshRows=[];
-     root.traverse(obj=>{if(!obj.isMesh||!obj.geometry?.getAttribute('position'))return;const names=path(obj.userData?.attributes?.layerIndex),segments=names.split('::').reverse(),ys=segments.map(matches).find(v=>v.length===1)||matches(names);const fallback=matches(obj.name);setPhotoMaterial(obj);meshRows.push({obj,layer:names,year:ys.length===1?ys[0]:ys.length===0&&fallback.length===1?fallback[0]:null,visible:obj.visible,height:geometryBox(obj).getSize(new THREE.Vector3()).z})});
-     const report={url,layers:list.map(l=>l.name),meshes:meshRows.map(r=>({name:r.obj.name,layer:r.layer,year:r.year,visible:r.visible,height:r.height,vertices:r.obj.geometry.getAttribute('position').count,textured:!!getMaterial(r.obj)})),warnings:root.userData.warnings||[]};
-     console.info('ENCI Rhino inspection',report);onChange?.();return {root,meshRows,report};
+     root.updateMatrixWorld(true);const {list,path}=layersFor(root),meshRows=[],curveRows=[];
+     root.traverse(obj=>{if(!(obj.isMesh||obj.isLine)||!obj.geometry?.getAttribute('position'))return;const idx=obj.userData?.attributes?.layerIndex,names=(list[idx]?.fullPath||path(idx)||list[idx]?.name||'Unassigned'),segments=names.split('::').reverse(),ys=segments.map(matches).find(v=>v.length===1)||matches(names);const fallback=matches(obj.name);const row={obj,layer:names,year:ys.length===1?ys[0]:ys.length===0&&fallback.length===1?fallback[0]:null,visible:obj.visible,height:geometryBox(obj).getSize(new THREE.Vector3()).z,category:category(names,obj.name)};if(obj.isMesh){setPhotoMaterial(obj);meshRows.push(row)}else curveRows.push(row)});
+     const describe=r=>({name:r.obj.name,layer:r.layer,year:r.year,visible:r.visible,height:r.height,vertices:r.obj.geometry.getAttribute('position').count,category:r.category,textured:r.obj.isMesh&&!!getMaterial(r.obj)});const report={url,layers:list.map(l=>l.name),meshes:meshRows.map(describe),curves:curveRows.map(describe),warnings:root.userData.warnings||[]};
+     console.info('ENCI Rhino inspection',report);onChange?.();return {root,meshRows,curveRows,report};
    }).catch(e=>{cache.delete(url);throw e}));
    return cache.get(url);
  }
@@ -60,8 +61,8 @@ export function createRhinoAssets(config,onChange,onProgress){
    throw Error('Year '+used+' contains no relief mesh or usable embedded map');
  }
  async function present(){
-   const data=await load(config.present);const visible=data.meshRows.filter(r=>r.visible);
-   const rows=visible.length?visible:data.meshRows;
+   const data=await load(config.present);const base=data.meshRows.filter(r=>!r.category||r.category==='water'&&r.height>1);const visible=base.filter(r=>r.visible);
+   const rows=visible.length?visible:base;
    if(!rows.length)throw Error('Current 3DM has no displayable meshes');
    const relief=rows.filter(r=>hasRelief(r.obj));
    // Preserve visible meshes including separately modelled buildings, but not flat map planes covering the site.
@@ -70,6 +71,19 @@ export function createRhinoAssets(config,onChange,onProgress){
    if(!filtered.some(r=>getMaterial(r.obj)))g.userData.atlasNote+=' · no embedded diffuse map';
    return g;
  }
+ async function sourceLayers(){const d=await load(config.present),groups=new Map();for(const r of [...d.meshRows,...d.curveRows]){const key=r.layer;const v=groups.get(key)||{layer:key,meshes:0,curves:0,category:r.category};if(r.obj.isMesh)v.meshes++;else v.curves++;groups.set(key,v)}return [...groups.values()].sort((a,b)=>a.layer.localeCompare(b.layer))}
+ async function nativeContext(kind,override=null){
+  const d=await load(config.present),match=r=>override?r.layer===override:r.category===kind;
+  if(kind==='buildings'){const rows=d.meshRows.filter(r=>match(r)&&r.height>.05);if(!rows.length)return null;
+   const g=sharedGroup(rows.map(r=>r.obj),'Rhino buildings');g.userData.atlasCount=rows.length;return g}
+  const rows=[...d.curveRows,...d.meshRows].filter(match);if(!rows.length)return null;
+  const paths=[],triangles=[],v=new THREE.Vector3();
+  for(const r of rows){const o=r.obj,geo=o.geometry,pos=geo.getAttribute('position');const xy=i=>{v.fromBufferAttribute(pos,i).applyMatrix4(o.matrixWorld);return [v.x,v.y]};
+   if(o.isLine){const points=[];for(let i=0;i<pos.count;i++)points.push(xy(i));if(o.isLineSegments){for(let i=0;i+1<points.length;i+=2)paths.push([points[i],points[i+1]])}else if(points.length>1)paths.push(points)}
+   else {const idx=geo.index,n=idx?idx.count:pos.count;if(n>900000)continue;for(let i=0;i+2<n;i+=3)triangles.push([xy(idx?idx.getX(i):i),xy(idx?idx.getX(i+1):i+1),xy(idx?idx.getX(i+2):i+2)])}
+  }
+  return paths.length||triangles.length?{paths,triangles,count:rows.length}:null;
+ }
  async function exportGLB(model,filename){await new Promise(r=>requestAnimationFrame(r));const result=await new GLTFExporter().parseAsync(model,{binary:true,onlyVisible:false,maxTextureSize:4096});const url=URL.createObjectURL(new Blob([result],{type:'model/gltf-binary'}));const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),30000)}
- return {history,present,exportGLB,reports:async()=>Promise.all([...cache.values()].map(p=>p.then(d=>d.report)))};
+ return {history,present,sourceLayers,nativeContext,exportGLB,reports:async()=>Promise.all([...cache.values()].map(p=>p.then(d=>d.report)))};
 }
