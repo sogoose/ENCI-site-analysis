@@ -20,16 +20,45 @@ function raster(url){return new Promise((resolve,reject)=>{const im=new Image();
 const hex=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
 function pixel(im,b,x,y){const u=Math.floor((x-b[0])/(b[2]-b[0])*im.width),v=Math.floor((b[3]-y)/(b[3]-b[1])*im.height);if(u<0||v<0||u>=im.width||v>=im.height)return null;const i=(v*im.width+u)*4;return im.data[i+3]>=128?[im.data[i],im.data[i+1],im.data[i+2]]:null}
 function delta(a,b){return a?Math.max(...a.map((v,i)=>Math.abs(v-b[i]))):Infinity}
-export async function cliffCandidates(manifest,ring){const b=manifest.model_bounds,sl=manifest.layers.find(l=>l.layer==='Slope'),as=manifest.layers.find(l=>l.layer==='Aspect');if(!sl||!as)throw Error('Slope/aspect manifest missing');const [s,a]=await Promise.all([raster('assets/environment/Slope.png'),raster('assets/environment/Aspect.png')]);const threshold=hex(sl.legend['9'].color),dirs=Object.entries(as.legend).map(([k,v])=>({angle:Number(k)*Math.PI/4,color:hex(v.color)}));const step=10,cells=[],set=new Set(),key=(i,j)=>i+','+j;
- for(let j=0;b[1]+(j+.5)*step<b[3];j++)for(let i=0;b[0]+(i+.5)*step<b[2];i++){const x=b[0]+(i+.5)*step,y=b[1]+(j+.5)*step;if(!inside(x,y,ring)||delta(pixel(s,b,x,y),threshold)>3)continue;set.add(key(i,j));const p=pixel(a,b,x,y),d=dirs.find(d=>delta(p,d.color)<=3);if(d)cells.push({i,j,x,y,angle:d.angle})}
- for(const c of cells){let score=0;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)if(set.has(key(c.i+i,c.j+j)))score++;c.score=score}
- cells.sort((a,b)=>b.score-a.score||a.y-b.y||a.x-b.x);const chosen=[];for(const c of cells){if(chosen.some(p=>Math.hypot(p.x-c.x,p.y-c.y)<120))continue;chosen.push(c);if(chosen.length>=24)break}
- if(!chosen.length)throw Error('No matching slope/aspect pixels within study perimeter');
- const canvas=document.createElement('canvas');canvas.width=s.width;canvas.height=s.height;const ctx=canvas.getContext('2d'),img=ctx.createImageData(s.width,s.height);for(let i=0;i<s.data.length;i+=4){if(s.data[i+3]>=128&&Math.abs(s.data[i]-threshold[0])<=3&&Math.abs(s.data[i+1]-threshold[1])<=3&&Math.abs(s.data[i+2]-threshold[2])<=3){const p=i/4,x=b[0]+(p%s.width+.5)/s.width*(b[2]-b[0]),y=b[3]-(Math.floor(p/s.width)+.5)/s.height*(b[3]-b[1]);if(inside(x,y,ring)){img.data[i]=211;img.data[i+1]=60;img.data[i+2]=33;img.data[i+3]=225}}}ctx.putImageData(img,0,0);
- // Preserve the selected steep-slope candidates; renumber along the route annotated in the atlas overview (November 18).
- const route=[4,1,9,7,21,14,22,15,16,6,17,2,8,10,19,23,5,3,13,12,18,20,24,11];
- const ranked=chosen.map((c,i)=>({...c,rank:i+1}));const order=new Map(route.map((r,i)=>[r,i]));
- ranked.sort((a,b)=>(order.get(a.rank)??100+a.rank)-(order.get(b.rank)??100+b.rank));
- return {candidates:ranked.map((c,i)=>({...c,id:'S'+String(i+1).padStart(2,'0')})),cellCount:set.size,canvas}
+// Cache the immutable source rasters; rebuild the mask on brush Apply.
+let cliffRasters=null;
+function getCliffRasters(){if(!cliffRasters)cliffRasters=Promise.all([raster('assets/environment/Slope.png'),raster('assets/environment/Aspect.png'),raster('assets/environment/Land_Cover_2020.png')]).catch(e=>{cliffRasters=null;throw e});return cliffRasters}
+function brushMask(b,strokes){
+ if(!strokes.length)return null;
+ const c=document.createElement('canvas'),dx=b[2]-b[0],dy=b[3]-b[1],scale=4096/Math.max(dx,dy);c.width=Math.max(1,Math.round(dx*scale));c.height=Math.max(1,Math.round(dy*scale));
+ const g=c.getContext('2d',{willReadFrequently:true});g.setTransform(c.width/dx,0,0,-c.height/dy,-b[0]*c.width/dx,b[3]*c.height/dy);g.fillStyle=g.strokeStyle='#fff';g.lineCap=g.lineJoin='round';
+ for(const st of strokes){const pts=st.points;if(!pts.length)continue;g.beginPath();if(pts.length===1){g.arc(pts[0][0],pts[0][1],st.width/2,0,Math.PI*2);g.fill()}else{g.lineWidth=st.width;pts.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.stroke()}}
+ const im=g.getImageData(0,0,c.width,c.height);return (x,y)=>{const u=Math.floor((x-b[0])/dx*c.width),v=Math.floor((b[3]-y)/dy*c.height);return u>=0&&v>=0&&u<c.width&&v<c.height&&im.data[(v*c.width+u)*4+3]>=128}
+}
+export async function cliffCandidates(manifest,ring,strokes=[]){
+ const b=manifest.model_bounds,sl=manifest.layers.find(l=>l.layer==='Slope'),as=manifest.layers.find(l=>l.layer==='Aspect'),lc=manifest.layers.find(l=>l.layer==='Land_Cover_2020');
+ if(!sl||!as||!lc)throw Error('Slope/aspect/land-cover manifest missing');
+ const [s,a,cover]=await getCliffRasters(),painted=brushMask(b,strokes),threshold=hex(sl.legend['9'].color),water=hex(lc.legend['80'].color),wet=hex(lc.legend['90'].color),built=hex(lc.legend['50'].color);
+ const dirs=Object.entries(as.legend).map(([k,v])=>({angle:Number(k)*Math.PI/4,color:hex(v.color)})),step=10,cells=[],raw=new Set(),key=(i,j)=>i+','+j;
+ const blocked=(x,y)=>{const p=pixel(cover,b,x,y);return !p||delta(p,water)<=3||delta(p,wet)<=3||delta(p,built)<=3};
+ for(let j=0;b[1]+(j+.5)*step<b[3];j++)for(let i=0;b[0]+(i+.5)*step<b[2];i++){
+  const x=b[0]+(i+.5)*step,y=b[1]+(j+.5)*step;
+  if(!inside(x,y,ring)||delta(pixel(s,b,x,y),threshold)>3)continue;
+  raw.add(key(i,j));const d=dirs.find(d=>delta(pixel(a,b,x,y),d.color)<=3);if(d)cells.push({i,j,x,y,angle:d.angle});
+ }
+ function score(c,set){let n=0;for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++)if(set.has(key(c.i+i,c.j+j)))n++;return n}
+ function spaced(list){const out=[];for(const c of list){if(out.some(p=>Math.hypot(p.x-c.x,p.y-c.y)<120))continue;out.push(c);if(out.length>=24)break}return out}
+ const rank=(list,set)=>list.map(c=>({...c,score:score(c,set)})).sort((a,b)=>b.score-a.score||a.y-b.y||a.x-b.x);
+ // Recover previous numbering so the rejected location is old section 14, not a newly numbered 14.
+ const route=[4,1,9,7,21,14,22,15,16,6,17,2,8,10,19,23,5,3,13,12,18,20,24,11],old=spaced(rank(cells,raw)),oldRoute=route.map(i=>old[i-1]).filter(Boolean),bad=old[route[13]-1];
+ const rejected=(x,y)=>!!bad&&Math.hypot(x-bad.x,y-bad.y)<=35;
+ const valid=(x,y)=>!blocked(x,y)&&!rejected(x,y)&&(!painted||painted(x,y));
+ const eligible=cells.filter(c=>valid(c.x,c.y)),screened=new Set(eligible.map(c=>key(c.i,c.j)));
+ const visited=new Set(),supported=new Set();
+ for(const c of eligible){const k=key(c.i,c.j);if(visited.has(k))continue;const q=[[c.i,c.j]];visited.add(k);for(let n=0;n<q.length;n++){const [i,j]=q[n];for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){if(!dx&&!dy)continue;const x=i+dx,y=j+dy,k=key(x,y);if(screened.has(k)&&!visited.has(k)){visited.add(k);q.push([x,y])}}}if(q.length>=3)for(const [i,j] of q)supported.add(key(i,j))}
+ // Exclude wet shoreline anchors; transect endpoints may cross water because a cut is not a footprint.
+ const dryAnchor=c=>![[10,0],[-10,0],[0,10],[0,-10]].some(([dx,dy])=>{const p=pixel(cover,b,c.x+dx,c.y+dy);return delta(p,water)<=3||delta(p,wet)<=3});
+ const chosen=spaced(rank(eligible.filter(c=>supported.has(key(c.i,c.j))&&dryAnchor(c)),supported));
+ const nearest=c=>{let n=0,d=Infinity;oldRoute.forEach((p,i)=>{const v=Math.hypot(c.x-p.x,c.y-p.y);if(v<d){d=v;n=i}});return n};
+ chosen.sort((a,b)=>nearest(a)-nearest(b)||a.y-b.y||a.x-b.x);
+ const canvas=document.createElement('canvas');canvas.width=s.width;canvas.height=s.height;const ctx=canvas.getContext('2d'),img=ctx.createImageData(s.width,s.height);
+ for(let i=0;i<s.data.length;i+=4){if(s.data[i+3]<128||Math.abs(s.data[i]-threshold[0])>3||Math.abs(s.data[i+1]-threshold[1])>3||Math.abs(s.data[i+2]-threshold[2])>3)continue;const p=i/4,x=b[0]+(p%s.width+.5)/s.width*(b[2]-b[0]),y=b[3]-(Math.floor(p/s.width)+.5)/s.height*(b[3]-b[1]);if(!inside(x,y,ring)||!valid(x,y))continue;const gx=Math.floor((x-b[0])/step),gy=Math.floor((y-b[1])/step);if(!supported.has(key(gx,gy)))continue;img.data[i]=211;img.data[i+1]=60;img.data[i+2]=33;img.data[i+3]=225}
+ ctx.putImageData(img,0,0);
+ return {candidates:chosen.map((c,i)=>({...c,id:'S'+String(i+1).padStart(2,'0')})),cellCount:supported.size,canvas}
 }
 export function lineFor(c,len,b){const dx=Math.sin(c.angle),dy=Math.cos(c.angle);const limit=(x,y,sign)=>{let t=len/2;for(const [p,d,lo,hi] of [[x,dx*sign,b[0],b[2]],[y,dy*sign,b[1],b[3]]])if(Math.abs(d)>1e-8)t=Math.min(t,((d>0?hi:lo)-p)/d);return Math.max(0,t)};const a=limit(c.x,c.y,-1),z=limit(c.x,c.y,1);return {id:c.id,label:c.id+'—'+c.id+'′',a:[c.x-dx*a,c.y-dy*a],b:[c.x+dx*z,c.y+dy*z],center:[c.x,c.y],angle:c.angle}}
