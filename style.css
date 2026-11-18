@@ -159,7 +159,7 @@ body.views-mode #photo>img{max-height:32vh;width:100%;object-fit:contain;object-
 /* Terrain-only compact control, available in both single and exploded views. */
 #terrain-focus{position:fixed;top:76px;right:30px;width:210px;z-index:3;background:rgba(255,255,255,.94);border-top:1px solid var(--ink);padding:8px 0 0}#terrain-focus .focus-control{margin:0;padding:2px 0 8px}#terrain-focus .focus-control input{margin-top:8px}@media(max-width:780px){#terrain-focus{top:99px;right:16px;width:142px}#terrain-focus .focus-control{font-size:10px}}
 
-#dsm-region-lines{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}#section-pins{transition:opacity .12s linear}
+#section-pins{transition:opacity .12s linear}
 
 /* Mobile: keep the terrain readable. Panels are mutually exclusive bottom sheets. */
 #mobile-dock{display:none}
