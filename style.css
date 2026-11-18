@@ -97,3 +97,37 @@ body.section-mode .section-index button.active{background:#161616;color:white;bo
 .section-pin,.section-pin:hover,.section-pin.active{width:19px;height:19px;font-size:9px;border-width:1.5px;box-shadow:0 0 0 .5px #161616}
 .section-pin:hover,.section-pin:focus-visible,.section-pin.active{box-shadow:0 0 0 .5px #161616,0 0 0 2px #ffffffc9}
 @media(max-width:780px){.section-pin,.section-pin:hover,.section-pin.active{width:18px;height:18px;font-size:9px}}
+
+/* Photographic archive */
+#photo-lines,#photo-markers{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+#photo-markers{z-index:2}
+.archive-pin{position:absolute;transform:translate(-50%,-50%);display:grid;place-items:center;min-width:20px;height:20px;padding:0 2px;background:#171717;color:white;border:1.5px solid white;box-shadow:0 0 0 .5px #111;font-size:10px;line-height:1;pointer-events:auto}
+.archive-pin.active,.archive-pin:hover{background:#0033ff;color:#fff;box-shadow:0 0 0 2px #fff}
+body.views-mode #drawer{width:265px;max-height:calc(100dvh - var(--footer-clearance,150px) - 90px);background:rgba(255,255,255,.97);padding:10px 22px 12px 0;overflow:auto}
+body.views-mode #photo{z-index:4;left:30px;top:90px;width:min(370px,32vw);max-width:none;max-height:calc(100dvh - 235px);overflow:auto;background:#fff;padding:0 0 10px;border-top:1px solid #222;border-bottom:1px solid #ccc}
+.archive-heading,.archive-card-head,.archive-toolbar{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.archive-heading{font-size:10px;letter-spacing:.08em}
+.archive-card-head{padding:7px 0}.archive-card-head b{font-weight:500;font-size:12px}
+.archive-card-head button{font-size:19px;line-height:1}
+.archive-button{font-size:11px;white-space:normal;text-align:left;padding:6px 0;color:#333}
+.archive-button:hover{color:#0033ff}.archive-button.primary{background:#171717;color:white;padding:8px 10px}
+.archive-toolbar{border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:5px 0}
+.archive-tabs{display:flex;gap:14px;margin-top:10px}
+.archive-filter{font-size:11px;padding:6px 0;border-bottom:1px solid transparent}
+.archive-filter.active{color:#0033ff;border-color:#0033ff}
+.archive-search{width:100%;border:0;border-bottom:1px solid #ccc;background:white;font-size:11px;padding:9px 0;margin-bottom:5px;border-radius:0}
+.archive-item{display:grid;grid-template-columns:58px minmax(0,1fr);gap:10px;align-items:center;width:100%;padding:7px 0;border-bottom:1px solid #e2e2e2;text-align:left;white-space:normal}
+.archive-item img{width:58px;height:43px;object-fit:cover;background:#eee}
+.archive-item span{min-width:0}.archive-item strong,.archive-item small{display:block;overflow-wrap:anywhere}.archive-item strong{font-size:11px;font-weight:500;line-height:1.35}.archive-item small{font-size:9px;color:#777;margin-top:4px}
+.archive-item.active strong{color:#0033ff}
+.archive-note{font-size:10px;line-height:1.5;color:#777}
+body.views-mode #photo>img{max-height:32vh;width:100%;object-fit:contain;object-position:left center;cursor:zoom-in}
+.archive-strip{display:flex;gap:6px;overflow:auto;padding:5px 0}.archive-strip button{flex:0 0 65px;padding:0}.archive-strip img{width:65px!important;height:48px!important;object-fit:cover!important}
+.archive-form{display:grid;gap:6px;border-top:1px solid #ccc;padding-top:5px}
+.archive-form>button{text-align:left;border-bottom:1px solid #ddd}
+.archive-field{display:grid;grid-template-columns:95px minmax(0,1fr);gap:6px;align-items:center;font-size:10px;color:#666}
+.archive-field input,.archive-field textarea,.archive-form select{width:100%;min-width:0;border:1px solid #d5d5d5;background:white;padding:5px;border-radius:0;font:inherit;color:#222}
+.archive-field textarea{min-height:48px;resize:vertical}
+.archive-lightbox{border:0;padding:18px;background:#fff;max-width:92vw;max-height:92vh;width:auto}
+.archive-lightbox::backdrop{background:#000b}.archive-lightbox img{display:block;max-width:86vw;max-height:76vh;object-fit:contain}.archive-lightbox p{font-size:12px}.archive-lightbox button{display:block;margin-left:auto;margin-bottom:8px}
+@media(max-width:780px){body.views-mode #drawer{width:190px;top:100px;max-height:42vh}body.views-mode #photo{left:12px;top:auto;bottom:150px;width:min(310px,75vw);max-height:42vh}.archive-item{grid-template-columns:45px minmax(0,1fr)}.archive-item img{width:45px;height:34px}}
