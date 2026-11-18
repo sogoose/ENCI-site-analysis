@@ -1,0 +1,727 @@
+{
+  "anchor": {
+    "lon": 5.6890607,
+    "lat": 50.82834457
+  },
+  "units": "m",
+  "model_bounds": [
+    -1202.081443241385,
+    -2178.894750454218,
+    961.9035417506408,
+    840.3501682211659
+  ],
+  "wgs84_bounds": [
+    5.671930320691491,
+    50.80873161689147,
+    5.702768400606337,
+    50.835908840114755
+  ],
+  "rd_bounds": [
+    175058.7434509934,
+    313243.95756536414,
+    177244.2510642346,
+    316276.3192246594
+  ],
+  "layers": [
+    {
+      "layer": "Slope",
+      "status": "ok",
+      "source": "https://service.pdok.nl/rws/actueel-hoogtebestand-nederland/wcs/v1_0",
+      "unit": "degrees",
+      "resolution_m": [
+        10.0,
+        10.0
+      ],
+      "valid_pixels": 44816,
+      "min": 0.011905771680176258,
+      "max": 71.4237289428711,
+      "legend": {
+        "0": {
+          "label": "< 5 deg",
+          "color": "#eeeeee"
+        },
+        "1": {
+          "label": "5 to < 10 deg",
+          "color": "#f5e18a"
+        },
+        "2": {
+          "label": "10 to < 15 deg",
+          "color": "#ffdb39"
+        },
+        "3": {
+          "label": "15 to < 20 deg",
+          "color": "#ffbd00"
+        },
+        "4": {
+          "label": "20 to < 25 deg",
+          "color": "#ff9800"
+        },
+        "5": {
+          "label": "25 to < 30 deg",
+          "color": "#f86d00"
+        },
+        "6": {
+          "label": "30 to < 35 deg",
+          "color": "#e84400"
+        },
+        "7": {
+          "label": "35 to < 40 deg",
+          "color": "#cf1000"
+        },
+        "8": {
+          "label": "40 to < 45 deg",
+          "color": "#8e0000"
+        },
+        "9": {
+          "label": ">= 45 deg",
+          "color": "#480000"
+        }
+      },
+      "note": "Computed from AHN DTM; aspect is downhill relative to RD grid north; slope <0.1 degrees has undefined aspect.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Aspect",
+      "status": "ok",
+      "source": "https://service.pdok.nl/rws/actueel-hoogtebestand-nederland/wcs/v1_0",
+      "unit": "degrees",
+      "resolution_m": [
+        10.0,
+        10.0
+      ],
+      "valid_pixels": 44498,
+      "min": 0.020233154296875,
+      "max": 359.9998779296875,
+      "legend": {
+        "0": {
+          "label": "N",
+          "color": "#d32f2f"
+        },
+        "1": {
+          "label": "NE",
+          "color": "#f57c00"
+        },
+        "2": {
+          "label": "E",
+          "color": "#fbc02d"
+        },
+        "3": {
+          "label": "SE",
+          "color": "#7cb342"
+        },
+        "4": {
+          "label": "S",
+          "color": "#00897b"
+        },
+        "5": {
+          "label": "SW",
+          "color": "#1976d2"
+        },
+        "6": {
+          "label": "W",
+          "color": "#5e35b1"
+        },
+        "7": {
+          "label": "NW",
+          "color": "#ad1457"
+        }
+      },
+      "note": "Computed from AHN DTM; aspect is downhill relative to RD grid north; slope <0.1 degrees has undefined aspect.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Land_Cover_2020",
+      "status": "ok",
+      "source": "https://esa-worldcover.s3.eu-central-1.amazonaws.com/v100/2020/map/ESA_WorldCover_10m_2020_v100_N48E003_Map.tif",
+      "unit": "class",
+      "resolution_m": [
+        10.0,
+        10.0
+      ],
+      "valid_pixels": 66259,
+      "min": 10.0,
+      "max": 90.0,
+      "legend": {
+        "10": {
+          "label": "Tree cover",
+          "color": "#006400"
+        },
+        "20": {
+          "label": "Shrubland",
+          "color": "#ffbb22"
+        },
+        "30": {
+          "label": "Grassland",
+          "color": "#ffff4c"
+        },
+        "40": {
+          "label": "Cropland",
+          "color": "#f096ff"
+        },
+        "50": {
+          "label": "Built-up",
+          "color": "#fa0000"
+        },
+        "60": {
+          "label": "Bare or sparse vegetation",
+          "color": "#b4b4b4"
+        },
+        "70": {
+          "label": "Snow and ice",
+          "color": "#f0f0f0"
+        },
+        "80": {
+          "label": "Permanent water",
+          "color": "#0064c8"
+        },
+        "90": {
+          "label": "Herbaceous wetland",
+          "color": "#0096a0"
+        },
+        "95": {
+          "label": "Mangroves",
+          "color": "#00cf75"
+        },
+        "100": {
+          "label": "Moss and lichen",
+          "color": "#fae6a0"
+        }
+      },
+      "note": "ESA WorldCover project 2020; modified Copernicus Sentinel data (2020). DOI 10.5281/zenodo.5571936",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Forest_Cover_2020_V4",
+      "status": "ok",
+      "source": "https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/FOREST/GFC2020/LATEST/single-cog/JRC_GFC2020_V4_COG.tif",
+      "unit": "class",
+      "resolution_m": [
+        10.0,
+        10.0
+      ],
+      "valid_pixels": 66259,
+      "min": 0.0,
+      "max": 1.0,
+      "legend": {
+        "0": {
+          "label": "Non forest",
+          "color": "#eeeeea"
+        },
+        "1": {
+          "label": "Forest",
+          "color": "#12613b"
+        }
+      },
+      "note": "JRC Global Forest Cover 2020, V4 (not necessarily same version as Google Earth).",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Surface_Water_Occurrence_1984_2021",
+      "status": "ok",
+      "source": "https://storage.googleapis.com/global-surface-water/downloads2021/occurrence/occurrence_0E_60Nv1_4_2021.tif",
+      "unit": "percent",
+      "resolution_m": [
+        30.0,
+        30.0
+      ],
+      "valid_pixels": 7480,
+      "min": 0.0,
+      "max": 98.0,
+      "legend": {
+        "0": {
+          "label": "< 1 %",
+          "color": "#e9f1f7"
+        },
+        "1": {
+          "label": "1 to < 10 %",
+          "color": "#b7d9ed"
+        },
+        "2": {
+          "label": "10 to < 50 %",
+          "color": "#71b6d6"
+        },
+        "3": {
+          "label": "50 to < 90 %",
+          "color": "#287bb6"
+        },
+        "4": {
+          "label": ">= 90 %",
+          "color": "#08306b"
+        }
+      },
+      "note": "JRC GSW v1.4; historical satellite water occurrence. Recurrence is NOT a flood event record or hazard probability.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Water_Recurrence_1984_2021",
+      "status": "ok",
+      "source": "https://storage.googleapis.com/global-surface-water/downloads2021/recurrence/recurrence_0E_60Nv1_4_2021.tif",
+      "unit": "percent",
+      "resolution_m": [
+        30.0,
+        30.0
+      ],
+      "valid_pixels": 7480,
+      "min": 0.0,
+      "max": 100.0,
+      "legend": {
+        "0": {
+          "label": "< 1 %",
+          "color": "#e9f1f7"
+        },
+        "1": {
+          "label": "1 to < 10 %",
+          "color": "#b7d9ed"
+        },
+        "2": {
+          "label": "10 to < 50 %",
+          "color": "#71b6d6"
+        },
+        "3": {
+          "label": "50 to < 90 %",
+          "color": "#287bb6"
+        },
+        "4": {
+          "label": ">= 90 %",
+          "color": "#08306b"
+        }
+      },
+      "note": "JRC GSW v1.4; historical satellite water recurrence. Recurrence is NOT a flood event record or hazard probability.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Flood_Risk_WMS_01",
+      "status": "map_only",
+      "source": "https://service.pdok.nl/rws/overstromingen-risicogebied/wms/v2_0",
+      "server_layer": "NZ.RiskZone",
+      "note": "Official potentially significant flood risk area, display only; not historical inundation, depth, or probability. Blank image is not proof of no hazard."
+    },
+    {
+      "layer": "Air_NO2_2025",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/gcn/conc_NO2_2025.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        1000.0,
+        1000.0
+      ],
+      "valid_pixels": 12,
+      "min": 0.08100000023841858,
+      "max": 0.3700000047683716,
+      "legend": {
+        "0": {
+          "label": "< 5 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "10 to < 15 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "15 to < 20 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "20 to < 30 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 30 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM GCN regional modeled annual concentration; native grid retained when RD. Display bins are cartographic, not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Air_PM10_2025",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/gcn/conc_PM10_2025.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        1000.0,
+        1000.0
+      ],
+      "valid_pixels": 12,
+      "min": 0.005799999926239252,
+      "max": 0.03099999949336052,
+      "legend": {
+        "0": {
+          "label": "< 5 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "10 to < 15 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "15 to < 20 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "20 to < 30 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 30 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM GCN regional modeled annual concentration; native grid retained when RD. Display bins are cartographic, not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Air_PM25_2025",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/gcn/conc_PM25_2025.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        1000.0,
+        1000.0
+      ],
+      "valid_pixels": 12,
+      "min": 0.002300000051036477,
+      "max": 0.010700000450015068,
+      "legend": {
+        "0": {
+          "label": "< 2 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "2 to < 5 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "10 to < 15 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "15 to < 20 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 20 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM GCN regional modeled annual concentration; native grid retained when RD. Display bins are cartographic, not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Air_NOx_2025",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/gcn/conc_NOx_2025.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        1000.0,
+        1000.0
+      ],
+      "valid_pixels": 12,
+      "min": 0.11800000071525574,
+      "max": 0.5690000057220459,
+      "legend": {
+        "0": {
+          "label": "< 5 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "10 to < 20 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "20 to < 30 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "30 to < 40 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 40 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM GCN regional modeled annual concentration; native grid retained when RD. Display bins are cartographic, not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Air_SO2_2025",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/gcn/conc_SO2_2025.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        1000.0,
+        1000.0
+      ],
+      "valid_pixels": 12,
+      "min": 0.36890000104904175,
+      "max": 0.6176999807357788,
+      "legend": {
+        "0": {
+          "label": "< 0.5 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "0.5 to < 1 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "1 to < 2 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "2 to < 4 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "4 to < 8 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 8 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM GCN regional modeled annual concentration; native grid retained when RD. Display bins are cartographic, not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Water_Chemical_Status_2022",
+      "status": "ok",
+      "source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer",
+      "features": 6,
+      "legend": {
+        "Failing to achieve good": [
+          230,
+          61,
+          92,
+          255
+        ]
+      },
+      "errors": [],
+      "note": "WFD reporting unit status or station locations, not local measured concentration. Unknown/unassessed is not clean."
+    },
+    {
+      "layer": "Water_Ecological_Status_2022",
+      "status": "ok",
+      "source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer",
+      "features": 6,
+      "legend": {
+        "Poor": [
+          246,
+          168,
+          0,
+          255
+        ],
+        "Moderate": [
+          255,
+          246,
+          166,
+          255
+        ]
+      },
+      "errors": [],
+      "note": "WFD reporting unit status or station locations, not local measured concentration. Unknown/unassessed is not clean."
+    },
+    {
+      "layer": "Groundwater_Chemical_Status_2022",
+      "status": "ok",
+      "source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_GroundWaterBody_WM/MapServer",
+      "features": 4,
+      "legend": {
+        "Poor": [
+          230,
+          61,
+          92,
+          255
+        ],
+        "Good": [
+          111,
+          178,
+          44,
+          255
+        ]
+      },
+      "errors": [],
+      "note": "WFD reporting unit status or station locations, not local measured concentration. Unknown/unassessed is not clean."
+    },
+    {
+      "layer": "Groundwater_Quantitative_Status_2022",
+      "status": "ok",
+      "source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_GroundWaterBody_WM/MapServer",
+      "features": 4,
+      "legend": {
+        "Good": [
+          111,
+          178,
+          44,
+          255
+        ]
+      },
+      "errors": [],
+      "note": "WFD reporting unit status or station locations, not local measured concentration. Unknown/unassessed is not clean."
+    },
+    {
+      "layer": "Water_Monitoring_Sites_2022",
+      "status": "ok",
+      "source": "https://water.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_MonitoringSite_WM/MapServer",
+      "features": 3,
+      "legend": {
+        "Monitoring location": [
+          29,
+          74,
+          155,
+          255
+        ]
+      },
+      "errors": [],
+      "note": "WFD reporting unit status or station locations, not local measured concentration. Unknown/unassessed is not clean."
+    },
+    {
+      "layer": "Air_NO2_2024_25m",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/alo/rivm_nsl_20260401_gm_NO22024.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        25.0,
+        25.0
+      ],
+      "valid_pixels": 9303,
+      "min": 6.484850883483887,
+      "max": 13.712053298950195,
+      "legend": {
+        "0": {
+          "label": "< 5 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "10 to < 15 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "15 to < 20 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "20 to < 30 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 30 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM ALO indicative interpolated annual concentration map, 25 m grid; not an on-site measurement. Display bins are not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Air_PM10_2024_25m",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/alo/rivm_nsl_20260401_gm_PM102024.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        25.0,
+        25.0
+      ],
+      "valid_pixels": 9303,
+      "min": 12.009621620178223,
+      "max": 13.346681594848633,
+      "legend": {
+        "0": {
+          "label": "< 5 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "10 to < 15 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "15 to < 20 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "20 to < 30 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 30 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM ALO indicative interpolated annual concentration map, 25 m grid; not an on-site measurement. Display bins are not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    },
+    {
+      "layer": "Air_PM25_2024_25m",
+      "status": "ok",
+      "source": "https://data.rivm.nl/data/alo/rivm_nsl_20260401_gm_PM252024.zip",
+      "unit": "ug/m3",
+      "resolution_m": [
+        25.0,
+        25.0
+      ],
+      "valid_pixels": 9303,
+      "min": 6.994759559631348,
+      "max": 7.78585147857666,
+      "legend": {
+        "0": {
+          "label": "< 2 ug/m3",
+          "color": "#eff6d3"
+        },
+        "1": {
+          "label": "2 to < 5 ug/m3",
+          "color": "#c4df9b"
+        },
+        "2": {
+          "label": "5 to < 10 ug/m3",
+          "color": "#f9d468"
+        },
+        "3": {
+          "label": "10 to < 15 ug/m3",
+          "color": "#ef9951"
+        },
+        "4": {
+          "label": "15 to < 20 ug/m3",
+          "color": "#d54b3e"
+        },
+        "5": {
+          "label": ">= 20 ug/m3",
+          "color": "#8b2456"
+        }
+      },
+      "note": "RIVM ALO indicative interpolated annual concentration map, 25 m grid; not an on-site measurement. Display bins are not regulatory thresholds.",
+      "unclassified_valid_pixels": 0
+    }
+  ],
+  "notes": [
+    "NoData is not zero. RD GeoTIFFs retain cells touching the boundary; PNGs and Rhino polygons are clipped in local XY.",
+    "All maps use sources of different vintages and resolutions. No data from private Google Earth map services.",
+    "Air maps cover Netherlands only; AHN has no Belgian terrain coverage.",
+    "PNG world files are local Rhino XY, not EPSG:28992.",
+    "Water status applies to reported bodies; not quarry-lake sampling."
+  ]
+}

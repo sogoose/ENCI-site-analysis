@@ -1,0 +1,1137 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              5.671930320691491,
+              50.82362847147504
+            ],
+            [
+              5.672053913474718,
+              50.823643011482396
+            ],
+            [
+              5.67218787024989,
+              50.8236555356379
+            ],
+            [
+              5.672192500166864,
+              50.823732199626036
+            ],
+            [
+              5.6721244833268,
+              50.82378794588875
+            ],
+            [
+              5.671980709762213,
+              50.82386614467009
+            ],
+            [
+              5.671952747902361,
+              50.823881575354186
+            ],
+            [
+              5.671930320691491,
+              50.823890356433786
+            ]
+          ],
+          [
+            [
+              5.671930320691491,
+              50.82453490608949
+            ],
+            [
+              5.671990753825393,
+              50.82452143069209
+            ],
+            [
+              5.672103239966972,
+              50.824496721050814
+            ],
+            [
+              5.672141043769058,
+              50.82449396714842
+            ],
+            [
+              5.672157086781721,
+              50.82449511456049
+            ],
+            [
+              5.672248960180769,
+              50.824501683522314
+            ],
+            [
+              5.6722798496501285,
+              50.82451225877714
+            ],
+            [
+              5.672436959603457,
+              50.82458078961625
+            ],
+            [
+              5.672486559183529,
+              50.82467298294843
+            ],
+            [
+              5.672458949463272,
+              50.82473873356052
+            ],
+            [
+              5.672376758106375,
+              50.8248134993186
+            ],
+            [
+              5.672295121009986,
+              50.824863166800085
+            ],
+            [
+              5.67215627739967,
+              50.82495428821334
+            ],
+            [
+              5.672049962684083,
+              50.82505505565313
+            ],
+            [
+              5.671958758529939,
+              50.8251414929098
+            ],
+            [
+              5.671930320691491,
+              50.82518952754532
+            ]
+          ],
+          [
+            [
+              5.671930320691491,
+              50.826418214401784
+            ],
+            [
+              5.672205666773987,
+              50.82638525660647
+            ],
+            [
+              5.672327666074396,
+              50.826404488878346
+            ],
+            [
+              5.672414299600407,
+              50.82642605502489
+            ],
+            [
+              5.672453573046311,
+              50.82643583712969
+            ],
+            [
+              5.672581070934585,
+              50.82646757689357
+            ],
+            [
+              5.672654074322771,
+              50.826478947253705
+            ],
+            [
+              5.673041025428026,
+              50.826539223507815
+            ],
+            [
+              5.673136489393273,
+              50.826572722261275
+            ],
+            [
+              5.673211994589542,
+              50.82659160094176
+            ],
+            [
+              5.673293399920579,
+              50.826635103588984
+            ],
+            [
+              5.673292760320112,
+              50.8266948275251
+            ],
+            [
+              5.673272084695517,
+              50.826727337692056
+            ],
+            [
+              5.67323730013111,
+              50.82676648116726
+            ],
+            [
+              5.6731908707056276,
+              50.826825113756634
+            ],
+            [
+              5.672917266327971,
+              50.827171585240585
+            ],
+            [
+              5.67283806995423,
+              50.82727010200604
+            ],
+            [
+              5.672816084585967,
+              50.82729744645869
+            ],
+            [
+              5.672758873580454,
+              50.82735713947373
+            ],
+            [
+              5.672671668725922,
+              50.8274481164321
+            ],
+            [
+              5.672628047434033,
+              50.82753211783353
+            ],
+            [
+              5.67258859252845,
+              50.82760809965176
+            ],
+            [
+              5.672586408724006,
+              50.827707513162174
+            ],
+            [
+              5.672565288433347,
+              50.827778694855546
+            ],
+            [
+              5.672510722966353,
+              50.8279754175062
+            ],
+            [
+              5.672435998406097,
+              50.828210836735444
+            ],
+            [
+              5.672435763945788,
+              50.82824837090336
+            ],
+            [
+              5.672432959405483,
+              50.82825858953831
+            ],
+            [
+              5.6724514170896105,
+              50.8284210274601
+            ],
+            [
+              5.672456807879659,
+              50.828489824353625
+            ],
+            [
+              5.6724797427671545,
+              50.8285704795404
+            ],
+            [
+              5.672495518980179,
+              50.82862714264085
+            ],
+            [
+              5.672631510439477,
+              50.82873196823076
+            ],
+            [
+              5.672690930402252,
+              50.8288560395999
+            ],
+            [
+              5.672779137776645,
+              50.82900783311959
+            ],
+            [
+              5.672815056913253,
+              50.82917080349916
+            ],
+            [
+              5.672881417259937,
+              50.82931712280407
+            ],
+            [
+              5.672934776289495,
+              50.829477290266105
+            ],
+            [
+              5.672943795374953,
+              50.82952425308361
+            ],
+            [
+              5.672970324421936,
+              50.82958222912964
+            ],
+            [
+              5.672988003266713,
+              50.82961811389315
+            ],
+            [
+              5.673005665043513,
+              50.82965123935688
+            ],
+            [
+              5.673023582840186,
+              50.82972581227538
+            ],
+            [
+              5.673055688628415,
+              50.829792736529775
+            ],
+            [
+              5.673090114765047,
+              50.8298997723554
+            ],
+            [
+              5.6731341160443085,
+              50.82995770481277
+            ],
+            [
+              5.6731519314330106,
+              50.83001570244891
+            ],
+            [
+              5.673216199603387,
+              50.83009413307715
+            ],
+            [
+              5.673237097111833,
+              50.83014782628392
+            ],
+            [
+              5.673254725650973,
+              50.830258175443014
+            ],
+            [
+              5.673267703611873,
+              50.83033948461543
+            ],
+            [
+              5.673252294809827,
+              50.83038630982397
+            ],
+            [
+              5.673215499815782,
+              50.830498115479266
+            ],
+            [
+              5.673144973082827,
+              50.830592277884136
+            ],
+            [
+              5.673070968073079,
+              50.83069109665756
+            ],
+            [
+              5.673023516364833,
+              50.830720499860526
+            ],
+            [
+              5.672909273118565,
+              50.83077802391509
+            ],
+            [
+              5.672790461040791,
+              50.830833419630586
+            ],
+            [
+              5.672694249677227,
+              50.83089660662704
+            ],
+            [
+              5.672688098014171,
+              50.83090481046203
+            ],
+            [
+              5.6726481786795535,
+              50.830932010939236
+            ],
+            [
+              5.672604669677103,
+              50.831001686982994
+            ],
+            [
+              5.672559021785928,
+              50.831120840481795
+            ],
+            [
+              5.672540464388789,
+              50.831278576199296
+            ],
+            [
+              5.672543400981468,
+              50.83135895933146
+            ],
+            [
+              5.672553879829243,
+              50.8314748823967
+            ],
+            [
+              5.672566475107847,
+              50.83153823590143
+            ],
+            [
+              5.6725897783046175,
+              50.83175461532992
+            ],
+            [
+              5.672633048355242,
+              50.83204206057953
+            ],
+            [
+              5.672652768172358,
+              50.8321438050526
+            ],
+            [
+              5.672528208673356,
+              50.83232683969553
+            ],
+            [
+              5.6725215350891185,
+              50.83244398189883
+            ],
+            [
+              5.6725521532672545,
+              50.832612565141396
+            ],
+            [
+              5.672576211947219,
+              50.83265170651865
+            ],
+            [
+              5.672645272629611,
+              50.832749605207354
+            ],
+            [
+              5.672713503268717,
+              50.83284632811581
+            ],
+            [
+              5.6727413824835695,
+              50.83288584659275
+            ],
+            [
+              5.672808014121443,
+              50.832983221116415
+            ],
+            [
+              5.672904216501836,
+              50.8331366754914
+            ],
+            [
+              5.672962888167995,
+              50.833229880547194
+            ],
+            [
+              5.673023197462897,
+              50.83333317585316
+            ],
+            [
+              5.673087028153754,
+              50.83340198990351
+            ],
+            [
+              5.6731840983067094,
+              50.833518654532966
+            ],
+            [
+              5.67328720064681,
+              50.8336111581449
+            ],
+            [
+              5.673424299728862,
+              50.83367420408185
+            ],
+            [
+              5.673502599583967,
+              50.8337033830037
+            ],
+            [
+              5.673590654244753,
+              50.83373099261269
+            ],
+            [
+              5.673683593045726,
+              50.83375858972357
+            ],
+            [
+              5.673787474225175,
+              50.8337766127694
+            ],
+            [
+              5.673874414076697,
+              50.83378567393288
+            ],
+            [
+              5.673976000958892,
+              50.833785839032025
+            ],
+            [
+              5.67401619248303,
+              50.83378755640341
+            ],
+            [
+              5.674052596709904,
+              50.833795342160045
+            ],
+            [
+              5.674089071005385,
+              50.83381463889387
+            ],
+            [
+              5.67412368758487,
+              50.833843028543676
+            ],
+            [
+              5.674189835929137,
+              50.83392472237518
+            ],
+            [
+              5.674195476450812,
+              50.83393020069966
+            ],
+            [
+              5.674286166768616,
+              50.83404277740236
+            ],
+            [
+              5.6743550199402115,
+              50.83413839243965
+            ],
+            [
+              5.6745230426275794,
+              50.83427611678254
+            ],
+            [
+              5.674601939862355,
+              50.834324856233536
+            ],
+            [
+              5.67461987023542,
+              50.8343458820135
+            ],
+            [
+              5.674638520159027,
+              50.83437080657128
+            ],
+            [
+              5.674650174901536,
+              50.83440757838267
+            ],
+            [
+              5.674686216209049,
+              50.83453133794657
+            ],
+            [
+              5.674700137401001,
+              50.834582450319786
+            ],
+            [
+              5.674699903839024,
+              50.83458663900045
+            ],
+            [
+              5.674714036135093,
+              50.83467062415231
+            ],
+            [
+              5.674710627028575,
+              50.83477094908671
+            ],
+            [
+              5.674713075836063,
+              50.834801837848914
+            ],
+            [
+              5.674720098864938,
+              50.83487449571668
+            ],
+            [
+              5.674724725188656,
+              50.83492225134755
+            ],
+            [
+              5.67472815315978,
+              50.834957686079115
+            ],
+            [
+              5.674734389264464,
+              50.83501795932819
+            ],
+            [
+              5.674736835376994,
+              50.83504157638555
+            ],
+            [
+              5.674739685731383,
+              50.835100518558356
+            ],
+            [
+              5.674742780427551,
+              50.835164646659194
+            ],
+            [
+              5.674768168614119,
+              50.83522533095777
+            ],
+            [
+              5.67480490611595,
+              50.835257644559995
+            ],
+            [
+              5.6748256050967365,
+              50.83527418628811
+            ],
+            [
+              5.674932871128182,
+              50.83534653195521
+            ],
+            [
+              5.674986224767858,
+              50.83536415214958
+            ],
+            [
+              5.6750432875513495,
+              50.83539147143705
+            ],
+            [
+              5.67529655676591,
+              50.83551323365977
+            ],
+            [
+              5.675345258030719,
+              50.83552213733572
+            ],
+            [
+              5.6754073621595875,
+              50.835531600397175
+            ],
+            [
+              5.675503936442513,
+              50.835541705673826
+            ],
+            [
+              5.675618530031716,
+              50.835548332650895
+            ],
+            [
+              5.675817293966423,
+              50.83556088821972
+            ],
+            [
+              5.675857353438221,
+              50.83556332319744
+            ],
+            [
+              5.675962582988913,
+              50.83558436373737
+            ],
+            [
+              5.675971030745851,
+              50.835591444004294
+            ],
+            [
+              5.676080280257454,
+              50.835619657268744
+            ],
+            [
+              5.676106096042075,
+              50.8356348645119
+            ],
+            [
+              5.6761351412701595,
+              50.83565108896979
+            ],
+            [
+              5.676285903727664,
+              50.83572590419624
+            ],
+            [
+              5.676287850376875,
+              50.83572851503685
+            ],
+            [
+              5.676305701698196,
+              50.83575263268447
+            ],
+            [
+              5.676318842254171,
+              50.83579740100996
+            ],
+            [
+              5.676316026035769,
+              50.83586257770589
+            ],
+            [
+              5.676317839978585,
+              50.835908840114755
+            ]
+          ]
+        ]
+      },
+      "properties": {
+        "OBJECTID": 22478,
+        "cYear": 2022,
+        "countryCode": "NL",
+        "euRBDCode": "NLMS",
+        "euSubUnitCode": "NLMS",
+        "euSurfaceWaterBodyCode": "NL60_JEKER",
+        "surfaceWaterBodyName": "JEKER",
+        "cArea": null,
+        "cLength": 5.111,
+        "hasDescriptiveData": 1,
+        "surfaceWaterBodyCategory": "RW",
+        "naturalAWBHMWB": "Natural water body",
+        "reservoir": "Inapplicable",
+        "surfaceWaterBodyTypeCode": "R18",
+        "surfaceWaterBodyTransboundary": "Yes",
+        "NCSWaterBodyType": "NL-RW-R18",
+        "swEcologicalStatusOrPotentialValue": "4",
+        "swEcologicalAssessmentYear": "2015--2020",
+        "swEcologicalAssessmentConfidence": "High",
+        "swEcologicalStatusOrPotentialExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValue": "3",
+        "swChemicalAssessmentYear": "2015--2020",
+        "swChemicalAssessmentConfidence": "High",
+        "swChemicalMonitoringResults": "Monitoring",
+        "swChemicalStatusExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValueWithoutUPBT": "2",
+        "geometry_Length": null,
+        "_source_layer": 2,
+        "_status_field": "swEcologicalStatusOrPotentialValue",
+        "_status_label": "Poor",
+        "_source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer/2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.674565484170561,
+            50.80873161689147
+          ],
+          [
+            5.675312704881468,
+            50.80920128397354
+          ],
+          [
+            5.6753127354241695,
+            50.80920130327362
+          ],
+          [
+            5.675346815709419,
+            50.809222978407746
+          ],
+          [
+            5.675370058719086,
+            50.809245478326204
+          ],
+          [
+            5.675379939288893,
+            50.80926588020318
+          ],
+          [
+            5.675379646438106,
+            50.80929538261506
+          ],
+          [
+            5.675367690760003,
+            50.80931982215305
+          ],
+          [
+            5.675338687752748,
+            50.809345432168506
+          ],
+          [
+            5.675046313975537,
+            50.80953188657649
+          ],
+          [
+            5.674948026605347,
+            50.80959367023567
+          ],
+          [
+            5.674786395431227,
+            50.80969774669727
+          ],
+          [
+            5.673317899673351,
+            50.81062530199653
+          ],
+          [
+            5.673084492209681,
+            50.8107719013677
+          ],
+          [
+            5.673012907261346,
+            50.81079874858895
+          ],
+          [
+            5.672814465821797,
+            50.81081879899211
+          ],
+          [
+            5.6726502663642755,
+            50.81085512162963
+          ],
+          [
+            5.6724814603459714,
+            50.810928367371154
+          ],
+          [
+            5.6723523931009,
+            50.81101306545702
+          ],
+          [
+            5.672262522944946,
+            50.811098595530055
+          ],
+          [
+            5.672222275725256,
+            50.811163749382885
+          ],
+          [
+            5.672194197982744,
+            50.81123447665572
+          ],
+          [
+            5.672149209455007,
+            50.81134535810868
+          ],
+          [
+            5.672119130266029,
+            50.811452265374
+          ],
+          [
+            5.672095847730491,
+            50.81158764596452
+          ],
+          [
+            5.672068061042139,
+            50.811737469229385
+          ],
+          [
+            5.671943735105115,
+            50.81205421429338
+          ],
+          [
+            5.671930320691491,
+            50.81206517941002
+          ]
+        ]
+      },
+      "properties": {
+        "OBJECTID": 33867,
+        "cYear": 2022,
+        "countryCode": "BE",
+        "euRBDCode": "BEMAAS_VL",
+        "euSubUnitCode": "BEMAAS_VL",
+        "euSurfaceWaterBodyCode": "BEVL05_140",
+        "surfaceWaterBodyName": "JEKER II",
+        "cArea": null,
+        "cLength": 1.688,
+        "hasDescriptiveData": 1,
+        "surfaceWaterBodyCategory": "RW",
+        "naturalAWBHMWB": "Natural water body",
+        "reservoir": "Inapplicable",
+        "surfaceWaterBodyTypeCode": "Rk",
+        "surfaceWaterBodyTransboundary": "Yes",
+        "NCSWaterBodyType": "BE-RW-RK",
+        "swEcologicalStatusOrPotentialValue": "3",
+        "swEcologicalAssessmentYear": "2013--2018",
+        "swEcologicalAssessmentConfidence": "High",
+        "swEcologicalStatusOrPotentialExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValue": "3",
+        "swChemicalAssessmentYear": "2013--2018",
+        "swChemicalAssessmentConfidence": "High",
+        "swChemicalMonitoringResults": "Monitoring",
+        "swChemicalStatusExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValueWithoutUPBT": "3",
+        "geometry_Length": null,
+        "_source_layer": 2,
+        "_status_field": "swEcologicalStatusOrPotentialValue",
+        "_status_label": "Moderate",
+        "_source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer/2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.674341991181715,
+            50.80873161689147
+          ],
+          [
+            5.672497527613156,
+            50.809816329596025
+          ],
+          [
+            5.671930320691491,
+            50.81008902266665
+          ]
+        ]
+      },
+      "properties": {
+        "OBJECTID": 33869,
+        "cYear": 2022,
+        "countryCode": "BE",
+        "euRBDCode": "BEMAAS_VL",
+        "euSubUnitCode": "BEMAAS_VL",
+        "euSurfaceWaterBodyCode": "BEVL22_208",
+        "surfaceWaterBodyName": "ALBERTKANAAL - MAASBEKKEN",
+        "cArea": null,
+        "cLength": 13.439,
+        "hasDescriptiveData": 1,
+        "surfaceWaterBodyCategory": "RW",
+        "naturalAWBHMWB": "Artificial water body",
+        "reservoir": "Inapplicable",
+        "surfaceWaterBodyTypeCode": "Rg",
+        "surfaceWaterBodyTransboundary": "No",
+        "NCSWaterBodyType": "BE-RW-RG",
+        "swEcologicalStatusOrPotentialValue": "4",
+        "swEcologicalAssessmentYear": "2013--2018",
+        "swEcologicalAssessmentConfidence": "High",
+        "swEcologicalStatusOrPotentialExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValue": "3",
+        "swChemicalAssessmentYear": "2013--2018",
+        "swChemicalAssessmentConfidence": "High",
+        "swChemicalMonitoringResults": "Monitoring",
+        "swChemicalStatusExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValueWithoutUPBT": "3",
+        "geometry_Length": null,
+        "_source_layer": 2,
+        "_status_field": "swEcologicalStatusOrPotentialValue",
+        "_status_label": "Poor",
+        "_source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer/2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.693752463345446,
+            50.80873161689147
+          ],
+          [
+            5.693788623926213,
+            50.809723894631496
+          ],
+          [
+            5.693815054158514,
+            50.81044906994479
+          ],
+          [
+            5.693849094019562,
+            50.81138287688662
+          ],
+          [
+            5.693853928752439,
+            50.81151535202306
+          ],
+          [
+            5.693855556499714,
+            50.81152565946367
+          ],
+          [
+            5.696033838113033,
+            50.81656168835298
+          ],
+          [
+            5.696940644273218,
+            50.818491882566164
+          ],
+          [
+            5.697607862560635,
+            50.82065642712639
+          ],
+          [
+            5.697892837813152,
+            50.822947842380195
+          ],
+          [
+            5.697863340732493,
+            50.82489852121228
+          ],
+          [
+            5.697577612691742,
+            50.82885441793952
+          ],
+          [
+            5.697290997115493,
+            50.830563082832604
+          ],
+          [
+            5.697443097164475,
+            50.83208180441661
+          ],
+          [
+            5.6976691923417055,
+            50.83404977393567
+          ],
+          [
+            5.698369255556896,
+            50.835908840114755
+          ]
+        ]
+      },
+      "properties": {
+        "OBJECTID": 72539,
+        "cYear": 2022,
+        "countryCode": "NL",
+        "euRBDCode": "NLMS",
+        "euSubUnitCode": "NLMS",
+        "euSurfaceWaterBodyCode": "NL91BOM",
+        "surfaceWaterBodyName": "BOVENMAAS",
+        "cArea": null,
+        "cLength": 13.948,
+        "hasDescriptiveData": 1,
+        "surfaceWaterBodyCategory": "RW",
+        "naturalAWBHMWB": "Heavily modified water body",
+        "reservoir": "Inapplicable",
+        "surfaceWaterBodyTypeCode": "R7",
+        "surfaceWaterBodyTransboundary": "Yes",
+        "NCSWaterBodyType": "NL-RW-R7",
+        "swEcologicalStatusOrPotentialValue": "3",
+        "swEcologicalAssessmentYear": "2015--2020",
+        "swEcologicalAssessmentConfidence": "High",
+        "swEcologicalStatusOrPotentialExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValue": "3",
+        "swChemicalAssessmentYear": "2015--2020",
+        "swChemicalAssessmentConfidence": "High",
+        "swChemicalMonitoringResults": "Monitoring",
+        "swChemicalStatusExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValueWithoutUPBT": "3",
+        "geometry_Length": null,
+        "_source_layer": 2,
+        "_status_field": "swEcologicalStatusOrPotentialValue",
+        "_status_label": "Moderate",
+        "_source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer/2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.693939012994665,
+            50.80873161689147
+          ],
+          [
+            5.693697687470005,
+            50.809231084442146
+          ],
+          [
+            5.693179479026988,
+            50.81035688996548
+          ],
+          [
+            5.693465695751259,
+            50.81092489177992
+          ]
+        ]
+      },
+      "properties": {
+        "OBJECTID": 89618,
+        "cYear": 2022,
+        "countryCode": "BE",
+        "euRBDCode": "BEMEUSE_RW",
+        "euSubUnitCode": "BEMEUSE_RW",
+        "euSurfaceWaterBodyCode": "BERW17_MV35R",
+        "surfaceWaterBodyName": "MEUSE II",
+        "cArea": null,
+        "cLength": 107.419,
+        "hasDescriptiveData": 1,
+        "surfaceWaterBodyCategory": "RW",
+        "naturalAWBHMWB": "Heavily modified water body",
+        "reservoir": "Inapplicable",
+        "surfaceWaterBodyTypeCode": "RIV_19",
+        "surfaceWaterBodyTransboundary": "No",
+        "NCSWaterBodyType": "BE-RW-RIV_19",
+        "swEcologicalStatusOrPotentialValue": "4",
+        "swEcologicalAssessmentYear": "2018",
+        "swEcologicalAssessmentConfidence": "High",
+        "swEcologicalStatusOrPotentialExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValue": "3",
+        "swChemicalAssessmentYear": "2018",
+        "swChemicalAssessmentConfidence": "High",
+        "swChemicalMonitoringResults": "Monitoring",
+        "swChemicalStatusExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValueWithoutUPBT": "3",
+        "geometry_Length": null,
+        "_source_layer": 2,
+        "_status_field": "swEcologicalStatusOrPotentialValue",
+        "_status_label": "Poor",
+        "_source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer/2"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            5.69256692950019,
+            50.80873161689147
+          ],
+          [
+            5.692651868816217,
+            50.80914038192426
+          ],
+          [
+            5.6929614776704724,
+            50.809715546866464
+          ],
+          [
+            5.693179479026988,
+            50.81035688996548
+          ]
+        ]
+      },
+      "properties": {
+        "OBJECTID": 92515,
+        "cYear": 2022,
+        "countryCode": "BE",
+        "euRBDCode": "BEMEUSE_RW",
+        "euSubUnitCode": "BEMEUSE_RW",
+        "euSurfaceWaterBodyCode": "BERW17_MV01C",
+        "surfaceWaterBodyName": "CANAL ALBERT",
+        "cArea": null,
+        "cLength": 20.982,
+        "hasDescriptiveData": 1,
+        "surfaceWaterBodyCategory": "RW",
+        "naturalAWBHMWB": "Artificial water body",
+        "reservoir": "Inapplicable",
+        "surfaceWaterBodyTypeCode": "RIV_25",
+        "surfaceWaterBodyTransboundary": "No",
+        "NCSWaterBodyType": "BE-RW-RIV_25",
+        "swEcologicalStatusOrPotentialValue": "3",
+        "swEcologicalAssessmentYear": "2018",
+        "swEcologicalAssessmentConfidence": "High",
+        "swEcologicalStatusOrPotentialExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValue": "3",
+        "swChemicalAssessmentYear": "2018",
+        "swChemicalAssessmentConfidence": "High",
+        "swChemicalMonitoringResults": "Monitoring",
+        "swChemicalStatusExpectedAchievementDate": "Beyond 2027",
+        "swChemicalStatusValueWithoutUPBT": "2",
+        "geometry_Length": null,
+        "_source_layer": 2,
+        "_status_field": "swEcologicalStatusOrPotentialValue",
+        "_status_label": "Moderate",
+        "_source": "https://marine.discomap.eea.europa.eu/arcgis/rest/services/WISE_WFD/WFD2022_SurfaceWaterBody_WM/MapServer/2"
+      }
+    }
+  ]
+}
