@@ -6,6 +6,7 @@ import {KTX2Loader} from 'three/addons/loaders/KTX2Loader.js';
 import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
 import {createRhinoAssets} from './rhino-assets.js?v=7';
 import {loadBuildingUses,applyBuildingUses,buildingPalette} from './building-use.js?v=7';
+import {loadSiteNetwork,categories as accessCategories} from './site-access.js?v=8';
 
 const $=s=>document.querySelector(s);
 const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
@@ -39,8 +40,9 @@ const ktx=new KTX2Loader().setTranscoderPath('https://cdn.jsdelivr.net/npm/three
 loader.setKTX2Loader(ktx);
 let year=2010,mode='terrain',stack=false,detail=false,active=null,kind='',localFile=null,serial=0,contextSerial=0,envSerial=0,env=null,opacity=.8,section='A',compare=true,selectedView=null,dirty=true,profiles={},presentProfiles={};
 const enabled=new Set(['buildings']), grids=new Map();
-let buildingUse=false,buildingUseSummary='',buildingUseCounts=null;
-let studyBoundary=true,walkingNetwork=false,walkBusy=false,walkMessage='',walkData=null,selectedWalks=new Set(),importedWalks=new Map();
+let buildingUse=false,buildingUseSummary='',buildingUseCounts=null,detailAvailable=false;
+let studyBoundary=true,networkData=null,networkError='',networkBusy=false,networkModel=null;
+const networkLayer=new THREE.Group();scene.add(networkLayer);
 let stackGap=650,stackEntries=[],stackLoading=false,nativeLayers=[],layerOverrides={},contextInfo={},roadCache=null;
 const preview=await json('./assets/terrain/preview-grid.json');
 const compressed=Uint8Array.from(atob(preview.data),v=>v.charCodeAt(0));
@@ -73,7 +75,7 @@ const yearRow=y=>cfg.years.find(r=>r.year===y);
 function updateUI(){const date=$('#date');date.textContent=stack?'1950—2026':year===2026?'Present':String(year);
 $('#source').textContent=stack?('Exploded comparison · '+stackEntries.filter(e=>e.kind==='preview').length+' preview layers · spacing illustrative'):year===2026?(kind==='local'?'Local preview · source date unverified':kind==='detail'?'Current detail · source date unverified':'Current terrain · source date unverified'):'Historical reconstruction · inferred elevations'+(kind==='preview'?' · low-resolution preview':'');
 if(!stack&&active?.userData?.atlasNote)$('#source').textContent=active.userData.atlasNote;
-$('#detail').hidden=stack||year!==2026||kind==='local';$('#detail').classList.toggle('active',detail);$('#detail').textContent=detail?'Overview':'Detail';
+$('#detail').hidden=stack||year!==2026||kind==='local'||!detailAvailable;$('#detail').classList.toggle('active',detail);$('#detail').textContent=detail?'Overview':'Detail';
 $('#stack').classList.toggle('active',stack);$('#stack-spacing').hidden=!stack;$('#stack-labels').hidden=!stack;$('#stack').textContent=stack?'Single':'Stack';
 $('#timeline').replaceChildren();for(const r of cfg.years){const b=el('button',r.year===2026?'2026':String(r.year),!stack&&year===r.year?'active':'');b.setAttribute('aria-pressed',String(!stack&&year===r.year));b.onclick=()=>selectYear(r.year,false);$('#timeline').append(b)}
 document.querySelectorAll('#modes button').forEach(b=>{b.classList.toggle('active',b.dataset.mode===mode);b.setAttribute('aria-pressed',String(b.dataset.mode===mode))})}
@@ -83,9 +85,9 @@ if(!model&&!wantDetail&&cfg.rhino){try{model=y===2026?await rhino.present():awai
 if(!model&&y!==2026){model=gridMesh(y);nextKind='preview'}
 if(!model)throw Error('Asset not uploaded: '+url)}
 if(token!==serial){dispose(model);return}
-clearEnv();contextSerial++;clear(context);clear(sectionMark);clear(terrain);
+clearEnv();contextSerial++;resetNetwork();clear(context);clear(sectionMark);clear(terrain);
 const needsFit=stack||((year===2026)!==(y===2026))||kind==='preview'&&nextKind==='rhino'&&y===2026;year=y;detail=wantDetail;stack=false;stackEntries=[];$('#stack-labels').replaceChildren();kind=nextKind;active=model;terrain.add(model);if(file)localFile=file;
-updateUI();renderDrawer();if(mode==='sections')drawSection();if(mode==='environment'&&env)applyEnv();renderContext();
+updateUI();renderDrawer();refreshNetwork();if(mode==='sections')drawSection();if(mode==='environment'&&env)applyEnv();renderContext();
 if(!selectYear.fitted||needsFit){fit();selectYear.fitted=true}
 else makeDirty();say('');
 const b=new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3());if(b.x<100||b.z<100||b.x>12000||b.z>12000)say('Check model units and orientation — expected local metres, Y up.');
@@ -110,7 +112,7 @@ async function showStack(){const token=++serial;stackLoading=true;$('#stack').di
 try{for(const row of cfg.years){const {model,kind}=await stackModel(row.year);if(token!==serial){dispose(model);return}
 model.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(model);const group=new THREE.Group();group.userData.atlasShared=true;group.userData.atlasDispose=()=>dispose(model);group.add(model);
 const label=el('div',undefined,'stack-annotation');label.append(el('i'),el('span',String(row.year)+(kind==='preview'?' *':'')));entries.push({group,box,label,year:row.year,kind});say('Loading terrain series · '+entries.length+'/'+cfg.years.length)}
-if(token!==serial)return;contextSerial++;clearEnv();clear(context);clear(sectionMark);clear(terrain);stack=true;detail=false;active=null;kind='stack';stackEntries=entries;$('#stack-labels').replaceChildren(...entries.map(e=>e.label));for(const e of entries)terrain.add(e.group);placeStack();setMode('terrain');updateUI();fit();say(entries.some(e=>e.kind==='preview')?'* Source layer unavailable — coarse fallback':'');
+if(token!==serial)return;contextSerial++;clearEnv();resetNetwork();clear(context);clear(sectionMark);clear(terrain);stack=true;detail=false;active=null;kind='stack';stackEntries=entries;$('#stack-labels').replaceChildren(...entries.map(e=>e.label));for(const e of entries)terrain.add(e.group);placeStack();setMode('terrain');updateUI();fit();say(entries.some(e=>e.kind==='preview')?'* Source layer unavailable — coarse fallback':'');
 }catch(e){if(token===serial)say('Stack: '+e.message)}finally{if(!stack||stackEntries!==entries)for(const e of entries)dispose(e.group);stackLoading=false;$('#stack').disabled=false}}
 function option(label,fn,on=false,end=''){const b=el('button',undefined,'option'+(on?' active':''));b.append(el('span',label),el('i',end||(on?'●':'')));b.onclick=fn;return b}
 function sub(s){return el('p',s,'subnote')}
@@ -127,14 +129,14 @@ function renderDrawer(){const drawer=$('#drawer'),p=$('#options'),key=$('#map-le
 if(mode==='environment'){p.append(option('Original material',()=>{env=null;clearEnv();renderDrawer();say('')},!env));for(const l of cfg.environment){const b=option(l.label,()=>{env=l;renderDrawer();applyEnv()},env===l,l.qa?'QA pending':'');if(l.qa){b.disabled=true;b.title='2025 source units/values require verification before use'}p.append(b)}if(env){const s=el('input');s.type='range';s.min=0;s.max=100;s.value=opacity*100;s.setAttribute('aria-label','Map opacity');s.oninput=()=>{opacity=+s.value/100;if(overlayMaterial)overlayMaterial.uniforms.alpha.value=opacity;makeDirty()};p.prepend(s)}}
 if(mode==='access'){
 if(year!==2026)p.append(option('Current terrain',()=>selectYear(2026,false),false,'↗'));
-for(const l of cfg.context.filter(x=>x.year===year)){const lab=el('label',undefined,'option');const cb=el('input');cb.type='checkbox';cb.checked=enabled.has(l.id);cb.onchange=()=>{cb.checked?enabled.add(l.id):enabled.delete(l.id);renderDrawer();renderContext()};if(l.id==='roads'){const sw=el('span',undefined,'walk-swatch');sw.style.background=l.color;lab.append(sw)}lab.append(el('span',l.label),cb);p.append(lab);
+for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads')){const lab=el('label',undefined,'option');const cb=el('input');cb.type='checkbox';cb.checked=enabled.has(l.id);cb.onchange=()=>{cb.checked?enabled.add(l.id):enabled.delete(l.id);renderDrawer();renderContext()};if(l.id==='roads'){const sw=el('span',undefined,'walk-swatch');sw.style.background=l.color;lab.append(sw)}lab.append(el('span',l.label),cb);p.append(lab);
 if(l.id==='buildings'){const use=checkOption('Building use',buildingUse,v=>{buildingUse=v;if(v)enabled.add('buildings');renderDrawer();renderContext()});use.classList.add('use-option');p.append(use);if(buildingUse&&buildingUseSummary)p.append(sub(buildingUseSummary))}
 }
 if(year===2026&&buildingUse&&enabled.has('buildings')){key.hidden=false;key.append(el('div','Building use','legend-title'));for(const [id,def] of Object.entries(buildingPalette)){const row=el('div',undefined,'legend-row'),sw=el('span',undefined,'legend-swatch');sw.style.background=def.color;row.append(sw,el('span',def.label));if(buildingUseCounts&&buildingUseCounts[id])row.append(el('span',String(buildingUseCounts[id]),'use-count'));key.append(row)}key.append(sub('Kadaster BAG · registered use, Netherlands only. Grey = unknown or unmatched.'),walkingLink('BAG source ↗','https://api.pdok.nl/kadaster/bag/ogc/v2?f=html&lang=en'))}
-renderWalking(p);}
+networkLegend(p);}
 if(mode==='sections'){for(const s of cfg.sections)p.append(option(s.label,()=>{section=s.id;renderDrawer();drawSection()},section===s.id));p.append(option('Compare years',()=>{compare=!compare;renderDrawer();drawSection()},compare));p.append(sub('Elevation profiles · inferred history, not surveyed sections.'))}
 if(mode==='views'){cfg.views.forEach((v,i)=>p.append(option(v.label,()=>moveView(i,true),selectedView===i,'↗')));p.append(sub('Camera presets; upload site photographs to attach them.'))}}
-function setMode(m){if(stack&&m!=='terrain'){mode=m;selectYear(year,false);return}mode=m;updateUI();renderDrawer();if(m==='environment'&&env)applyEnv();else clearEnv();$('#profile').hidden=m!=='sections';if(m==='sections')drawSection();else clear(sectionMark);if(m!=='views')$('#photo').hidden=true;else if(selectedView!==null)moveView(selectedView,false);makeDirty()}
+function setMode(m){if(stack&&m!=='terrain'){mode=m;selectYear(year,false);return}mode=m;updateUI();renderDrawer();refreshNetwork();if(m==='environment'&&env)applyEnv();else clearEnv();$('#profile').hidden=m!=='sections';if(m==='sections')drawSection();else clear(sectionMark);if(m!=='views')$('#photo').hidden=true;else if(selectedView!==null)moveView(selectedView,false);makeDirty()}
 async function applyEnv(){clearEnv();const token=envSerial,model=active;if(!env||!model||stack)return;const l=env;say('Loading '+l.label+'…');try{if(!await exists(l.url))throw Error('Upload '+l.url);const tx=await new THREE.TextureLoader().loadAsync(l.url);if(token!==envSerial||active!==model){tx.dispose();return}tx.colorSpace=THREE.SRGBColorSpace;
 overlayMaterial=new THREE.ShaderMaterial({transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4,side:THREE.DoubleSide,uniforms:{map:{value:tx},alpha:{value:opacity},bounds:{value:new THREE.Vector4(...(l.bounds||cfg.bounds))}},vertexShader:'varying vec3 w;void main(){w=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(w,1.);}',fragmentShader:'uniform sampler2D map;uniform float alpha;uniform vec4 bounds;varying vec3 w;void main(){vec2 uv=(vec2(w.x,-w.z)-bounds.xy)/(bounds.zw-bounds.xy);if(any(lessThan(uv,vec2(0.)))||any(greaterThan(uv,vec2(1.))))discard;vec4 c=texture2D(map,uv);gl_FragColor=vec4(c.rgb,c.a*alpha);\n#include <colorspace_fragment>\n}'});
 model.updateMatrixWorld(true);model.traverse(n=>{if(n.isMesh){const mesh=new THREE.Mesh(n.geometry,overlayMaterial);mesh.matrixAutoUpdate=false;mesh.matrix.copy(n.matrixWorld);mesh.renderOrder=3;overlay.add(mesh)}});say('');makeDirty()}catch(e){if(token===envSerial)say(e.message)}}
@@ -148,66 +150,31 @@ if(!polygons.length)throw Error('No road polygons returned by PDOK');roadCache={
 
 function walkingLink(text,url){const a=el('a',text,'walk-link');a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a}
 function checkOption(name,on,fn,color){const label=el('label',undefined,'option');if(color){const sw=el('span',undefined,'walk-swatch');sw.style.background=color;label.append(sw)}label.append(el('span',name));const cb=el('input');cb.type='checkbox';cb.checked=on;cb.onchange=()=>fn(cb.checked);label.append(cb);return label}
-function renderWalking(p){
- const sep=el('div','SITE / WALKING','walk-section');p.append(sep);
- p.append(checkOption('ENCI study boundary',studyBoundary,v=>{studyBoundary=v;renderContext()},'#d72632'));
- p.append(sub('Approximate research perimeter · traced from your annotated view, not legal ownership.'));
- if(year!==2026)return;
- p.append(checkOption('Mapped walking paths',walkingNetwork,v=>{walkingNetwork=v;if(v)loadWalking();else renderContext()},'#b48731'));
- const button=option(walkBusy?'Loading mapped routes…':walkData?'Refresh mapped routes':'Load mapped hiking routes',()=>loadWalking(true),false,'↗');button.disabled=walkBusy;p.append(button);
- if(walkMessage)p.append(sub(walkMessage));
- if(walkData){for(const route of walkData.routes){p.append(checkOption(route.name,selectedWalks.has(route.id),v=>{v?selectedWalks.add(route.id):selectedWalks.delete(route.id);renderContext()},route.color));p.append(walkingLink('OSM relation '+route.id,'https://www.openstreetmap.org/relation/'+route.id));}}
- for(const [id,track] of importedWalks){if(!id.startsWith('local:'))continue;p.append(checkOption(track.name,selectedWalks.has(id),v=>{v?selectedWalks.add(id):selectedWalks.delete(id);renderContext()},track.color))}
- p.append(el('div','NATUURMONUMENTEN','walk-section'));
- for(const route of walking.official){const row=el('div',undefined,'walk-official');const label=walkingLink(route.name+' · '+route.km+' km ↗',route.url);row.append(label);const track=importedWalks.get(route.id);
- if(track){const cb=el('input');cb.type='checkbox';cb.checked=selectedWalks.has(route.id);cb.title='Display imported GPX';cb.onchange=()=>{cb.checked?selectedWalks.add(route.id):selectedWalks.delete(route.id);renderContext()};row.append(cb)}
- else {const b=el('button','GPX +');b.title='Choose a GPX downloaded from the official route page';b.onclick=()=>pickGPX(route);row.append(b)}p.append(row)}
- p.append(option('Import another GPX',()=>pickGPX(null),false,'+'));
- p.append(sub('Official links are independent of OSM geometry. GPX stays local to this browser session; check reuse permission before publishing a track. Route display is for research, not navigation. Access can change.'));
- p.append(walkingLink('© OpenStreetMap contributors · ODbL','https://www.openstreetmap.org/copyright'));
-}
 function localXY(lon,lat){const b=envManifest?.wgs84_bounds,m=envManifest?.model_bounds;if(!b||!m)throw Error('Missing site georeference');return [m[0]+(lon-b[0])/(b[2]-b[0])*(m[2]-m[0]),m[1]+(lat-b[1])/(b[3]-b[1])*(m[3]-m[1])]}
-const routeColors=['#dfaa00','#206b4e','#2266be','#b44c99','#d36a35','#745caa','#147e85'];
-function routeColor(tags,i){const s=(tags.colour||tags.color||tags['osmc:symbol']||'').toLowerCase().split(':')[0];return ({yellow:'#dfaa00',green:'#206b4e',blue:'#2266be',red:'#c83a3a',orange:'#d36a35',purple:'#745caa',black:'#333'})[s]||routeColors[i%routeColors.length]}
-async function loadWalking(force=false){
- if(walkBusy)return;if(walkData&&!force){renderContext();return}
- walkBusy=true;walkMessage='Requesting OSM walking paths and route relations…';if(mode==='access')renderDrawer();
- try{
- const b=envManifest?.wgs84_bounds;if(!b)throw Error('Missing site georeference');
- const bbox=[b[1]-.002,b[0]-.002,b[3]+.002,b[2]+.002].join(',');
- const q='[out:json][timeout:25];(relation["type"="route"]["route"~"^(hiking|foot|walking)$"]('+bbox+');way["highway"~"^(footway|path|steps|pedestrian|track)$"]('+bbox+'););out geom;';
- let data=null,last;for(const endpoint of ['https://overpass-api.de/api/interpreter','https://overpass.kumi.systems/api/interpreter']){try{const res=await fetch(endpoint+'?data='+encodeURIComponent(q),{signal:AbortSignal.timeout(35000)});if(!res.ok)throw Error('HTTP '+res.status);data=await res.json();break}catch(e){last=e}}
- if(!data)throw Error('OSM service unavailable: '+last?.message);
- const convert=g=>g.filter(p=>Number.isFinite(p.lat)&&Number.isFinite(p.lon)).map(p=>localXY(p.lon,p.lat));
- const routes=[],paths=[];
- for(const e of data.elements||[]){if(e.type==='way'&&e.geometry){const t=e.tags||{};if(['private','no'].includes(t.access)||['private','no'].includes(t.foot))continue;const path=convert(e.geometry);if(path.length>1)paths.push(path)}
- if(e.type==='relation'){const t=e.tags||{},segments=(e.members||[]).filter(m=>m.type==='way'&&m.geometry).map(m=>convert(m.geometry)).filter(p=>p.length>1);if(!segments.length)continue;const name=t.name||t.ref||('Walking relation '+e.id);routes.push({id:String(e.id),name,paths:segments,color:routeColor(t,routes.length)})}}
- routes.sort((a,b)=>a.name.localeCompare(b.name));walkData={paths,routes};walkMessage=routes.length+' route relations · '+paths.length+' path segments · clipped to terrain. OSM is not an official access guarantee.';
- // Select a route only if its published OSM name explicitly identifies the quarry.
- for(const rt of routes)if(/groeve|enci/i.test(rt.name))selectedWalks.add(rt.id);
- await renderContext();
- }catch(e){walkMessage=e.message+' · official links / GPX import remain available.'}finally{walkBusy=false;if(mode==='access')renderDrawer()}
+function networkLegend(p){
+ const box=el('div',undefined,'network-legend');const row=(label,color,dashed=false)=>{const r=el('div',undefined,'network-key'),sw=el('span');sw.style.borderTop='3px '+(dashed?'dashed':'solid')+' '+color;r.append(sw,el('span',label));box.append(r)};
+ row('ENCI study boundary','#d72632');
+ if(year===2026){for(const def of Object.values(accessCategories))row(def.label,def.color);if(networkBusy)box.append(sub('Loading local access…'));else if(networkError){box.append(sub(networkError));box.append(option('Retry',()=>{networkError='';refreshNetwork()},false,'↻'))}else if(networkData){box.append(sub('Site + '+networkData.bufferM+' m · '+(networkData.stale?'cached / older data':'mapped access')))}box.append(walkingLink('© OpenStreetMap contributors','https://www.openstreetmap.org/copyright'))}
+ box.append(walkingLink('Official walking routes ↗','./sources.html#walking'));p.append(box)
 }
-function pickGPX(route){const input=el('input');input.type='file';input.accept='.gpx,application/gpx+xml';input.onchange=async()=>{const f=input.files?.[0];if(!f)return;try{const doc=new DOMParser().parseFromString(await f.text(),'application/xml');if(doc.querySelector('parsererror'))throw Error('Invalid GPX');
- const segments=[...doc.getElementsByTagNameNS('*','trkseg'),...doc.getElementsByTagNameNS('*','rte')];
- const paths=segments.map(seg=>[...seg.children].filter(n=>['trkpt','rtept'].includes(n.localName)).map(n=>localXY(Number(n.getAttribute('lon')),Number(n.getAttribute('lat')))).filter(p=>p.every(Number.isFinite))).filter(p=>p.length>1);
- if(!paths.length)throw Error('No track or route points in GPX');const id=route?.id||'local:'+Date.now();importedWalks.set(id,{name:route?.name||f.name,color:route?.color||'#dd9700',paths});selectedWalks.add(id);await renderContext();renderDrawer()
- }catch(e){walkMessage=e.message;renderDrawer()}};input.click()}
-function walkingOverlays(){if(studyBoundary&&walking.boundary?.paths)context.add(textureProjection({paths:walking.boundary.paths},'#d72632',5.0,8));
- if(year!==2026)return;
- if(walkingNetwork&&walkData?.paths.length)context.add(textureProjection({paths:walkData.paths},'#b48731',1.35,6));
- for(const route of [...(walkData?.routes||[]),...[...importedWalks].map(([id,r])=>({...r,id}))])if(selectedWalks.has(route.id))context.add(textureProjection({paths:route.paths},route.color,4.5,7));
- makeDirty();
+function walkingOverlays(){if(studyBoundary&&walking.boundary?.paths)context.add(textureProjection({paths:walking.boundary.paths},'#d72632',4,8));makeDirty()}
+function resetNetwork(){clear(networkLayer);networkModel=null}
+async function refreshNetwork(){
+ const visible=mode==='access'&&year===2026&&!stack&&active;networkLayer.visible=!!visible;makeDirty();if(!visible)return;
+ if(networkData){if(networkModel!==active){resetNetwork();const styledPaths=networkData.paths.filter(r=>accessCategories[r.type]).map(r=>({points:r.points,...accessCategories[r.type]}));networkLayer.add(textureProjection({styledPaths},'#ed008c',4,7));networkModel=active;makeDirty()}return}
+ if(networkBusy)return;networkBusy=true;networkError='';if(mode==='access')renderDrawer();
+ try{networkData=await loadSiteNetwork(envManifest,walking.boundary.paths[0],cfg.accessNetwork||{},localXY)}
+ catch(e){networkError='Local network unavailable · '+e.message}
+ finally{networkBusy=false;if(mode==='access')renderDrawer();if(networkData)refreshNetwork()}
 }
-
 function textureProjection(data,color,width=2.1,order=5){const canvas=document.createElement('canvas');canvas.width=2048;canvas.height=Math.round(2048*(ymax-ymin)/(xmax-xmin));const c=canvas.getContext('2d');const point=p=>[(p[0]-xmin)/(xmax-xmin)*canvas.width,(ymax-p[1])/(ymax-ymin)*canvas.height];c.strokeStyle=color;c.fillStyle=color;c.lineWidth=width;c.lineJoin='round';c.lineCap='round';
 function path(points,close=false){if(!points.length)return;const a=point(points[0]);c.moveTo(...a);for(let i=1;i<points.length;i++)c.lineTo(...point(points[i]));if(close)c.closePath()}
-for(const line of data.paths||[]){c.beginPath();path(line);c.stroke()}for(const tri of data.triangles||[]){c.beginPath();path(tri,true);c.fill()}for(const poly of data.polygons||[]){c.beginPath();for(const ring of poly)path(ring,true);c.fill('evenodd')}
+for(const line of data.paths||[]){c.beginPath();path(line);c.stroke()}for(const item of (data.styledPaths||[]).slice().sort((a,b)=>b.width-a.width)){c.strokeStyle=item.color;c.lineWidth=item.width;c.beginPath();path(item.points);c.stroke()}for(const tri of data.triangles||[]){c.beginPath();path(tri,true);c.fill()}for(const poly of data.polygons||[]){c.beginPath();for(const ring of poly)path(ring,true);c.fill('evenodd')}
 const tx=new THREE.CanvasTexture(canvas);tx.colorSpace=THREE.SRGBColorSpace;const mat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-3,polygonOffsetUnits:-6,side:THREE.DoubleSide,uniforms:{map:{value:tx},bounds:{value:new THREE.Vector4(xmin,ymin,xmax,ymax)}},vertexShader:'varying vec3 w;void main(){w=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(w,1.);}',fragmentShader:'uniform sampler2D map;uniform vec4 bounds;varying vec3 w;void main(){vec2 uv=(vec2(w.x,-w.z)-bounds.xy)/(bounds.zw-bounds.xy);if(any(lessThan(uv,vec2(0.)))||any(greaterThan(uv,vec2(1.))))discard;vec4 c=texture2D(map,uv);if(c.a<.03)discard;gl_FragColor=vec4(c.rgb,c.a*.92);\n#include <colorspace_fragment>\n}'});
 const group=new THREE.Group();group.userData.atlasShared=true;group.userData.atlasDispose=()=>{tx.dispose();mat.dispose()};active.updateMatrixWorld(true);active.traverse(n=>{if(n.isMesh){const m=new THREE.Mesh(n.geometry,mat);m.matrixAutoUpdate=false;m.matrix.copy(n.matrixWorld);m.renderOrder=order;group.add(m)}});return group}
 async function renderContext(){const token=++contextSerial;clear(context);buildingUseCounts=null;buildingUseSummary=buildingUse?'Loading registered uses…':'';if(!active||stack)return;walkingOverlays();contextInfo={};const current=year===2026;
 
-for(const l of cfg.context.filter(x=>x.year===year&&enabled.has(x.id))){let o=null;try{
+for(const l of cfg.context.filter(x=>x.year===year&&x.id!=='roads'&&enabled.has(x.id))){let o=null;try{
 let native=null;if(current&&cfg.rhino?.present){try{native=await rhino.nativeContext(l.id,layerOverrides[l.id]||null)}catch(e){console.warn('Native layer:',e)}}
 if(token!==contextSerial)return;
 if(native){o=l.id==='buildings'?native:textureProjection(native,l.color,l.id==='roads'?4.2:2.1);contextInfo[l.id]='Rhino · '+(native.userData?.atlasCount||native.count)+' objects'}
@@ -249,6 +216,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape'&&mode!=='terrain')setMode('te
 renderer.setAnimationLoop(()=>{controls.update();if(dirty){renderer.render(scene,camera);projectStackLabels();dirty=false}});
 $('#export-layer').onclick=async()=>{if(!active||stack)return;say('Exporting selected terrain…');try{await rhino.exportGLB(active,(year===2026?'present':year)+'.glb');say('')}catch(e){say('GLB export failed: '+e.message)}};
 $('#inspect-layers').onclick=async()=>{const report=await rhino.reports();const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'}),u=URL.createObjectURL(blob),a=el('a');a.href=u;a.download='ENCI_rhino_layers.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),30000)};
+exists(yearRow(2026).detail).then(v=>{detailAvailable=v;updateUI()});
 updateUI();renderDrawer();fit();
 // Show a lightweight terrain immediately, then load the uploaded present-day model.
 const initial=serial;const fallback=gridMesh(2010);terrain.add(fallback);active=fallback;kind='preview';updateUI();fit();selectYear.fitted=true;makeDirty();renderContext();

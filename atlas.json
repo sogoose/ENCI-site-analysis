@@ -220,5 +220,14 @@
     "history": "assets/terrain/ENCI_Historical_Maps.3dm",
     "present": "assets/terrain/reduced_site.3dm",
     "presentZOffset": 995.425
+  },
+  "accessNetwork": {
+    "bufferM": 150,
+    "cacheDays": 7,
+    "colors": {
+      "road": "#ed008c",
+      "path": "#00c7e5",
+      "steps": "#ffae00"
+    }
   }
 }
