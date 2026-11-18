@@ -358,9 +358,9 @@ function loadDsm(res){
  if(dsmWorker){dsmWorker.terminate();dsmWorker=null}
  clear(dsmLayer);dsmResolution=res;dsmCount=0;dsmExpected=0;dsmStatus='';dsmIsolated=false;
  if(res==='off'){refreshDsmDrawer();return}
- const directory='ENCI_cliffs';
+ const directory='ENCI_cliffs_40cm_all';
  dsmStatus='Reading manifest…';refreshDsmDrawer();
- const w=new Worker(new URL('./cliff-dsm-worker.js?v=40',import.meta.url),{type:'module'});dsmWorker=w;
+ const w=new Worker(new URL('./cliff-dsm-worker.js?v=42',import.meta.url),{type:'module'});dsmWorker=w;
  function fail(message){if(dsmWorker!==w)return;w.terminate();dsmWorker=null;clear(dsmLayer);dsmCount=0;dsmStatus='Point cloud unavailable · '+message;refreshDsmDrawer()}
  w.onerror=e=>fail(e.message||'Decoder worker could not load');
  w.onmessage=({data:m})=>{
@@ -385,7 +385,7 @@ function dsmControls(p){
  if(dsmResolution!=='off'){
   if(dsmStatus)p.append(sub(dsmStatus));
   if(dsmCount){p.append(checkOption('Isolate point cloud',dsmIsolated,v=>{dsmIsolated=v;makeDirty()}),option('Zoom to scan',zoomDsm,false,'↗'))}
-  p.append(sub('2025 DSM · 40 cm sampled heights; may include vegetation. Local RD / NAP alignment provisional. Section profiles remain based on the original terrain.'))
+  p.append(sub('PDOK / Kadaster · 2025 DSM · 40 cm samples · slopes ≥45° + 5 m buffer. Includes possible vegetation and buildings. Alignment provisional; section profiles use the original terrain.'))
  }
 }
 function renderSectionControls(p){
