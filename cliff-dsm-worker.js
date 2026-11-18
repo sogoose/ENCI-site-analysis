@@ -5,7 +5,7 @@ async function loadDecoder(){
  if(!decoder)decoder=import('https://esm.sh/@loaders.gl/las@3.4.1?bundle').then(m=>m.LASLoader);
  return decoder;
 }
-async function readFile(url){const r=await fetch(url);if(!r.ok)throw Error('HTTP '+r.status+' · '+url);return r.arrayBuffer()}
+async function readFile(url){const r=await fetch(url,{cache:'no-cache'});if(!r.ok)throw Error('HTTP '+r.status+' · '+url);return r.arrayBuffer()}
 self.onmessage=async ({data})=>{
  try{
   const url=new URL(data.manifest,self.location.href),r=await fetch(url);
@@ -38,6 +38,6 @@ self.onmessage=async ({data})=>{
    self.postMessage({type:'chunk',positions,count:f.points,total},[positions.buffer]);
   }
   if(total!==m.total_points)throw Error('Total point count differs from manifest');
-  self.postMessage({type:'done',total});
+  self.postMessage({type:'done',total,tiles:new Set(m.files.map(f=>f.source||f.file)).size});
  }catch(e){self.postMessage({type:'error',message:e?.message||String(e)})}
 };
