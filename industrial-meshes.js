@@ -2,11 +2,13 @@ import * as THREE from 'three';
 
 // Approximate heritage massing registered from the 2023 RCE concept plan,
 // using chimney and office reference coordinates. Rhino local XY metres.
+// Roof footprints revised using the user's annotated 2026 viewport: inverse approximate
+// orthographic screen registration against the existing mesh positions and roof diameters.
 // Heights other than chimney / kiln length are visual estimates.
 // Do not use these meshes as surveyed geometry or a current-condition inventory.
 export const industrialSpec={
-  mengbed:{xy:[-12.5,-1180.8],radius:28.5,wall:5.5,roof:14,segments:32},
-  klinkerhal:{xy:[176.6,-846.7],radius:28,wall:8,roof:15,segments:16},
+  mengbed:{xy:[-62.8,-1191.3],radius:39.5,wall:5.5,roof:14,segments:32},
+  klinkerhal:{xy:[143.3,-771.0],radius:43,wall:8,roof:15,segments:16},
   chimney:{xy:[7.452,-1135.051],height:150,radiusBase:4.5,radiusTop:2.5},
   kiln:{a:[73.8,-1062.1],b:[135.5,-893.0],length:180,radius:2.8,axisHeightA:12,axisHeightB:5.5}
 };
