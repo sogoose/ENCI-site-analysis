@@ -27,7 +27,7 @@ export async function cliffCandidates(manifest,ring){const b=manifest.model_boun
  if(!chosen.length)throw Error('No matching slope/aspect pixels within study perimeter');
  const canvas=document.createElement('canvas');canvas.width=s.width;canvas.height=s.height;const ctx=canvas.getContext('2d'),img=ctx.createImageData(s.width,s.height);for(let i=0;i<s.data.length;i+=4){if(s.data[i+3]>=128&&Math.abs(s.data[i]-threshold[0])<=3&&Math.abs(s.data[i+1]-threshold[1])<=3&&Math.abs(s.data[i+2]-threshold[2])<=3){const p=i/4,x=b[0]+(p%s.width+.5)/s.width*(b[2]-b[0]),y=b[3]-(Math.floor(p/s.width)+.5)/s.height*(b[3]-b[1]);if(inside(x,y,ring)){img.data[i]=211;img.data[i+1]=60;img.data[i+2]=33;img.data[i+3]=225}}}ctx.putImageData(img,0,0);
  // Preserve the selected steep-slope candidates; renumber along the route annotated in the atlas overview (November 18).
- const route=[4,1,9,7,21,14,22,15,16,6,17,2,8,10,19,23,5,3,13,12,18,11,24,20];
+ const route=[4,1,9,7,21,14,22,15,16,6,17,2,8,10,19,23,5,3,13,12,18,20,24,11];
  const ranked=chosen.map((c,i)=>({...c,rank:i+1}));const order=new Map(route.map((r,i)=>[r,i]));
  ranked.sort((a,b)=>(order.get(a.rank)??100+a.rank)-(order.get(b.rank)??100+b.rank));
  return {candidates:ranked.map((c,i)=>({...c,id:'S'+String(i+1).padStart(2,'0')})),cellCount:set.size,canvas}
