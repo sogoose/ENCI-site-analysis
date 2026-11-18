@@ -61,7 +61,7 @@ self.onmessage=async ({data})=>{
   const opts=loader?{...loader.options,worker:false,las:{...loader.options?.las,shape:'mesh',fp64:true,skip:1,colorDepth:'auto'}}:null;
   let total=0;const chunks=[];
   for(let i=0;i<files.length;i++){
-   const f=files[i];if(!/^[\\w.-]+\\.la[sz]$/i.test(f.file))throw Error('Unexpected point filename');
+   const f=files[i];if(!/^[A-Za-z0-9_.-]+[.]la[sz]$/i.test(f.file))throw Error('Unexpected point filename');
    self.postMessage({type:'progress',file:i+1,files:files.length,total});
    const raw=await fetchBuffer(new URL(f.file,url)),head=new DataView(raw);
    if(raw.byteLength<227||head.getUint32(0,false)!==0x4c415346)throw Error('Invalid LAS header');
