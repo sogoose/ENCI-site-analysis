@@ -30,3 +30,5 @@
 
 /* Slightly smaller, softly squared mobility symbols match the model annotation scale. */
 .atlas-key-icon{height:14px;width:14px;flex:0 0 14px}.qa-details strong{display:block;font-size:11px;font-weight:500;margin-top:9px;color:#333}
+
+.cliff-select{width:100%;background:#fff;border:0;border-bottom:1px solid #ccc;padding:8px 0;color:#0033ff}.section-title{font-size:11px;color:#333;margin:0 0 3px}#profile{background:rgba(255,255,255,.97);max-height:33vh;overflow:auto}#profile svg{height:clamp(85px,18vh,190px)}#profile .subnote{margin:3px 0;font-size:10px}.section-geokey{display:flex;gap:14px;flex-wrap:wrap}.section-geokey .atlas-key-row{font-size:10px}@media(max-width:780px){#profile{max-height:30vh}.section-geokey{gap:5px}}

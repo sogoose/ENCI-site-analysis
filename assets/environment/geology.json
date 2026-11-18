@@ -8,7 +8,7 @@
     "pages": "9–10, §2.3, Fig. 2.3",
     "url": "https://limburg.bestuurlijkeinformatie.nl/Document/View/698d7e66-8301-4e4c-8b19-d7298043817e"
   },
-  "note": "Approximate quarry-wide elevation intervals from the 2007 report, not surveyed three-dimensional contacts. Horizontal boundaries assumed for visualisation. Present surface sampled from uploaded terrain. Overburden, spoil, backfill and submerged floor unresolved. Not a geotechnical model.",
+  "note": "Approximate quarry-wide elevation intervals from the 2007 report, not surveyed three-dimensional contacts. Horizontal boundaries assumed for visualisation. Present surface sampled from uploaded terrain. Overburden, spoil, backfill and submerged floor unresolved. Not a geotechnical model. D’n Observant is reported as an overburden depot, not intact natural strata. No fill geometry assigned.",
   "layers": [
     {
       "id": "gulpen",
@@ -32,7 +32,7 @@
       "min": 90,
       "max": null,
       "color": "#b49b76",
-      "description": "Upper interval not independently mapped. Original cover reported as loess, sand and gravel; spoil and backfill may differ."
+      "description": "Not mapped. ARCADIS (2007) describes original ~15 m loess/sand/gravel cover and partial deposition at D’n Observant; present artificial material thickness and footprint unknown."
     }
   ],
   "members": [
