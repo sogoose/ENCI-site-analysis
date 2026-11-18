@@ -26,6 +26,10 @@ export async function cliffCandidates(manifest,ring){const b=manifest.model_boun
  cells.sort((a,b)=>b.score-a.score||a.y-b.y||a.x-b.x);const chosen=[];for(const c of cells){if(chosen.some(p=>Math.hypot(p.x-c.x,p.y-c.y)<120))continue;chosen.push(c);if(chosen.length>=24)break}
  if(!chosen.length)throw Error('No matching slope/aspect pixels within study perimeter');
  const canvas=document.createElement('canvas');canvas.width=s.width;canvas.height=s.height;const ctx=canvas.getContext('2d'),img=ctx.createImageData(s.width,s.height);for(let i=0;i<s.data.length;i+=4){if(s.data[i+3]>=128&&Math.abs(s.data[i]-threshold[0])<=3&&Math.abs(s.data[i+1]-threshold[1])<=3&&Math.abs(s.data[i+2]-threshold[2])<=3){const p=i/4,x=b[0]+(p%s.width+.5)/s.width*(b[2]-b[0]),y=b[3]-(Math.floor(p/s.width)+.5)/s.height*(b[3]-b[1]);if(inside(x,y,ring)){img.data[i]=211;img.data[i+1]=60;img.data[i+2]=33;img.data[i+3]=225}}}ctx.putImageData(img,0,0);
- return {candidates:chosen.map((c,i)=>({...c,id:'S'+String(i+1).padStart(2,'0')})),cellCount:set.size,canvas}
+ // Preserve the selected steep-slope candidates; renumber along the route annotated in the atlas overview (November 18).
+ const route=[4,1,9,7,21,14,22,15,16,6,17,2,8,10,19,23,5,3,13,12,18,20,24,11];
+ const ranked=chosen.map((c,i)=>({...c,rank:i+1}));const order=new Map(route.map((r,i)=>[r,i]));
+ ranked.sort((a,b)=>(order.get(a.rank)??100+a.rank)-(order.get(b.rank)??100+b.rank));
+ return {candidates:ranked.map((c,i)=>({...c,id:'S'+String(i+1).padStart(2,'0')})),cellCount:set.size,canvas}
 }
 export function lineFor(c,len,b){const dx=Math.sin(c.angle),dy=Math.cos(c.angle);const limit=(x,y,sign)=>{let t=len/2;for(const [p,d,lo,hi] of [[x,dx*sign,b[0],b[2]],[y,dy*sign,b[1],b[3]]])if(Math.abs(d)>1e-8)t=Math.min(t,((d>0?hi:lo)-p)/d);return Math.max(0,t)};const a=limit(c.x,c.y,-1),z=limit(c.x,c.y,1);return {id:c.id,label:c.id+'—'+c.id+'′',a:[c.x-dx*a,c.y-dy*a],b:[c.x+dx*z,c.y+dy*z],center:[c.x,c.y],angle:c.angle}}
