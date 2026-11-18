@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "title": "ENCI geological section",
+  "datum": "m NAP",
+  "source": {
+    "title": "ARCADIS / ENCI B.V. — Kalksteenwinning ENCI tot 2020, Startnotitie",
+    "date": "2007-12-14",
+    "pages": "9–10, §2.3, Fig. 2.3",
+    "url": "https://limburg.bestuurlijkeinformatie.nl/Document/View/698d7e66-8301-4e4c-8b19-d7298043817e"
+  },
+  "note": "Approximate quarry-wide elevation intervals from the 2007 report, not surveyed three-dimensional contacts. Horizontal boundaries assumed for visualisation. Present surface sampled from uploaded terrain. Overburden, spoil, backfill and submerged floor unresolved. Not a geotechnical model. D’n Observant is reported as an overburden depot, not intact natural strata. No fill geometry assigned.",
+  "layers": [
+    {
+      "id": "gulpen",
+      "name": "Gulpen Formation",
+      "min": -35,
+      "max": 45,
+      "color": "#a6acb5",
+      "description": "Chalk / limestone; variable flint content."
+    },
+    {
+      "id": "maastricht",
+      "name": "Maastricht Formation",
+      "min": 45,
+      "max": 90,
+      "color": "#e5ca85",
+      "description": "Calcareous rock; relatively low flint content in the reported quarry interval."
+    },
+    {
+      "id": "upper",
+      "name": "Cover / disturbed ground",
+      "min": 90,
+      "max": null,
+      "color": "#b49b76",
+      "description": "Not mapped. ARCADIS (2007) describes original ~15 m loess/sand/gravel cover and partial deposition at D’n Observant; present artificial material thickness and footprint unknown."
+    }
+  ],
+  "members": [
+    {
+      "name": "Maastricht Formation",
+      "units": [
+        "Meerssen",
+        "Nekum",
+        "Emael",
+        "Schiepersberg",
+        "Gronsveld",
+        "Valkenburg"
+      ]
+    },
+    {
+      "name": "Gulpen Formation",
+      "units": [
+        "Lanaye",
+        "Lixhe 1–3",
+        "Vijlen"
+      ]
+    }
+  ],
+  "memberNote": "Regional stratigraphic order, top to bottom; local presence and absolute elevations not assigned.",
+  "memberSource": "https://repository.naturalis.nl/pub/428924"
+}

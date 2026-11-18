@@ -19,10 +19,6 @@
       "url": "assets/terrain/1970.glb"
     },
     {
-      "year": 1975,
-      "url": "assets/terrain/1970.glb"
-    },
-    {
       "year": 1980,
       "url": "assets/terrain/1980.glb"
     },
@@ -104,24 +100,16 @@
       "label": "Roads / paths",
       "url": "assets/context/roads.json",
       "type": "lines",
-      "color": "#333333",
+      "color": "#ed008c",
       "year": 2026
     },
     {
       "id": "water",
-      "label": "Water bodies",
-      "url": "assets/context/water.json",
-      "type": "lines",
-      "color": "#197caa",
+      "label": "Water extent · 2020",
+      "url": "assets/environment/Land_Cover_2020.png",
+      "type": "watermask",
+      "color": "#0099ff",
       "year": 2026
-    },
-    {
-      "id": "water-2010",
-      "label": "Water / 2010",
-      "url": "assets/context/water-2010.json",
-      "type": "lines",
-      "color": "#197caa",
-      "year": 2010
     }
   ],
   "sections": [
@@ -219,5 +207,28 @@
       ],
       "photo": "assets/views/04.jpg"
     }
-  ]
+  ],
+  "rhino": {
+    "history": "assets/terrain/ENCI_Historical_Maps.3dm",
+    "present": "assets/terrain/reduced_site.3dm",
+    "presentZOffset": 995.425
+  },
+  "accessNetwork": {
+    "bufferM": 150,
+    "cacheDays": 7,
+    "colors": {
+      "road": "#ed008c",
+      "path": "#00c7e5",
+      "steps": "#ffae00"
+    },
+    "fullRoadExtent": true
+  },
+  "focus": {
+    "outsideFade": 0.72,
+    "buildingFade": 0.35,
+    "roadFade": 0.35
+  },
+  "mobility": {
+    "url": "assets/context/mobility.json"
+  }
 }

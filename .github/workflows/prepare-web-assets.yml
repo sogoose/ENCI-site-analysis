@@ -1,0 +1,59 @@
+name: Prepare web assets
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/prepare-web-assets.yml'
+permissions:
+  contents: write
+concurrency:
+  group: enci-web-assets
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Fetch local access network
+        id: network
+        continue-on-error: true
+        run: node scripts/cache-access.mjs
+      - name: Convert Rhino terrain and buildings
+        id: model
+        continue-on-error: true
+        run: |
+          npm install --no-save playwright@1.51.1 @gltf-transform/cli@4.1.1 three@0.170.0 rhino3dm@8.9.0
+          npx playwright install --with-deps chromium
+          python -m http.server 8000 > /tmp/enci-http.log 2>&1 &
+          node scripts/export-web-models.mjs
+          npx gltf-transform optimize build-cache/present-source.glb build-cache/present.glb --compress meshopt --texture-compress webp --simplify true --simplify-ratio 0.35 --simplify-error 0.001
+          npx gltf-transform meshopt build-cache/buildings-source.glb build-cache/buildings.glb
+          test "$(stat -c%s build-cache/present.glb)" -lt 95000000
+          test "$(stat -c%s build-cache/buildings.glb)" -lt 95000000
+          cp build-cache/present.glb assets/terrain/present.glb
+          cp build-cache/buildings.glb assets/context/buildings.glb
+          ls -lh assets/terrain/present.glb assets/context/buildings.glb
+      - name: Save generated assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for file in assets/context/site-access.json assets/context/buildings.glb assets/terrain/present.glb; do
+            if test -f "$file"; then git add "$file"; fi
+          done
+          if git diff --cached --quiet; then echo "No generated assets"; exit 1; fi
+          git commit -m "Cache ENCI access and optimized web models"
+          git push
+      - name: Upload generated files for manual Pages deployment
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enci-web-assets
+          if-no-files-found: warn
+          path: |
+            assets/context/site-access.json
+            assets/context/buildings.glb
+            assets/terrain/present.glb
