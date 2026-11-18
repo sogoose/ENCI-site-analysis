@@ -23,17 +23,10 @@ function delta(a,b){return a?Math.max(...a.map((v,i)=>Math.abs(v-b[i]))):Infinit
 // Cache the immutable source rasters; rebuild the mask on brush Apply.
 let cliffRasters=null;
 function getCliffRasters(){if(!cliffRasters)cliffRasters=Promise.all([raster('assets/environment/Slope.png'),raster('assets/environment/Aspect.png'),raster('assets/environment/Land_Cover_2020.png')]).catch(e=>{cliffRasters=null;throw e});return cliffRasters}
-function brushMask(b,strokes){
- if(!strokes.length)return null;
- const c=document.createElement('canvas'),dx=b[2]-b[0],dy=b[3]-b[1],scale=4096/Math.max(dx,dy);c.width=Math.max(1,Math.round(dx*scale));c.height=Math.max(1,Math.round(dy*scale));
- const g=c.getContext('2d',{willReadFrequently:true});g.setTransform(c.width/dx,0,0,-c.height/dy,-b[0]*c.width/dx,b[3]*c.height/dy);g.fillStyle=g.strokeStyle='#fff';g.lineCap=g.lineJoin='round';
- for(const st of strokes){const pts=st.points;if(!pts.length)continue;g.beginPath();if(pts.length===1){g.arc(pts[0][0],pts[0][1],st.width/2,0,Math.PI*2);g.fill()}else{g.lineWidth=st.width;pts.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.stroke()}}
- const im=g.getImageData(0,0,c.width,c.height);return (x,y)=>{const u=Math.floor((x-b[0])/dx*c.width),v=Math.floor((b[3]-y)/dy*c.height);return u>=0&&v>=0&&u<c.width&&v<c.height&&im.data[(v*c.width+u)*4+3]>=128}
-}
-export async function cliffCandidates(manifest,ring,strokes=[]){
+export async function cliffCandidates(manifest,ring){
  const b=manifest.model_bounds,sl=manifest.layers.find(l=>l.layer==='Slope'),as=manifest.layers.find(l=>l.layer==='Aspect'),lc=manifest.layers.find(l=>l.layer==='Land_Cover_2020');
  if(!sl||!as||!lc)throw Error('Slope/aspect/land-cover manifest missing');
- const [s,a,cover]=await getCliffRasters(),painted=brushMask(b,strokes),threshold=hex(sl.legend['9'].color),water=hex(lc.legend['80'].color),wet=hex(lc.legend['90'].color),built=hex(lc.legend['50'].color);
+ const [s,a,cover]=await getCliffRasters(),threshold=hex(sl.legend['9'].color),water=hex(lc.legend['80'].color),wet=hex(lc.legend['90'].color),built=hex(lc.legend['50'].color);
  const dirs=Object.entries(as.legend).map(([k,v])=>({angle:Number(k)*Math.PI/4,color:hex(v.color)})),step=10,cells=[],raw=new Set(),key=(i,j)=>i+','+j;
  const blocked=(x,y)=>{const p=pixel(cover,b,x,y);return !p||delta(p,water)<=3||delta(p,wet)<=3||delta(p,built)<=3};
  for(let j=0;b[1]+(j+.5)*step<b[3];j++)for(let i=0;b[0]+(i+.5)*step<b[2];i++){
@@ -47,7 +40,7 @@ export async function cliffCandidates(manifest,ring,strokes=[]){
  // Recover previous numbering so the rejected location is old section 14, not a newly numbered 14.
  const route=[4,1,9,7,21,14,22,15,16,6,17,2,8,10,19,23,5,3,13,12,18,20,24,11],old=spaced(rank(cells,raw)),oldRoute=route.map(i=>old[i-1]).filter(Boolean),bad=old[route[13]-1];
  const rejected=(x,y)=>!!bad&&Math.hypot(x-bad.x,y-bad.y)<=35;
- const valid=(x,y)=>!blocked(x,y)&&!rejected(x,y)&&(!painted||painted(x,y));
+ const valid=(x,y)=>!blocked(x,y)&&!rejected(x,y);
  const eligible=cells.filter(c=>valid(c.x,c.y)),screened=new Set(eligible.map(c=>key(c.i,c.j)));
  const visited=new Set(),supported=new Set();
  for(const c of eligible){const k=key(c.i,c.j);if(visited.has(k))continue;const q=[[c.i,c.j]];visited.add(k);for(let n=0;n<q.length;n++){const [i,j]=q[n];for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++){if(!dx&&!dy)continue;const x=i+dx,y=j+dy,k=key(x,y);if(screened.has(k)&&!visited.has(k)){visited.add(k);q.push([x,y])}}}if(q.length>=3)for(const [i,j] of q)supported.add(key(i,j))}
