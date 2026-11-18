@@ -358,9 +358,9 @@ function loadDsm(res){
  if(dsmWorker){dsmWorker.terminate();dsmWorker=null}
  clear(dsmLayer);dsmResolution=res;dsmCount=0;dsmExpected=0;dsmStatus='';dsmIsolated=false;
  if(res==='off'){refreshDsmDrawer();return}
- const directory=res==='8'?'ENCI_cliffs_8cm':'ENCI_cliffs';
+ const directory='ENCI_cliffs';
  dsmStatus='Reading manifest…';refreshDsmDrawer();
- const w=new Worker(new URL('./cliff-dsm-worker.js?v=39',import.meta.url),{type:'module'});dsmWorker=w;
+ const w=new Worker(new URL('./cliff-dsm-worker.js?v=40',import.meta.url),{type:'module'});dsmWorker=w;
  function fail(message){if(dsmWorker!==w)return;w.terminate();dsmWorker=null;clear(dsmLayer);dsmCount=0;dsmStatus='Point cloud unavailable · '+message;refreshDsmDrawer()}
  w.onerror=e=>fail(e.message||'Decoder worker could not load');
  w.onmessage=({data:m})=>{
@@ -371,7 +371,7 @@ function loadDsm(res){
    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(m.positions,3));geo.computeBoundingBox();geo.computeBoundingSphere();
    const material=new THREE.PointsMaterial({color:'#566c84',size:1.55,sizeAttenuation:false,depthTest:true,depthWrite:true});
    const points=new THREE.Points(geo,material);points.renderOrder=9;dsmLayer.add(points);dsmCount=m.total;dsmStatus=dsmCount.toLocaleString()+' / '+dsmExpected.toLocaleString()+' points';
-  }else if(m.type==='done'){dsmStatus=m.total.toLocaleString()+' points · one 250 m source tile';w.terminate();dsmWorker=null}
+  }else if(m.type==='done'){dsmStatus=m.total.toLocaleString()+' points · '+m.tiles+' source '+(m.tiles===1?'tile':'tiles');w.terminate();dsmWorker=null}
   else if(m.type==='error'){fail(m.message);return}
   refreshDsmDrawer();
  };
@@ -381,11 +381,11 @@ function zoomDsm(){const box=new THREE.Box3().setFromObject(dsmLayer);if(box.isE
 function dsmControls(p){
  if(year!==2026||kind==='local'||cliffCutaway)return;
  p.append(el('div','CLIFF DETAIL · PDOK DSM','env-group-label'));
- for(const [res,label] of [['off','Off'],['40','40 cm · preview'],['8','8 cm · native']])p.append(option(label,()=>loadDsm(res),dsmResolution===res));
+ p.append(checkOption('Cliff point cloud · 40 cm',dsmResolution!=='off',v=>loadDsm(v?'40':'off')));
  if(dsmResolution!=='off'){
   if(dsmStatus)p.append(sub(dsmStatus));
   if(dsmCount){p.append(checkOption('Isolate point cloud',dsmIsolated,v=>{dsmIsolated=v;makeDirty()}),option('Zoom to scan',zoomDsm,false,'↗'))}
-  p.append(sub('2025 surface model · native height samples; may include vegetation. Local RD / NAP alignment provisional. Section profiles remain based on the original terrain.'))
+  p.append(sub('2025 DSM · 40 cm sampled heights; may include vegetation. Local RD / NAP alignment provisional. Section profiles remain based on the original terrain.'))
  }
 }
 function renderSectionControls(p){
