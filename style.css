@@ -131,3 +131,6 @@ body.views-mode #photo>img{max-height:32vh;width:100%;object-fit:contain;object-
 .archive-lightbox{border:0;padding:18px;background:#fff;max-width:92vw;max-height:92vh;width:auto}
 .archive-lightbox::backdrop{background:#000b}.archive-lightbox img{display:block;max-width:86vw;max-height:76vh;object-fit:contain}.archive-lightbox p{font-size:12px}.archive-lightbox button{display:block;margin-left:auto;margin-bottom:8px}
 @media(max-width:780px){body.views-mode #drawer{width:190px;top:100px;max-height:42vh}body.views-mode #photo{left:12px;top:auto;bottom:150px;width:min(310px,75vw);max-height:42vh}.archive-item{grid-template-columns:45px minmax(0,1fr)}.archive-item img{width:45px;height:34px}}
+
+/* Former industrial function inventory */
+.heritage-info{border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:8px 0;line-height:1.4}.heritage-info strong{display:block;font-weight:500;font-size:12px;margin:3px 0}.heritage-entry{display:block;width:100%;text-align:left;font-size:10px;white-space:normal;line-height:1.4;padding:5px 0;border-bottom:1px solid #e8e8e8}.heritage-entry:hover{color:#0033ff}.heritage-info .qa-details{max-height:210px;overflow:auto}
