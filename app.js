@@ -66,6 +66,7 @@ let year=2026,mode='terrain',stack=false,detail=false,active=null,kind='',localF
 const enabled=new Set(['buildings']), grids=new Map();
 let buildingUse=false,buildingUseMode='former',buildingUseSummary='',buildingUseCounts=null,formerSelected=null,detailAvailable=false;
 let studyBoundary=true,networkData=null,networkError='',networkBusy=false,networkModel=null;
+const dsmLayer=new THREE.Group();scene.add(dsmLayer);let dsmResolution='off',dsmWorker=null,dsmStatus='',dsmCount=0,dsmExpected=0,dsmIsolated=false;
 const networkLayer=new THREE.Group(),focusLayer=new THREE.Group(),mobilityLayer=new THREE.Group();scene.add(networkLayer,focusLayer,mobilityLayer);let roadFade=cfg.focus?.roadFade??.35,mobilityEnabled=false,mobilityData=null,mobilityBusy=false,mobilityError='',mobilityModel=null;let outsideFade=cfg.focus?.outsideFade??.72,buildingFade=cfg.focus?.buildingFade??.35,focusMaterial=null,focusBuildingMaterial=null,focusTexture=null;
 const geologyLayer=new THREE.Group();scene.add(geologyLayer);let cliffCutaway=false,selectedCut=null,cliffMode=true,cliffData=null,cliffPromise=null,cliffSelected=null,cliffLength=240,showStrata=true,sectionToken=0,sectionBusy=false,sectionMessage='',sectionIndex=null,sectionModel=null;const cliffOverlay=new THREE.Group(),sectionFace=new THREE.Group();scene.add(cliffOverlay);const cutScene=new THREE.Scene();cutScene.add(sectionFace);const fadeScene=new THREE.Scene(),fadeCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,2);fadeCamera.position.z=1;const fadeMaterial=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.78,depthTest:false,depthWrite:false});fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fadeMaterial));let sectionBackground=.78,sectionInfo=null,sectionLast=null,dxfDatum='source';let sectionPins=[],sectionExpanded=false,sectionCameraPending=false,sectionFlip=false,sectionSlopeVisible=true;let geologyY=-840,geologyCut=true,geologyMessage='',geologyModel=null,geologyLastY=null;let legendOpen=true;const legendSections=new Map();let stackGap=650,stackEntries=[],stackLoading=false,nativeLayers=[],layerOverrides={},contextInfo={},roadCache=null;
 const preview=await json('./assets/terrain/preview-grid.json');
@@ -351,9 +352,46 @@ function sectionOverview(plan=false){if(mode!=='sections')return;cliffCutaway=fa
 
 function setSectionLock(on){controls.enableRotate=!on;controls.maxPolarAngle=on?Math.PI/2:Math.PI/2-.003;document.body.classList.toggle('section-cut-active',on);for(const id of ['rotate-left','rotate-right'])$('#'+id).disabled=on;$('#axo').disabled=on;renderer.domElement.setAttribute('aria-label',on?'Section drawing: pan and zoom; rotation locked':'3D terrain: drag to rotate, scroll to zoom')}
 function backgroundControl(){const box=el('label',undefined,'focus-control'),head=el('span',undefined,'focus-head'),value=el('span',Math.round(sectionBackground*100)+'%','focus-value');head.append(el('span','Background fade'),value);const range=el('input');range.type='range';range.min=0;range.max=100;range.step=5;range.value=Math.round(sectionBackground*100);range.setAttribute('aria-label','Background fade');range.oninput=()=>{sectionBackground=+range.value/100;fadeMaterial.opacity=sectionBackground;value.textContent=range.value+'%';makeDirty()};box.append(head,range);return box}
+function dsmVisible(){return !!active&&!stack&&year===2026&&kind!=='local'&&mode==='sections'&&!cliffCutaway&&dsmResolution!=='off'}
+function refreshDsmDrawer(){if(mode==='sections')renderDrawer();makeDirty()}
+function loadDsm(res){
+ if(dsmWorker){dsmWorker.terminate();dsmWorker=null}
+ clear(dsmLayer);dsmResolution=res;dsmCount=0;dsmExpected=0;dsmStatus='';dsmIsolated=false;
+ if(res==='off'){refreshDsmDrawer();return}
+ const directory=res==='8'?'ENCI_cliffs_8cm':'ENCI_cliffs';
+ dsmStatus='Reading manifest…';refreshDsmDrawer();
+ const w=new Worker(new URL('./cliff-dsm-worker.js?v=39',import.meta.url),{type:'module'});dsmWorker=w;
+ function fail(message){if(dsmWorker!==w)return;w.terminate();dsmWorker=null;clear(dsmLayer);dsmCount=0;dsmStatus='Point cloud unavailable · '+message;refreshDsmDrawer()}
+ w.onerror=e=>fail(e.message||'Decoder worker could not load');
+ w.onmessage=({data:m})=>{
+  if(dsmWorker!==w)return;
+  if(m.type==='manifest'){dsmExpected=m.count;dsmStatus='Preparing LAZ decoder…'}
+  else if(m.type==='progress')dsmStatus='Decoding '+m.file+' / '+m.files+' · '+dsmCount.toLocaleString()+' points';
+  else if(m.type==='chunk'){
+   const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(m.positions,3));geo.computeBoundingBox();geo.computeBoundingSphere();
+   const material=new THREE.PointsMaterial({color:'#566c84',size:1.55,sizeAttenuation:false,depthTest:true,depthWrite:true});
+   const points=new THREE.Points(geo,material);points.renderOrder=9;dsmLayer.add(points);dsmCount=m.total;dsmStatus=dsmCount.toLocaleString()+' / '+dsmExpected.toLocaleString()+' points';
+  }else if(m.type==='done'){dsmStatus=m.total.toLocaleString()+' points · one 250 m source tile';w.terminate();dsmWorker=null}
+  else if(m.type==='error'){fail(m.message);return}
+  refreshDsmDrawer();
+ };
+ w.postMessage({manifest:new URL('./assets/terrain/'+directory+'/manifest.json',location.href).href});
+}
+function zoomDsm(){const box=new THREE.Box3().setFromObject(dsmLayer);if(box.isEmpty())return;const c=box.getCenter(new THREE.Vector3()),offset=camera.position.clone().sub(controls.target);controls.target.copy(c);camera.position.copy(c).add(offset);camera.lookAt(c);camera.updateMatrixWorld(true);let mx=0,my=0;for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){const v=new THREE.Vector3(x,y,z).applyMatrix4(camera.matrixWorldInverse);mx=Math.max(mx,Math.abs(v.x));my=Math.max(my,Math.abs(v.y))}camera.zoom=Math.min(controls.maxZoom,(camera.right-camera.left)*.38/Math.max(mx,1),(camera.top-camera.bottom)*.36/Math.max(my,1));camera.updateProjectionMatrix();controls.update();makeDirty()}
+function dsmControls(p){
+ if(year!==2026||kind==='local'||cliffCutaway)return;
+ p.append(el('div','CLIFF DETAIL · PDOK DSM','env-group-label'));
+ for(const [res,label] of [['off','Off'],['40','40 cm · preview'],['8','8 cm · native']])p.append(option(label,()=>loadDsm(res),dsmResolution===res));
+ if(dsmResolution!=='off'){
+  if(dsmStatus)p.append(sub(dsmStatus));
+  if(dsmCount){p.append(checkOption('Isolate point cloud',dsmIsolated,v=>{dsmIsolated=v;makeDirty()}),option('Zoom to scan',zoomDsm,false,'↗'))}
+  p.append(sub('2025 surface model · native height samples; may include vegetation. Local RD / NAP alignment provisional. Section profiles remain based on the original terrain.'))
+ }
+}
 function renderSectionControls(p){
  const nav=el('div',undefined,'section-tabs');for(const [txt,on,fn] of [['Overview',!cliffCutaway,()=>sectionOverview()],['Cutaway',cliffCutaway,()=>{const id=cliffMode?cliffSelected:section;if(id)sectionSelect(id,true)}]]){const b=el('button',txt,on?'active':'');b.onclick=fn;nav.append(b)}p.append(nav);
  const types=el('div',undefined,'section-tabs section-types');for(const [txt,on,fn] of [['Cliffs ≥45°',cliffMode,()=>{cliffMode=true;compare=false;sectionOverview()}],['Site transects',!cliffMode,()=>{cliffMode=false;sectionOverview()}]]){const b=el('button',txt,on?'active':'');b.onclick=fn;types.append(b)}p.append(types);
+ dsmControls(p);
  if(cliffMode&&year!==2026)p.append(option('Open 2026 terrain',()=>selectYear(2026,false),false,'↗'));
  const list=sectionList(),selected=cliffMode?cliffSelected:section;
  if(list.length){const grid=el('div',undefined,'section-index');for(const c of list){const b=el('button',sectionNumber(c.id),c.id===selected&&cliffCutaway?'active':'');b.title='Open section '+sectionNumber(c.id);b.setAttribute('aria-pressed',String(c.id===selected&&cliffCutaway));b.onclick=()=>sectionSelect(c.id,true);grid.append(b)}p.append(el('div','SECTION INDEX','section-kicker'),grid)}
@@ -367,12 +405,12 @@ function renderSectionControls(p){
 }
 function focusSection(s,points){const dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),len=Math.hypot(dx,dz);if(len<1)return;const vals=points.map(p=>p[1]).filter(Number.isFinite),top=Math.max(...vals),floor=sectionBands(s,len,points).floor,span=Math.max(45,top-floor),unit=Math.max(len,span),pad=unit*.13;const W=camera.right-camera.left,H=camera.top-camera.bottom;const mobile=innerWidth<780,usable=mobile?.79:Math.min(.68,Math.max(.35,(innerWidth-590)/innerWidth));camera.zoom=Math.max(.08,Math.min(15,W*usable/(len+pad*2),H*.64/(span+pad*2)));const normal=new THREE.Vector3(-dz,0,dx).normalize().multiplyScalar(sectionFlip?-1:1),right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),normal).normalize();const center=new THREE.Vector3((s.a[0]+s.b[0])/2,(top+floor)/2,-(s.a[1]+s.b[1])/2);if(!mobile)center.addScaledVector(right,W/camera.zoom*.015);center.y-=H/camera.zoom*.025;setSectionLock(true);controls.target.copy(center);camera.position.copy(center).addScaledVector(normal,3500);camera.lookAt(center);camera.updateProjectionMatrix();controls.update();makeDirty()}
 function applySectionCut(){renderer.clippingPlanes=[];context.visible=true;sectionFace.visible=false;cliffOverlay.visible=sectionSlopeVisible&&!cliffCutaway;if(mode!=='sections'||!cliffCutaway||!selectedCut||!active){setSectionLock(false);return}const s=selectedCut,dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),n=new THREE.Vector3(-dz,0,dx).normalize(),anchor=new THREE.Vector3(s.a[0],0,-s.a[1]);if(n.dot(camera.position.clone().sub(anchor))>0)n.negate();renderer.clippingPlanes=[new THREE.Plane().setFromNormalAndCoplanarPoint(n,anchor)];context.visible=false;sectionFace.visible=true;setSectionLock(true);makeDirty()}
-function renderAtlas(){renderer.autoClear=true;renderer.render(scene,camera);if(mode!=='sections'||!cliffCutaway||!selectedCut||!sectionFace.visible)return;const planes=renderer.clippingPlanes;renderer.autoClear=false;renderer.clippingPlanes=[];try{if(sectionBackground>0){fadeMaterial.opacity=sectionBackground;renderer.render(fadeScene,fadeCamera)}renderer.clearDepth();renderer.render(cutScene,camera)}finally{renderer.clippingPlanes=planes;renderer.autoClear=true}}
+function renderAtlas(){renderer.autoClear=true;dsmLayer.visible=dsmVisible();const hidden=dsmLayer.visible&&dsmIsolated&&dsmCount?[terrain,focusLayer,context,sectionMark,cliffOverlay]:[];const states=hidden.map(o=>o.visible);try{hidden.forEach(o=>o.visible=false);renderer.render(scene,camera)}finally{hidden.forEach((o,i)=>o.visible=states[i])}if(mode!=='sections'||!cliffCutaway||!selectedCut||!sectionFace.visible)return;const planes=renderer.clippingPlanes;renderer.autoClear=false;renderer.clippingPlanes=[];try{if(sectionBackground>0){fadeMaterial.opacity=sectionBackground;renderer.render(fadeScene,fadeCamera)}renderer.clearDepth();renderer.render(cutScene,camera)}finally{renderer.clippingPlanes=planes;renderer.autoClear=true}}
 function cliffSelection(){const c=cliffData?.candidates.find(c=>c.id===cliffSelected)||cliffData?.candidates[0];return c?lineFor(c,cliffLength,cfg.bounds):null}
 function clearSectionPins(){sectionPins=[];$('#section-pins')?.replaceChildren()}
 function pinSectionEndpoint(s,points,selected){const len=Math.hypot(s.b[0]-s.a[0],s.b[1]-s.a[1]);const p=points.find(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));if(!p||!len)return;const t=Math.max(0,Math.min(1,p[0]/len));pinSection(s.id,s.a[0]+(s.b[0]-s.a[0])*t,s.a[1]+(s.b[1]-s.a[1])*t,p[1],selected)}
 function pinSection(id,x,y,h,selected){if(!Number.isFinite(h))return;const b=el('button',sectionNumber(id),'section-pin'+(selected?' active':''));b.title='Open section '+sectionNumber(id);b.setAttribute('aria-label',b.title);b.onclick=()=>sectionSelect(id,true);$('#section-pins').append(b);sectionPins.push({b,point:new THREE.Vector3(x,h+2.5,-y)});}
-function projectSectionPins(){const host=$('#section-pins');host.hidden=mode!=='sections'||cliffCutaway||stack||!sectionPins.length; if(host.hidden)return;for(const p of sectionPins){const q=p.point.clone().project(camera);p.b.hidden=q.z < -1||q.z>1||Math.abs(q.x)>1.05||Math.abs(q.y)>1.05;p.b.style.left=((q.x+1)*50)+'%';p.b.style.top=((1-q.y)*50)+'%'}}
+function projectSectionPins(){const host=$('#section-pins');host.hidden=mode!=='sections'||cliffCutaway||stack||!sectionPins.length||(dsmVisible()&&dsmIsolated&&dsmCount>0); if(host.hidden)return;for(const p of sectionPins){const q=p.point.clone().project(camera);p.b.hidden=q.z < -1||q.z>1||Math.abs(q.x)>1.05||Math.abs(q.y)>1.05;p.b.style.left=((q.x+1)*50)+'%';p.b.style.top=((1-q.y)*50)+'%'}}
 
 function sectionLine(s,pts,color,highlight=false){
  const len=Math.hypot(s.b[0]-s.a[0],s.b[1]-s.a[1]);let run=[];
