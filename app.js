@@ -405,7 +405,7 @@ function loadDsm(res){
  clear(dsmLayer);dsmResolution=res;dsmCount=0;dsmExpected=0;dsmStatus='';dsmIsolated=false;
  if(res==='off'){dsmStyle.reset();refreshDsmDrawer();return}
  if(active)dsmStyle.prepare(active);
- const directory='ENCI_cliffs_40cm_all';
+ const directory='ENCI_cliffs_refined';
  dsmStatus='Reading manifest…';refreshDsmDrawer();
  const w=new Worker(new URL('./cliff-dsm-worker.js?v=42',import.meta.url),{type:'module'});dsmWorker=w;
  function fail(message){if(dsmWorker!==w)return;w.terminate();dsmWorker=null;clear(dsmLayer);dsmCount=0;dsmStatus='Point cloud unavailable · '+message;refreshDsmDrawer()}
@@ -433,7 +433,7 @@ function dsmControls(p){
   if(dsmStatus)p.append(sub(dsmStatus));
   p.append(checkOption('Project terrain texture',dsmStyle.flags.texture,v=>{dsmStyle.flags.texture=v;dsmStyle.change()}),checkOption('Cliff focus · exclude buildings / water',dsmStyle.flags.focus,v=>{dsmStyle.flags.focus=v;dsmStyle.change()}));if(dsmStyle.flags.focus)p.append(checkOption('Exclude tree cover',dsmStyle.flags.trees,v=>{dsmStyle.flags.trees=v;dsmStyle.change()}));if(dsmStyle.status)p.append(sub(dsmStyle.status));
   if(dsmCount){p.append(checkOption('Isolate point cloud',dsmIsolated,v=>{dsmIsolated=v;makeDirty()}),option('Zoom to scan',zoomDsm,false,'↗'))}
-  p.append(sub('PDOK / Kadaster 2025 DSM · 40 cm. Cliff focus: AHN DTM ≥30° + approx. 10 m margin, 3D building footprint & WorldCover 2020. Screening only; source gaps remain. Projected photo colours, not point RGB. Section profiles use original terrain.'))
+  p.append(sub('PDOK / Kadaster 2025 DSM · 40 cm samples · DSM ≥30° on 1 m grid + 5 m buffer. Cliff focus: AHN DTM ≥30° + approx. 10 m margin, 3D building footprint & WorldCover 2020. Screening only; source gaps remain. Projected photo colours, not point RGB. Section profiles use original terrain.'))
  }
 }
 function renderSectionControls(p){
