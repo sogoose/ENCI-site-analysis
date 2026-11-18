@@ -1,0 +1,91 @@
+{
+  "source": "PDOK DSM (user-supplied LAS/LAZ)",
+  "mode": "cliffs",
+  "coordinate_system": "RD New EPSG:28992 XY, input Z expected m NAP (not transformed)",
+  "origin_rd_for_local_xy": [
+    176269.00991889625,
+    315430.72517179325
+  ],
+  "rhino_original_z_offset_m": 995.425,
+  "study_boundary_status": "Approximate atlas boundary; origin from previous extraction script; alignment requires control-point check",
+  "output_step_m": 0.0,
+  "slope_screening_grid_m": 2.0,
+  "slope_threshold_deg": 45.0,
+  "cliff_buffer_m": 20.0,
+  "region_rd_bounds": [
+    175229.60991889625,
+    313576.6251717933,
+    176848.80991889624,
+    315762.42517179326
+  ],
+  "total_points": 6133125,
+  "total_bytes": 20153775,
+  "soft_budget_mib": 200,
+  "files": [
+    {
+      "file": "001_DSM_1757_3152_001.laz",
+      "source": "DSM_1757_3152.laz",
+      "points": 2000000,
+      "bytes": 6283379,
+      "rd_bounds": [
+        175750.04000314788,
+        315417.2400031479,
+        175999.96000314786,
+        315499.96000314795
+      ],
+      "z_nap_range": [
+        45.52640866088867,
+        107.03740866088867
+      ]
+    },
+    {
+      "file": "001_DSM_1757_3152_002.laz",
+      "source": "DSM_1757_3152.laz",
+      "points": 2000000,
+      "bytes": 6646670,
+      "rd_bounds": [
+        175750.04000314788,
+        315334.6800031479,
+        175999.96000314786,
+        315417.2400031479
+      ],
+      "z_nap_range": [
+        46.71140866088867,
+        122.34240866088868
+      ]
+    },
+    {
+      "file": "001_DSM_1757_3152_003.laz",
+      "source": "DSM_1757_3152.laz",
+      "points": 2000000,
+      "bytes": 6776909,
+      "rd_bounds": [
+        175750.04000314788,
+        315255.4800031479,
+        175999.96000314786,
+        315334.6800031479
+      ],
+      "z_nap_range": [
+        46.50140866088867,
+        122.77140866088868
+      ]
+    },
+    {
+      "file": "001_DSM_1757_3152_004.laz",
+      "source": "DSM_1757_3152.laz",
+      "points": 133125,
+      "bytes": 446817,
+      "rd_bounds": [
+        175750.04000314788,
+        315250.0400031479,
+        175999.96000314786,
+        315255.4800031479
+      ],
+      "z_nap_range": [
+        46.49540866088867,
+        104.30140866088867
+      ]
+    }
+  ],
+  "limitation": "DSM includes vegetation and buildings; slope from cell-average heights and neighboring differences is a screening mask, not measured rock faces or structural stability. XY sampling keeps the first original point per cell; no elevation interpolation. No vertical datum conversion. Missing source tiles are not filled."
+}
