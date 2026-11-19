@@ -146,9 +146,107 @@ function xuankong(mode){
  [[506,107,291],"04  VERTICAL PROPS","Supplementary; exact sites unknown"]],
  facts:["TWO UNMEASURED REPRESENTATIVE UNITS","ACTUAL BUILDING PLACEMENT NOT RECREATED","SOCKET DEPTH & POST LOCATIONS UNKNOWN"]};
 }
+
+// Enlarged interface drawings: only the documented relationship is solid.
+// All local shapes are graphic conventions; concealed fixing is not drawn.
+function jointPlate(id){
+ const pod=id==="podokam", W=1280,H=790, graphite="#292b2a", muted="#717873";
+ const T=(x,y,t,size=12,c=graphite,w=400)=>writing(x,y,t,size,c,w);
+ const L=(x1,y1,x2,y2,c=graphite,w=1.4,dash="")=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+w+'" '+(dash?'stroke-dasharray="'+dash+'"':'')+'/>';
+ const D=(d,fill="none",c=graphite,w=1.3,dash="")=>'<path d="'+d+'" fill="'+fill+'" stroke="'+c+'" stroke-width="'+w+'" stroke-linejoin="round" '+(dash?'stroke-dasharray="'+dash+'"':'')+'/>';
+ const R=(x,y,w,h,fill,stroke=graphite)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.2"/>';
+ const group=(x,y,s)=>'<g transform="translate('+x+' '+y+')">'+s+'</g>';
+ const shape=(x,y,w,h,depth=18,front="#a88a68",top="#c9b18e",side="#856d52")=>
+   D('M'+x+' '+y+'l'+depth+' '+(-depth*.55)+'h'+w+'l'+(-depth)+' '+(depth*.55)+'Z',top)+
+   D('M'+(x+w)+' '+y+'l'+depth+' '+(-depth*.55)+'v'+h+'l'+(-depth)+' '+(depth*.55)+'Z',side)+R(x,y,w,h,front);
+ const grain=(x,y,w,h)=>Array.from({length:3},(_,i)=>L(x+(i+1)*w/4,y+7,x+(i+1)*w/4,y+h-7,"#735b44",.65)).join("");
+ const ring=(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="11" fill="none" stroke="'+blue+'" stroke-width="1.6" stroke-dasharray="3 3"/>';
+ const arrow=(x,y1,y2)=>L(x,y1,x,y2,blue,2.2)+D('M'+(x-5)+' '+(y2-9)+'L'+x+' '+y2+'L'+(x+5)+' '+(y2-9), "none",blue,2.2);
+ const rockblock=(topY)=>D('M28 '+(topY+38)+'L72 '+(topY+13)+'L118 '+topY+'L226 '+topY+'L307 '+(topY+37)+'L307 352H28Z',"#e5e5df",muted,1.3,"5 4")+
+   D('M28 '+(topY+38)+'L72 '+(topY+13)+'L118 '+topY+'L226 '+topY+'L307 '+(topY+37)+'L307 352H28Z',"url(#joint-rock)",muted,.6,"5 4");
+ const miniCall=(x,y,tx,ty,label)=>L(x,y,tx-5,ty-4,blue,.9)+T(tx,ty,label,11,muted);
+ function head(){
+   let d=shape(32,105,280,33,22)+shape(130,138,57,181,19,pod?"#a98b69":"#977a58", "#c0a585","#81674d");
+   d+=grain(130,138,57,181);
+   if(pod){for(const y of [170,210,250,290])d+=L(131,y,187,y,"#b68c5e",2);}
+   d+=ring(159,138)+arrow(112,77,126)+arrow(112,155,304);
+   d+=miniCall(245,104,253,82,"Floor frame");
+   d+=L(160,139,221,190,blue,.9,"4 4")+T(225,194,"Head joint",11,muted)+T(225,210,"not recorded",11,muted);
+   d+=T(46,341,pod?"Copper-clad timber prop":"Supplementary timber prop",11,muted);
+   return d;
+ }
+ function base(){
+   const top=238;
+   let d=rockblock(top);
+   d+=shape(131,68,57,top-68,19,pod?"#a98b69":"#977a58","#c0a585","#81674d")+grain(131,68,57,top-68);
+   if(pod){for(const y of [105,147,189,224])d+=L(132,y,187,y,"#b68c5e",2);}
+   d+=arrow(109,88,230)+ring(160,238);
+   d+=L(171,238,221,213,blue,.9,"4 4")+T(225,211,"Contact zone",11,muted)+T(225,226,"fixing unknown",11,muted);
+   d+=T(44,340,"Lower bearing / rock shown symbolically",11,muted);
+   return d;
+ }
+ function tie(){
+   let d=D("M39 65L151 37L151 310L39 334Z","#e5e5df",muted,1.3,"5 4")+
+     D("M39 65L151 37L151 310L39 334Z","url(#joint-rock)",muted,.7,"5 4");
+   d+=shape(245,219,70,31,18)+shape(254,185,24,35,12);
+   // A linked chain indicates the historical restraint, not its exact attachment.
+   for(let i=0;i<9;i++){const x=149+i*13.5,y=139+i*7.2;
+     d+='<ellipse cx="'+x+'" cy="'+y+'" rx="10" ry="4.8" transform="rotate(28 '+x+' '+y+')" fill="none" stroke="#4e5150" stroke-width="1.8"/>';}
+   d+=ring(149,139)+ring(257,197)+L(147,125,185,87,blue,.9,"4 4")+T(190,83,"Rock fixing",11,muted)+T(190,98,"unknown",11,muted);
+   d+=T(190,157,"Iron chain",11,muted)+L(220,160,211,170,blue,.9);
+   d+=T(180,289,"Hall-side fixing",11,muted)+T(180,304,"also unverified",11,muted);
+   return d;
+ }
+ function socket(){
+   // Cutaway diagram: the visible beam is continuous through the cliff face;
+   // the buried end and its dimensions remain deliberately unresolved.
+   let d=D("M30 74L148 45L148 315L30 344Z","#e5e5df",muted,1.4)+
+     D("M30 74L148 45L148 315L30 344Z","url(#joint-rock)",muted,.65);
+   d+=D("M148 45L190 67V300L148 315Z","#d9dbd5",muted,1.3);
+   d+=D("M148 142L190 151V195L148 184Z","#fff",muted,1.2,"4 4");
+   d+=shape(164,152,157,36,13);
+   d+=D("M58 167L148 145L177 153L92 177Z","none",blue,1.7,"5 4")+
+     D("M92 177L177 153V190L92 213","none",blue,1.7,"5 4");
+   d+=ring(174,174)+shape(214,118,108,18,15);
+   d+=arrow(298,82,117);
+   d+=L(107,193,72,250,blue,1,"4 4")+T(41,268,"Embedded portion",11,muted)+T(41,284,"depth unknown",11,muted);
+   d+=T(224,218,"Projecting beam",11,muted)+T(224,234,"supports floor",11,muted);
+   return d;
+ }
+ const panels=pod?[
+  {n:"01",title:"COLUMN HEAD",sub:"Floor frame / external prop",art:head(),status:"DOCUMENTED SUPPORT RELATION",notes:["The long outer prop supports the hall.","Head shape, notch and fasteners unknown.","No hidden joinery has been invented."]},
+  {n:"02",title:"COLUMN BASE",sub:"External prop / lower bearing",art:base(),status:"FOUNDATION GEOMETRY UNVERIFIED",notes:["Published prop height: 7.3 m.","Lower contact is a symbolic bearing zone.","No stone pad, dowel or bolt is asserted."]},
+  {n:"03",title:"IRON RESTRAINT",sub:"Hall / historical chain / cliff",art:tie(),status:"CHAIN REPORTED; FIXINGS UNKNOWN",notes:["Historic accounts describe iron chains.","Rock and hall-side anchorage unverified.","Chain layout and tension are not measured."]}
+ ]:[
+  {n:"01",title:"ROCK SOCKET",sub:"Cliff / inserted horizontal beam",art:socket(),status:"PRIMARY SUPPORT TYPE DOCUMENTED",notes:["Timber crossbeams enter cliff sockets.","Buried length and socket shape unknown.","Dashed lines indicate hidden uncertainty."]},
+  {n:"02",title:"PROP HEAD",sub:"Outer floor beam / visible prop",art:head(),status:"SUPPLEMENTARY SUPPORT RELATION",notes:["Visible slender props beneath galleries.","Head connection and load share unverified.","No notch or metal connectors asserted."]},
+  {n:"03",title:"PROP BASE",sub:"Prop / lower support zone",art:base(),status:"FOUNDATION GEOMETRY UNVERIFIED",notes:["Actual lower support varies by location.","Rock profile represents a bearing zone.","No measured pad or anchorage asserted."]}
+ ];
+ let s='<defs><pattern id="joint-rock" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-33)"><path d="M0 0V10" stroke="#b8bcb5" stroke-width=".8"/></pattern></defs><rect width="1280" height="790" fill="#fff"/>';
+ s+=L(32,44,1248,44)+T(34,29,"CLIFF CONSTRUCTION ATLAS   /   ENLARGED CONNECTION STUDY",11,muted);
+ s+=T(34,90,pod?"PODOK HERMITAGE / 보덕암":"XUANKONG SI / 悬空寺",27,graphite,500);
+ s+=T(35,119,"04 / JOINT DETAIL    ·    ANALYTICAL AXON + CUTAWAY    ·    N.T.S.",11,blue,600);
+ panels.forEach((v,i)=>{
+   const x=36+i*414;
+   let a=T(0,0,v.n+" / "+v.title,17,graphite,500)+T(0,24,v.sub,12,muted)+L(0,40,380,40,"#d2d4d0",.8);
+   a+=group(8,52,v.art);
+   a+=L(0,427,380,427,"#d2d4d0",.8)+T(0,450,v.status,10,blue,600);
+   v.notes.forEach((t,j)=>a+=T(0,478+j*23,t,11,muted));
+   s+=group(x,164,a);
+   if(i<2)s+=L(x+393,150,x+393,718,"#ddddda",.8);
+ });
+ s+=L(36,735,1248,735);
+ s+=L(36,756,60,756,graphite,1.5)+T(68,760,"Recorded relationship; illustrative outline",10,muted);
+ s+=L(350,756,374,756,blue,1.5,"4 4")+T(382,760,"Unknown fitting / hidden extent",10,muted);
+ s+=T(690,760,"Blue arrows: conceptual load path, not structural calculation",10,muted);
+ s+=T(1165,760,"N.T.S.",10,blue,600);
+ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+(pod?"Podok Hermitage":"Xuankong Si")+' enlarged analytical joint details">'+s+'</svg>';
+}
+
 export const hasAxon=id=>id==="podokam"||id==="hanging-temple";
 export function axonPlate(id,mode="assembly",mini=false){
  if(!hasAxon(id))return "";
+ if(mode==="joint"&&!mini)return jointPlate(id);
  const isPodok=id==="podokam",o=isPodok?podok(mode):xuankong(mode);
  let content=o.s+o.marks;
  if(mini)return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="50 80 840 635" role="img" aria-label="3D axonometric structural principle"><rect width="1280" height="800" fill="#fff"/>'+definitions+content+'</svg>';
@@ -157,7 +255,7 @@ export function axonPlate(id,mode="assembly",mini=false){
  svg+=writing(33,29,"CLIFF CONSTRUCTION ATLAS  /  MATERIAL AND STRUCTURE",11,slate);
  svg+=writing(33,92,isPodok?"PODOK HERMITAGE / 보덕암":"XUANKONG SI / 悬空寺",27,ink,500);
  svg+=writing(34,117,isPodok?"SINGLE PROP / ROCK + TIE":"ROCK-SOCKETED TIMBER / GALLERIES",11,slate);
- svg+=writing(34,144,mode==="contact"?"02 / SUPPORT INTERFACE":"01 / STRUCTURAL AXONOMETRIC",11,blue,600);
+ svg+=writing(34,144,mode==="contact"?"03 / SUPPORTS ONLY":mode==="frame"?"02 / TIMBER FRAME":"01 / ROOF + STRUCTURE",11,blue,600);
  svg+=content;
  svg+='<path d="M944 168V694" stroke="#ddd" stroke-width="1"/>';
  const points=o.notes;

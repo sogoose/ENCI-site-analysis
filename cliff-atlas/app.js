@@ -1,7 +1,7 @@
 import {references} from './data.js?v=8';
 import {diagramFor} from './diagrams.js?v=9';
 import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
-import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=13';
+import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=14';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
@@ -76,12 +76,13 @@ function openReference(id,keepFocus=false){
  '<button type="button" data-axon="assembly" aria-pressed="true" class="active">01 / ROOF + STRUCTURE</button>'+
  '<button type="button" data-axon="frame" aria-pressed="false">02 / TIMBER FRAME</button>'+
  '<button type="button" data-axon="contact" aria-pressed="false">03 / SUPPORTS ONLY</button>'+
+ '<button type="button" data-axon="joint" aria-pressed="false">04 / JOINT DETAIL</button>'+
  '<span class="plate-grow"></span>'+
  '<button type="button" id="axon-expand">OPEN FULL SIZE ↗</button>'+
  '<button type="button" id="axon-save">SVG ↓</button></div>'+
  '<div class="plate-window" tabindex="0" aria-label="Axonometric diagram scroll region"><div id="axon-sheet" class="plate-sheet">'+axonPlate(r.id,'assembly')+'</div></div>'+
  '<div class="plate-meta"><span>GREY / ROCK</span><span>CLAY / SCHEMATIC ROOF TILES</span><span>BROWN / TIMBER</span><span>BLUE / GROUND CONNECTION</span></div>'+
- '<p class="plate-warning">Roof typologies are based on published architectural descriptions and photographs: Podok has layered Korean tiled roof forms, and Xuankong has tiled pavilions with projecting eaves. Tile courses, roof slope, roof framing and bay placement are schematic, NOT traced from as-built drawings. Switch to TIMBER FRAME or SUPPORTS ONLY to inspect rock attachment without the roof. See primary sources below.</p>'+
+ '<p class="plate-warning">Roof typologies are based on published architectural descriptions and photographs: Podok has layered Korean tiled roof forms, and Xuankong has tiled pavilions with projecting eaves. Tile courses, roof slope, roof framing and bay placement are schematic, NOT traced from as-built drawings. Switch to TIMBER FRAME or SUPPORTS ONLY to inspect the frame. JOINT DETAIL shows three enlarged connection studies: solid lines express documented component relations, dashed lines mark uncertain extent or attachment. No foundation hardware or joinery is claimed without evidence. See primary sources below.</p>'+
  '</section>':'';
  const detailedPlate=hasStructuralPlate(r.id)?
   '<section class="plate-module" aria-label="Refined analytical drawings">'+
