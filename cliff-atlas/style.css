@@ -174,3 +174,35 @@ html{scroll-behavior:auto}.case,.photo-frame img{transition:none}
 .technical-unknown b{font-weight:500;color:#333}
 .technical-note{margin:12px 0 6px;font-size:10px;color:#797979;line-height:1.55}
 @media(max-width:600px){.technical-row{grid-template-columns:1fr;gap:5px}.technical-row-status{grid-column:1;justify-content:flex-start}.technical-row-label{font-size:10px}}
+
+/* Primary architectural sources: authoritative drawings remain externally linked
+   to the rights holder; do not reproduce original sheets in this archive. */
+.primary-archive{margin:21px 0 0;padding:18px 0 8px;border-top:1px solid #9c9c9c}
+.archive-section-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.archive-status{font-size:9px;line-height:1.45;letter-spacing:.04em;color:#868686;max-width:65%;text-align:right}
+.archive-section-title{font-size:20px;letter-spacing:-.045em;line-height:1.2;margin:13px 0 16px;font-weight:400}
+.archive-usage{font-size:11px;line-height:1.65;color:#696969;max-width:580px;margin:-3px 0 15px}
+.archive-drawing-link{display:grid;grid-template-columns:51px minmax(0,1fr) 155px 10px;gap:10px;align-items:center;border-top:1px solid #e5e5e5;padding:12px 0;font-size:11px}
+.archive-drawing-link:last-child{border-bottom:1px solid #e5e5e5}
+.archive-drawing-link:hover .drawing-desc{color:#0033ff}
+.drawing-number{font-variant-numeric:tabular-nums;color:#0033ff;font-size:10px}
+.drawing-desc{min-width:0;line-height:1.45;letter-spacing:-.01em}
+.drawing-desc small{display:block;font-size:9px;color:#999;margin-top:2px}
+.drawing-tag{font-size:9px;color:#888;line-height:1.4;letter-spacing:.015em;text-align:right}
+.drawing-open{color:#0033ff;font-size:13px}
+.archive-timeline,.archive-analysis{display:grid;grid-template-columns:132px minmax(0,1fr);gap:20px;border-top:1px solid #e5e5e5;padding:14px 0}
+.archive-timeline-date{font-size:10px;line-height:1.5;color:#0033ff}
+.archive-timeline-copy strong,.archive-analysis h4{font-size:12px;font-weight:500;letter-spacing:-.012em}
+.archive-timeline-copy p,.archive-analysis p{font-size:11px;line-height:1.7;color:#626262;margin:8px 0}
+.archive-timeline-copy>a,.archive-analysis a{display:inline-block;font-size:9px;color:#0033ff;line-height:1.5;letter-spacing:.045em;margin:1px 0}
+.archive-analysis{grid-template-columns:32px minmax(0,1fr)}
+.archive-analysis-num{font-size:10px;color:#aaa;letter-spacing:.08em}
+.archive-analysis h4{margin:0}
+@media(max-width:600px){
+.archive-section-title{font-size:18px}
+.archive-status{width:100%;max-width:100%;text-align:left}
+.archive-drawing-link{grid-template-columns:42px minmax(0,1fr) 10px;gap:8px;padding:12px 0}
+.drawing-tag{grid-column:2;text-align:left;margin-top:-3px}
+.drawing-open{grid-column:3;grid-row:1}
+.archive-timeline{grid-template-columns:1fr;gap:5px}
+}
