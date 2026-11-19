@@ -1,10 +1,10 @@
-import {references} from './data.js?v=2';
-import {diagramFor} from './diagrams.js?v=2';
+import {references} from './data.js?v=3';
+import {diagramFor} from './diagrams.js?v=3';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const families=['All','Anchored','Cantilevered','Inserted','Stilted'];
+const families=['All','Korea','Anchored','Cantilevered','Inserted','Stilted'];
 let family='All',query='',shown=[...references],opened=null,returnFocus=null;
 function field(label,value){return '<div class="field"><span class="field-label">'+esc(label)+'</span><span class="field-value">'+esc(value)+'</span></div>'}
 function photo(r,large){
@@ -21,7 +21,7 @@ function fallback(root){
 function renderTabs(){
  filters.replaceChildren();
  for(const f of families){
-  const n=f==='All'?references.length:references.filter(x=>x.family===f).length;
+  const n=f==='All'?references.length:references.filter(x=>f==='Korea'?x.place.includes('South Korea'):x.family===f).length;
   const b=document.createElement('button');b.type='button';
   b.className='filter'+(f===family?' active':'');b.setAttribute('aria-pressed',String(f===family));
   b.innerHTML=esc(f)+' <span class="count">'+n+'</span>';
@@ -45,7 +45,7 @@ function createCard(r){
 function render(){
  renderTabs();
  const q=query.trim().toLowerCase();
- shown=references.filter(r=>(family==='All'||r.family===family)&&(!q||
+ shown=references.filter(r=>(family==='All'||(family==='Korea'?r.place.includes('South Korea'):r.family===family))&&(!q||
  [r.name,r.year,r.place,r.designer,r.family,r.scale,r.connection,r.principle,r.materials,r.ground].some(v=>String(v).toLowerCase().includes(q))));
  grid.replaceChildren();
  if(!shown.length){const p=document.createElement('p');p.className='empty';p.textContent='No built references match this query.';grid.append(p)}

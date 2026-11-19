@@ -225,4 +225,137 @@ export const references = [
   ]
  ]
 }
+,
+{
+ "id": "saseongam",
+ "name": "Saseongam · Yurigwangjeon",
+ "year": "Extant / renovated",
+ "place": "Gurye, Jeollanam-do, South Korea",
+ "designer": "Korean temple craft tradition / subsequent reconstruction",
+ "family": "Stilted",
+ "scheme": "saseongam",
+ "scale": "Elevated hall with reported c. 20 m high supporting posts",
+ "ground": "Steep irregular rock face and discontinuous rock ledges",
+ "connection": "Painted timber hall with tall slender supporting columns standing on or reaching lower rock ledges; rear of the hall is closely integrated with an uneven cliff face. Precise foundation and rock-to-column joint details not verified.",
+ "materials": "Timber columns and beams · tiled roof · natural rock · stone masonry",
+ "principle": "Split rock ledges + tall timber supports",
+ "description": "The closest Korean analogue to Hanging Temple in terms of the visible building-rock interface. A hall projects out in front of a nearly vertical rock wall and is supported beneath by conspicuous painted columns. Do not interpret the column footing as a drilled anchor without a verified detail.",
+ "evidence": "Photographs and published building accounts explicitly show tall columns under Yurigwangjeon and describe a cliff-adjacent hall. Reported height is about 20 m. The original foundation interface is not documented in the cited sources, and the current hall underwent later works.",
+ "photo": "https://cdnweb01.wikitree.co.kr/webdata/editor/202604/14/img_20260414115358_533e727b.webp",
+ "photoFrom": "Wikitree (2026) / Saseongam Yurigwangjeon",
+ "photoLink": "https://www.wikitree.co.kr/articles/1131361",
+ "sources": [
+  [
+   "Built heritage / tall posts and temple structure",
+   "https://biz.heraldcorp.com/article/10573774"
+  ],
+  [
+   "Contemporary photograph / elevated building",
+   "https://www.ibulgyo.com/news/articleView.html?idxno=173536"
+  ],
+  [
+   "Heritage study / site preservation (PDF)",
+   "https://www.ii.re.kr/storage/report/BB0000026308.pdf"
+  ]
+ ]
+},
+{
+ "id": "yonggwolsan",
+ "name": "Yonggwolsan Sky Path",
+ "year": "2020 / extended 2023",
+ "place": "Sunchang, Jeonbuk, South Korea",
+ "designer": "Sunchang County / trail construction contractors",
+ "family": "Anchored",
+ "scheme": "cliffposts",
+ "scale": "1,096 m route along exposed sloping rock",
+ "ground": "Steep exposed bedrock slab (reported slope about 60°)",
+ "connection": "Metal support columns fixed into the steep rock surface carry raised timber walking-deck units above the irregular inclined ground. Details of embedment, bolt size and foundation design not yet verified.",
+ "materials": "Steel support posts · timber deck · protective railings · exposed bedrock",
+ "principle": "Rock-fixed steel posts + elevated wooden deck",
+ "description": "A useful assembled system for steep, exposed and irregular rock: a repeating post / deck module climbs the face without cutting a continuous horizontal path through the rock. Note the varying free length of the posts where the ground slopes.",
+ "evidence": "Published site accounts explicitly describe steel poles driven/fixed into the steep rock. 2023 extension to 1,096 m confirmed by Yonhap. Detailed rock-socket/anchorage drawings have not been found.",
+ "photo": "https://contents-cdn.viewus.co.kr/image/2024/05/CP-2023-0038/image-50299515-7b43-4c39-a42e-0ef7cd7785d8.jpeg",
+ "photoFrom": "Viewus / Yonggwolsan cliff route photograph",
+ "photoLink": "https://view.nate.com/travel/view/193622/",
+ "sources": [
+  [
+   "Site report / rock-mounted steel supports",
+   "https://m.jb-ecotour.org/bbs/board1/2568"
+  ],
+  [
+   "Yonhap / 2023 extension and route length",
+   "https://www.yna.co.kr/amp/view/AKR20230622111300055"
+  ],
+  [
+   "Municipal 2026 refurbishment specification (PDF)",
+   "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01311339&bidPbancOrd=000&fileSeq=1&fileType=&prcmBsneSeCd=05"
+  ]
+ ]
+},
+{
+ "id": "hantangang",
+ "name": "Hantangang Jando Walkway",
+ "year": "2021",
+ "place": "Cheorwon, Gangwon-do, South Korea",
+ "designer": "Cheorwon County / public infrastructure construction team",
+ "family": "Anchored",
+ "scheme": "hantangang",
+ "scale": "3.6 km overall trail; cliff, deck and bridge segments",
+ "ground": "Near-vertical volcanic gorge rock with columnar-jointed terrain",
+ "connection": "Elevated steel passage constructed at the cliff face. Contemporary on-site construction reporting describes deep metal rods inserted into rock and wire ropes supporting rail structures. The trail also includes bridge spans, so not all 3.6 km use the same connection.",
+ "materials": "Steel walkway framing · metal rods / anchors · steel wire · grating",
+ "principle": "Rock-mounted elevated walkway + cable-stabilized elements",
+ "description": "A compelling modern precedent for impossible ground access: construction on a vertical UNESCO geopark cliff relied on localized ground connections, steel passage modules and difficult access logistics. Important to differentiate bracket-support zones from cable and bridge sections.",
+ "evidence": "Cheorwon government documents 3.6 km length and 1.5 m width; SBS reported rock-inserted iron rods and cable-supported railings during construction. Precise structural steel bracket and anchor spacing remains unverified.",
+ "photo": "https://img7.yna.co.kr/etc/inner/KR/2022/11/13/AKR20221113022300062_01_i_P4.jpg",
+ "photoFrom": "Yonhap News / Hantangang cliffside walkway (2022)",
+ "photoLink": "https://www.yna.co.kr/view/AKR20221113022300062",
+ "sources": [
+  [
+   "Cheorwon county / built route and dimensions",
+   "https://www.cwg.go.kr/tour/contents.do?ctgry=53&key=1644"
+  ],
+  [
+   "SBS / construction and deep rock rods",
+   "https://news.sbs.co.kr/amp/news.amp?news_id=N1006255867"
+  ],
+  [
+   "National government / segment composition (PDF)",
+   "https://www.tour.go.kr/FileSystem/UploadTemp/SendNewsLetter/week_poliy%282021_11_04%29.pdf"
+  ]
+ ]
+},
+{
+ "id": "byeongbangchi",
+ "name": "Byeongbangchi Skywalk",
+ "year": "Built / active",
+ "place": "Jeongseon, Gangwon-do, South Korea",
+ "designer": "Jeongseon County / structural steel specialists",
+ "family": "Cantilevered",
+ "scheme": "korean-skywalk",
+ "scale": "11 m long × approximately 2 m wide U-shaped projection",
+ "ground": "Cliff edge at approximately 583 m elevation",
+ "connection": "Exposed white steel superstructure projects beyond the cliff-edge foundation zone to carry a U-shaped glass-floor walkway. The exact footing type, embedment depth, and anchorage design are not published in the referenced public material.",
+ "materials": "Painted structural steel · laminated/strengthened glass · metal railings",
+ "principle": "Cliff-edge projecting steel frame; footing unverified",
+ "description": "A true projected skywalk rather than a ground-level viewing platform. Its U-shaped steel framing is visibly unsupported by columns beneath the outer tip, transferring bending and overturning to the landward structural base.",
+ "evidence": "Korea Tourism Organization confirms 11 m U-shaped projection from the cliff edge. The conceptual diagram intentionally leaves the attachment to rock unspecified, because an as-built foundation section was not located.",
+ "photo": "https://static.hanatour.com/product/2021/07/20/0721rdd5qc/extra.jpg",
+ "photoFrom": "HanaTour / Byeongbangchi Skywalk project view",
+ "photoLink": "https://mfnd.hanatour.com/product-detail/gangwon-kr/MHJ-PRD33721ZMMK",
+ "sources": [
+  [
+   "Korea Tourism Organization / U-shaped 11 m skywalk",
+   "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=78975"
+  ],
+  [
+   "Yonhap / dimensions and constructed platform",
+   "https://www.yna.co.kr/view/AKR20170202050800805"
+  ],
+  [
+   "Project photograph / steel support structure",
+   "https://mfnd.hanatour.com/product-detail/gangwon-kr/MHJ-PRD33721ZMMK"
+  ]
+ ]
+}
 ];
