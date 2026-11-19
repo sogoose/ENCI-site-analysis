@@ -56,12 +56,66 @@ shore:()=>[
  label(114,26,"TIMBER / STEEL CABIN"),label(240,132,"OVER WATER")
 ].join(""),
 sockets:()=>[
- rock("M0 0 H112 L138 18 115 44 132 78 120 109 141 147 126 180 H0 Z"),
- `<path d="M88 70 H322 M92 112 H321" stroke="#866d50" stroke-width="9" stroke-linecap="square"/>`,
- blue("M49 69 H145 M52 110 H144",3.3),node(70,70),node(70,110),
- str("M149 49 L322 49 332 72 M150 49 L150 113 M247 49 V113 M318 49V113",3),
- str("M143 45 L233 27 333 45",2.3),str("M165 70 V105 M204 70 V105 M283 70 V105",1.4),
- label(159,141,"ROCK-SOCKETED TIMBER"),label(172,15,"TIMBER HALL")
+ // The rock-inserted beams carry cantilevered floor framing; visible lower
+ // timber posts also reach intermittent rock ledges below the pavilions.
+ rock("M0 0 H112 L138 18 115 44 132 78 120 109 141 141 159 161 191 166 210 180 H0 Z"),
+ rock("M215 180 L233 155 250 152 276 173 290 180 Z"),
+ '<path d="M91 70 H326 M93 110 H325" stroke="#88694a" stroke-width="8.5" stroke-linecap="square"/>',
+ blue("M46 69 H151 M50 109 H150",3.5),node(72,70),node(74,110),
+ str("M147 44 H318 L336 69 M150 46 V111 M249 46 V111 M320 46V110",2.7),
+ str("M144 42 L238 22 338 42",2.3),
+ ...[164,214,264,310].map(x=>str("M"+x+" 112 V"+(x===164?160:x===214?163:x===264?158:174),x===164||x===214?3.2:2.2,"#856a4e")),
+ str("M164 160 L137 125 M214 163 L178 118 M264 158 L240 116",1.9,"#856a4e"),
+ blue("M165 152 V162 M213 156 V166 M264 150 V157",2.1),
+ label(185,14,"TIMBER HALL"),
+ label(175,127,"VERTICAL SUPPORT POSTS"),
+ label(173,171,"ROCK LEDGES"),
+ label(7,49,"SOCKETS")
+].join(""),
+vierendeel:()=>[
+ rock("M0 142 L58 142 105 155 148 154 174 169 205 175 H0 Z"),
+ '<path d="M65 65 H358 V118 H65 Z" fill="#e6d1b2" fill-opacity=".2" stroke="#393632" stroke-width="3"/>',
+ str("M65 72 H358 M65 114 H358",3,"#7b614b"),
+ ...[82,118,154,190,226,262,298,334].map(x=>str("M"+x+" 74 V114",2.2,"#8d7356")),
+ str("M109 116 V158 M157 116 V164",5,"#3d4d57"),
+ ...[109,157].map(x=>blue("M"+(x-12)+" 121 L"+(x+12)+" 157 M"+(x+12)+" 121 L"+(x-12)+" 157",2)),
+ node(109,156),node(157,163),
+ label(177,51,"TIMBER VIERENDEEL"),
+ label(251,141,"12 M CANTILEVER"),
+ label(13,175,"STEEL LATTICE BASES")
+].join(""),
+galleries:()=>[
+ rock("M0 0 H119 L131 28 117 61 129 93 121 132 136 168 128 180 H0 Z"),
+ ...[65,125].map(y=>'<rect x="125" y="'+y+'" width="214" height="7" fill="#d1c7b8" stroke="#242424" stroke-width="1.5"/>'),
+ ...[65,125].map(y=>[173,229,285,333].map(x=>str("M"+x+" "+(y-19)+"V"+y,1)).join("")),
+ ...[65,125].map(y=>blue("M60 "+(y+1)+" H145 M65 "+(y+21)+" L145 "+(y+8),3)),
+ str("M137 71 L203 113 M136 132 L202 171",2.4),
+ node(67,66),node(66,125),
+ label(175,29,"STEEL GALLERY"),
+ label(178,157,"ROCK ANCHOR / BRACKET")
+].join(""),
+stilts:()=>[
+ rock("M0 99 H96 L120 105 133 134 145 171 180 177 H0 Z"),
+ '<path d="M55 38 H321 V105 H55 Z" fill="#e6d3bc" fill-opacity=".35" stroke="#4c4038" stroke-width="2.3"/>',
+ str("M45 35 L185 21 330 34",2.2),str("M55 65 H322 M115 38 V105 M193 38 V105 M265 38V105",2.0),
+ str("M63 106 V111 H315",4,"#745b44"),
+ ...[155,235,309].map((x,i)=>str("M"+x+" 110 V"+[173,167,157][i],3,"#85654e")),
+ str("M155 148 L206 111 M235 141 L273 111",2.1,"#85654e"),
+ node(156,172),node(235,165),node(307,155),
+ str("M185 173 Q270 166 380 169",1.3,"#93b6c5"),
+ label(184,151,"LONG TIMBER STILTS"),
+ label(24,130,"ROAD / SLOPE")
+].join(""),
+ancientroad:()=>[
+ rock("M0 0 H117 L132 34 117 72 129 118 117 158 129 180 H0 Z"),
+ '<rect x="124" y="68" width="234" height="9" fill="#ab8b65" stroke="#5a4d40" stroke-width="1.4"/>',
+ str("M137 67 H355 M169 43 V67 M205 43 V67 M241 43 V67 M277 43 V67 M315 43 V67",1.4,"#69563f"),
+ blue("M56 72 H156 M61 118 H142",3.6),
+ ...[166,228,289].map(x=>str("M139 75 L"+x+" 126",2.6,"#7e6446")),
+ ...[166,228,289].map((x,i)=>str("M"+x+" 126 L"+(x+10)+" "+(i===0?144:i===1?151:162),2.1,"#7e6446")),
+ node(59,72),node(61,118),
+ label(157,32,"TIMBER PLANK ROAD"),
+ label(170,173,"BRACES FROM ROCK SOCKETS")
 ].join(""),
 alcove:()=>[
  rock("M0 0H380V22Q330 17 285 35T195 56Q133 74 103 95L90 137L380 137V180H0Z"),
