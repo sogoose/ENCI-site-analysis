@@ -2,6 +2,371 @@
 // A site-derived diagram is interpretive, NOT an as-built engineering section.
 export const references = [
 {
+ "id": "podokam",
+ "historic": true,
+ "name": "Podok Hermitage · 보덕암",
+ "year": "1675 / repaired 1808",
+ "place": "Mt. Kumgang, North Korea",
+ "designer": "Historic Korean temple builders",
+ "family": "Inserted",
+ "scheme": "podok",
+ "scale": "Hall: 3.35 m × 0.85 m; copper-clad timber support: 7.3 m",
+ "ground": "Steep natural rock cliff and cave entrance; more than 20 m above ravine",
+ "connection": "A tiny timber hall utilizes the natural cliff and cave as its rear enclosure; a 7.3 m long supporting wood pillar clad in nineteen copper-plate sections bears the outer floor framing. Historic iron chains are described as restraining the hall against rock.",
+ "materials": "Traditional timber frame · copper sheathing · roof tile · iron chains · natural stone",
+ "principle": "Cliff-integrated rear bearing + one external prop + historic metal restraint",
+ "description": "The most structurally specific Korean cliff-architecture precedent. Here the ground is part of the enclosure and support system, while the free edge is sustained by one exceptionally long pole. Its hybrid timber-and-metal column is an important historic material detail; the precise chain anchorage and rock-socket geometry are not established.",
+ "evidence": "The Academy of Korean Studies gives the published floor dimensions 3.35 × 0.85 m, column height 7.3 m and 1675 building date, with an 1808 repair. Other historical accounts describe the timber core wrapped in 19 copper plate sections and chains renewed in 1511.",
+ "photo": "https://res.cloudinary.com/korea-konsult-ab/image/upload/c_limit%2Cf_auto%2Cq_auto%2Cw_800%2Cdpr_auto/kumgang/PodokHermitageInnerKumgang.jpg",
+ "photoFrom": "Korea Konsult / historic Mt. Kumgang hermitage",
+ "photoLink": "https://www.koreakonsult.com/Attraction_Kumgang_eng.html",
+ "dimensionNote": "Floor dimensions are sourced from encyclopedic building documentation; 7.3m refers to the visible prop, not cliff height or a rock-anchor embedment.",
+ "technicalEvidence": [
+  {
+   "label": "Present main hall",
+   "value": "1675; repaired 1808",
+   "status": "KOREAN HERITAGE ENCYCLOPEDIA",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070871"
+  },
+  {
+   "label": "Plan size",
+   "value": "3.35 × 0.85 m (one bay)",
+   "status": "PUBLISHED BUILDING DIMENSIONS",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070871"
+  },
+  {
+   "label": "Front supporting column",
+   "value": "7.3 m high, traditionally described as copper",
+   "status": "PUBLISHED BUILDING DIMENSIONS",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070871"
+  },
+  {
+   "label": "Column material",
+   "value": "Timber core enclosed by 19 copper bands; renewed in 1511",
+   "status": "HISTORICAL MATERIAL ACCOUNT",
+   "source": "https://www.fnnews.com/news/202101020803013265"
+  }
+ ],
+ "technicalUnknowns": "Actual copper skin gauge, timber core diameter, top connection, iron-chain anchorage, foot-to-rock construction joint, modern conservation status.",
+ "researchNote": "Do not model a solid-copper 7.3 m column: published accounts describe timber enclosed by copper sheathing. Original foundation and tensile tie anchor drawings have not been located.",
+ "sources": [
+  [
+   "Academy of Korean Studies / primary dimensions",
+   "https://encykorea.aks.ac.kr/Article/E0070871"
+  ],
+  [
+   "Korean Heritage Encyclopedia / cave, chain and conservation history",
+   "https://encykorea.aks.ac.kr/Article/E0023245"
+  ],
+  [
+   "Historic photographs and 19 copper bands",
+   "https://www.fnnews.com/news/202101020803013265"
+  ]
+ ]
+},
+{
+ "id": "hyeonam",
+ "historic": true,
+ "name": "Hyeonam Hermitage · 현암",
+ "year": "Joseon rebuilt; recorded by 923",
+ "place": "Mt. Jangsu, Hwanghaenam-do, North Korea",
+ "designer": "Historic Korean timber builders / successive restorers",
+ "family": "Founded",
+ "scheme": "hyeonam",
+ "scale": "Hall: 11.2 m × 6.35 m; 6 × 3 structural bays",
+ "ground": "High fractured rocky cliff; natural rising bedrock used as footings",
+ "connection": "Stone foundation blocks stand directly on natural protruding rock; inward-leaning tapered timber columns rise from uneven rock-supported points and support an elaborate bracketed roof.",
+ "materials": "Timber columns and beams · stone plinths · traditional tiled roof",
+ "principle": "Rock outcrop footing + localized stone bearing + inward-leaning timber frame",
+ "description": "A strong contrast to Podokam. Rather than one dramatic single free-edge column, it transforms multiple irregular rock outcrops into a series of column positions. The 'hanging' impression derives from a severe cliff location; do not assume its hall is mechanically cantilevered out over empty space.",
+ "evidence": "The Academy of Korean Studies gives the 11.2 × 6.35 m six-by-three-bay plan, natural-rock stone footings and tilted posts. A 1701 historical record places a monk at the site in 923; surviving buildings are understood to have been rebuilt in the middle Joseon period.",
+ "photo": "https://thumbnews.nateimg.co.kr/view610/news.nateimg.co.kr/orgImg/na/2021/01/23/4587564_high.jpg",
+ "photoFrom": "News1 / Hyeonam at Jangsu Mountain",
+ "photoLink": "https://v.daum.net/v/20210123080124854",
+ "dimensionNote": "The nearby cliff is described as 120m tall: NOT a 120m column or unsupported cantilever. Only the 11.2×6.35m hall is confirmed as building size.",
+ "technicalEvidence": [
+  {
+   "label": "Hall plan",
+   "value": "11.2 m × 6.35 m, 6 × 3 bays",
+   "status": "HERITAGE DOCUMENTATION",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070854"
+  },
+  {
+   "label": "Footing and columns",
+   "value": "Stone pads on natural exposed rock; slightly inward-leaning posts",
+   "status": "HERITAGE DESCRIPTION",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070854"
+  },
+  {
+   "label": "Cliff dimension",
+   "value": "120 m rock cliff; NOT structure clearance",
+   "status": "SITE GEOLOGICAL CONTEXT",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070854"
+  },
+  {
+   "label": "Architectural measured survey",
+   "value": "127-page 2007 Korean government research publication listed in national archives",
+   "status": "PUBLIC CATALOGUE, FULL REPORT NOT REVIEWED",
+   "source": "https://www.archives.go.kr/next/newsearch/showDetailPopup.do?rc_code=1310377&rc_rfile_no=201003410667&rc_ritem_no=000000000001&sitePage=0-0-0"
+  }
+ ],
+ "technicalUnknowns": "Clear underside height, footing contact dimensions, individual column lengths, structural bearing stability and repair records.",
+ "researchNote": "Highest research priority: National Research Institute for Cultural Heritage, 북한의 전통건축 — 황해남도 2 (2007). Its detailed report is listed but not yet examined directly.",
+ "sources": [
+  [
+   "Academy of Korean Studies / building size, footing construction",
+   "https://encykorea.aks.ac.kr/Article/E0070854"
+  ],
+  [
+   "National Archives / 127-page measured architecture research (2007)",
+   "https://www.archives.go.kr/next/newsearch/showDetailPopup.do?rc_code=1310377&rc_rfile_no=201003410667&rc_ritem_no=000000000001&sitePage=0-0-0"
+  ],
+  [
+   "National heritage research architecture survey programme",
+   "https://www.nrich.go.kr/kor/page.do?menuIdx=339"
+  ]
+ ]
+},
+{
+ "id": "nageiredo",
+ "historic": true,
+ "name": "Nageire-dō · 投入堂",
+ "year": "Late Heian, c. 1086–1184",
+ "place": "Misasa, Tottori, Japan",
+ "designer": "Historic Japanese Buddhist carpenters",
+ "family": "Stilted",
+ "scheme": "nageiredo",
+ "scale": "Small one-by-two-bay sacred hall; exact metric plan size not verified",
+ "ground": "Rock cavity and steep volcanic rock slope (andesite and volcaniclastic rock)",
+ "connection": "A traditional kake-zukuri suspended hall lies inside a natural cliff overhang. Slender vertical timber posts adapt to individual inclined rock contact points, with horizontal floor beams and diagonal timber braces stiffening the elevated frame.",
+ "materials": "Timber frame · wooden brackets · bark roof covering",
+ "principle": "Under-overhang timber frame + inclined-rock posts and braces",
+ "description": "One of the most persuasive historic precedents for shape-specific foundations. Neither regular level ground nor a fabricated rock anchor system is necessary: posts are measured to the actual rock ledges and the surrounding cave functions as a protective architectural boundary.",
+ "evidence": "Tottori Prefecture records dendrochronology dating the surviving construction to late Heian (1086–1184). Cultural authorities classify it as kake-zukuri in a cliff cave. The specifics of actual footing restraint remain to be verified from conservation drawings.",
+ "photo": "https://cdn.yamap.co.jp/public/image2.yamap.co.jp/production/45b5c2b1-33fb-460f-b234-b69857e599b4?h=1080&q=50&t=resize&w=1617",
+ "photoFrom": "YAMAP / user photograph, 2025",
+ "photoLink": "https://yamap.com/activities/40301248",
+ "dimensionNote": "Cultural property authority describes bays rather than full measured metres; geological site height is not clearance under its floor.",
+ "technicalEvidence": [
+  {
+   "label": "Surviving structure",
+   "value": "Late Heian period, 1086–1184",
+   "status": "DENDROCHRONOLOGY / TOTTORI PREFECTURE",
+   "source": "https://www.pref.tottori.lg.jp/33901.htm"
+  },
+  {
+   "label": "Structural typology",
+   "value": "Cliff-cave kake-zukuri, one-by-two-bay hall",
+   "status": "CULTURAL HERITAGE REGISTRY",
+   "source": "https://online.bunka.go.jp/heritages/detail/123947"
+  },
+  {
+   "label": "Rock type",
+   "value": "Andesite and related volcanic agglomerate on mountain",
+   "status": "PREFECTURAL GEOLOGICAL CONTEXT",
+   "source": "https://www.pref.tottori.lg.jp/33901.htm"
+  }
+ ],
+ "technicalUnknowns": "Metric plan and column dimensions, individual rock-contact bearings, bracing connection sizes and erection sequence.",
+ "researchNote": "The legend about throwing the building into a cliff is not a construction history. The real measured-section and conservation records are the needed next sources.",
+ "sources": [
+  [
+   "Tottori prefecture: geologic setting and scientific dating",
+   "https://www.pref.tottori.lg.jp/33901.htm"
+  ],
+  [
+   "National cultural property classification",
+   "https://online.bunka.go.jp/heritages/detail/123947"
+  ],
+  [
+   "Japanese historic architecture glossary / section",
+   "https://projects.mcah.columbia.edu/jaanus/record/nageiredo"
+  ]
+ ]
+},
+{
+ "id": "kiyomizu",
+ "historic": true,
+ "name": "Kiyomizu-dera Stage · 清水の舞台",
+ "year": "1633 surviving stage",
+ "place": "Higashiyama, Kyoto, Japan",
+ "designer": "Historic Japanese timber builders",
+ "family": "Stilted",
+ "scheme": "kiyomizu",
+ "scale": "18 principal supporting posts; longest ~12 m; stage ~13 m above slope",
+ "ground": "Steep wooded hillside, irregular rock / soil bearing points",
+ "connection": "Eighteen principal tall zelkova timber columns support the projecting stage. Through-ties (nuki) are inserted across posts and locked through interlocking carpentry, bracing an elevated lattice without nails at those joints.",
+ "materials": "Large zelkova (keyaki) timber posts · timber through-rails · wood terrace decking",
+ "principle": "Kake-zukuri: long timber columns + through-ties (nuki) on slope",
+ "description": "Unlike hanging temples that depend on cliff sockets, this creates a freestanding timber support matrix whose posts extend down until each meets a different elevation of hillside. It is valuable for understanding a repeatable yet customized frame that works over uneven topography.",
+ "evidence": "The temple's official text gives 18 stage pillars, maximum c. 12 m long, approximately 2 m in girth, joined with penetrating horizontal timber members, reconstructed 1633. The stage is about 13 m above the hillside.",
+ "photo": "https://res.cloudinary.com/dbm1qiew0/image/upload/blog-images/2024/08/hall_ph_01.webp",
+ "photoFrom": "Magical Trip / Kiyomizu-dera underside",
+ "photoLink": "https://www.kiyomizudera.or.jp/en/learn/",
+ "dimensionNote": "18 refers to the principal posts under the stage, not the total column count of the entire historical complex. 12m is maximum timber member length, not rock-anchor depth.",
+ "technicalEvidence": [
+  {
+   "label": "Stage support",
+   "value": "18 principal zelkova wood pillars",
+   "status": "OFFICIAL TEMPLE RECORD",
+   "source": "https://www.kiyomizudera.or.jp/en/learn/"
+  },
+  {
+   "label": "Maximum pillar size",
+   "value": "~12 m long; ~2 m girth",
+   "status": "OFFICIAL TEMPLE RECORD",
+   "source": "https://www.kiyomizudera.or.jp/en/learn/"
+  },
+  {
+   "label": "Stage above slope",
+   "value": "About 13 m; present stage reconstructed 1633",
+   "status": "OFFICIAL TEMPLE RECORD",
+   "source": "https://www.kiyomizudera.or.jp/en/learn/"
+  },
+  {
+   "label": "Carpentry",
+   "value": "Through-post nuki horizontal joints without nails",
+   "status": "OBSERVED CARPENTRY TYPOLOGY",
+   "source": "https://www.kiyomizudera.or.jp/read/%E6%B8%85%E6%B0%B4%E5%AF%BA%E3%81%AE%E8%88%9E%E5%8F%B0%E8%A3%8F"
+  }
+ ],
+ "technicalUnknowns": "Exact post-to-base stone interface, floor-span profiles, joinery survey dimensions and temporary timber construction sequence.",
+ "researchNote": "The 18 major columns cited by temple authorities are not necessarily the sum of all posts across the entire temple. More detailed structural drawings are cited by Japan's National Diet Library reference service.",
+ "sources": [
+  [
+   "Kiyomizu-dera official structure and dimensions",
+   "https://www.kiyomizudera.or.jp/en/learn/"
+  ],
+  [
+   "Official under-stage timber framing explanation",
+   "https://www.kiyomizudera.or.jp/read/%E6%B8%85%E6%B0%B4%E5%AF%BA%E3%81%AE%E8%88%9E%E5%8F%B0%E8%A3%8F"
+  ],
+  [
+   "Japanese library bibliography: measured plan and section",
+   "https://crd.ndl.go.jp/reference/entry/reference/show?asc=desc&fi=2_1+2_7+3_%E6%96%87%E7%8C%AE%E7%B4%B9%E4%BB%8B&id=1000110196&lsmp=1&mcbt=200&mcmd=200&mcup=200&oldasc=desc&oldmc=25&oldst=update&page=ref_view&rnk=1&st=update&type=reference"
+  ]
+ ]
+},
+{
+ "id": "kasamori",
+ "historic": true,
+ "name": "Kasamori Kannon Hall · 笠森寺",
+ "year": "1597 surviving hall",
+ "place": "Chonan, Chiba, Japan",
+ "designer": "Historic Japanese temple carpenters",
+ "family": "Stilted",
+ "scheme": "kasamori",
+ "scale": "61 supports of different lengths; hall stands on rock ~16 m above lower level",
+ "ground": "High isolated natural rock prominence; rock-contact points at four sides",
+ "connection": "A hall raised on all four sides of a rocky hillock by a dense timber post-and-penetrating-beam lattice. The posts have differing lengths to compensate for differing contact elevations on the irregular rock.",
+ "materials": "Timber columns · wood girders / nuki through-ties · copper roof",
+ "principle": "Shihō-kake-zukuri: four-sided post lattice on natural rock",
+ "description": "Unlike the front-supported stage of Kiyomizu, this is lifted in every direction by long timber legs. It turns the topography into a three-dimensional set of individualized bearings, not a single planar slab. Especially relevant to scan-based robotic production of bespoke supports.",
+ "evidence": "The culture agency dates the surviving building to 1597. Japanese architectural tourism documentation gives 61 differently sized posts and a rock platform about 16 m above the low ground. A 2026 Japanese university field team reported 3D scanning the preserved structure.",
+ "photo": "https://livedoor.blogimg.jp/darklunacy2000/imgs/1/5/1541ae7d.jpg",
+ "photoFrom": "Architects Blog / Kasamori timber support grid",
+ "photoLink": "https://www.pref.chiba.lg.jp/kyouiku/bunkazai/bunkazai/n111-001.html",
+ "dimensionNote": "16m is approximate prominence height above adjacent lower ground; it is not the longest timber post. Column lengths vary by individual rock bearing.",
+ "technicalEvidence": [
+  {
+   "label": "Surviving hall date",
+   "value": "1597",
+   "status": "JAPANESE CULTURAL PROPERTY REGISTER",
+   "source": "https://kunishitei.bunka.go.jp/heritage/detail/102/492"
+  },
+  {
+   "label": "Supporting columns",
+   "value": "61 pillars of differing lengths",
+   "status": "ARCHITECTURAL TOURISM INVENTORY",
+   "source": "https://tabi.jtb.or.jp/res/120049-/"
+  },
+  {
+   "label": "Rock platform elevation",
+   "value": "~16 m above surrounding lower level",
+   "status": "ARCHITECTURAL SITE DESCRIPTION",
+   "source": "https://tabi.jtb.or.jp/res/120049-/"
+  },
+  {
+   "label": "Digital capture",
+   "value": "3D scan of historic framing conducted in 2026",
+   "status": "UNIVERSITY FIELDWORK REPORT",
+   "source": "https://blog.t-kougei.ac.jp/ac/2026/05/25/7303/"
+  }
+ ],
+ "technicalUnknowns": "Verified survey of all 61 individual post lengths and rock point positions, post section and joinery dimensions, original foundation geology, temporary frame assembly sequence.",
+ "researchNote": "Tokyo Polytechnic University's 2026 survey is a valuable precedent for geometric scan-to-documentation on irregular historic sites. It is documentation, not evidence of robotic construction.",
+ "sources": [
+  [
+   "Japan Agency for Cultural Affairs / 1597 building",
+   "https://kunishitei.bunka.go.jp/heritage/detail/102/492"
+  ],
+  [
+   "61 columns and terrain configuration",
+   "https://tabi.jtb.or.jp/res/120049-/"
+  ],
+  [
+   "Tokyo Polytechnic University / 2026 digital 3D scan",
+   "https://blog.t-kougei.ac.jp/ac/2026/05/25/7303/"
+  ],
+  [
+   "UTokyo historical section drawing catalogue (PDF)",
+   "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/pdf/japanese_historical_arch202509.pdf"
+  ]
+ ]
+},
+{
+ "id": "iwayado",
+ "historic": true,
+ "name": "Fudō-in Iwayadō · 不動院岩屋堂",
+ "year": "Early Muromachi / 14th century",
+ "place": "Wakasa, Tottori, Japan",
+ "designer": "Medieval Japanese temple carpenters",
+ "family": "Stilted",
+ "scheme": "iwayado",
+ "scale": "3 × 3 bays; metric plan dimensions not yet verified",
+ "ground": "Large natural cave entrance and rugged inclined rock",
+ "connection": "Three-by-three-bay timber pavilion stands within a rock cavity, its floor grid supported from lower irregular rocky bearing points by long posts and framing adapted to the cavern geometry.",
+ "materials": "Timber columns and girders · shingled / wooden roofing · natural rock",
+ "principle": "Rock cavity + stilt-supported timber hall",
+ "description": "Whereas Nageiredo is a small, extremely exposed rocky-overhang hall, Iwayado uses an enclosed rock aperture. The stone roof and sides are natural surfaces while the independent timber hall occupies the protected void.",
+ "evidence": "Japanese cultural heritage records classify the surviving hall as Muromachi-era kake-zukuri and report three bays by three bays; precise timber post-to-rock connections require more detailed measured surveys.",
+ "photo": "https://cdn-ak.f.st-hatena.com/images/fotolife/n/naoyukij9/20190919/20190919105545.jpg",
+ "photoFrom": "Naoyukij9 / Fudo-in Iwayado view",
+ "photoLink": "https://naoyukij9.hatenablog.com/entry/2019/09/19/105850",
+ "dimensionNote": "Three-by-three bays is a traditional framing count, not a metric 3m by 3m plan.",
+ "technicalEvidence": [
+  {
+   "label": "Surviving construction period",
+   "value": "Early Muromachi, c. 1333–1392",
+   "status": "JAPAN HERITAGE REGISTER",
+   "source": "https://japanheritage.jp/ja/tottori/heritage/fudoin-temple-iwayado-hall"
+  },
+  {
+   "label": "Building form",
+   "value": "3 × 3 bays, kake-zukuri under natural cave",
+   "status": "CULTURAL HERITAGE AUTHORITY",
+   "source": "https://online.bunka.go.jp/heritages/detail/187086"
+  }
+ ],
+ "technicalUnknowns": "Metric plan and column dimensions, precise ledge-by-ledge footing positions, joining and wall-rock clearance measurements.",
+ "researchNote": "Do not confuse the cave wall (natural enclosure) with load-bearing concrete or rock anchors: the surviving historic system is described as a timber post-and-beam frame.",
+ "sources": [
+  [
+   "Japanese cultural property register / building form",
+   "https://kunishitei.bunka.go.jp/heritage/detail/102/2939"
+  ],
+  [
+   "Japan Heritage / 14th-century cliff-hall classification",
+   "https://japan-heritage.bunka.go.jp/ja/culturalproperties/result/4491/"
+  ],
+  [
+   "Official property record / structural category",
+   "https://online.bunka.go.jp/heritages/detail/187086"
+  ]
+ ]
+},
+
+{
  id:"juvet",name:"Juvet Landscape Hotel",year:"2008",place:"Valldal, Norway",designer:"Jensen & Skodvin Arkitektkontor",
  family:"Anchored",scheme:"rods",scale:"800 m² total hotel project (published)",ground:"Steep, forested bedrock / river gorge",
  connection:"Ø40 mm steel support rods drilled into rock. Individual timber rooms avoid conventional cut-and-fill foundations.",
@@ -120,7 +485,7 @@ export const references = [
  photoLink:"https://www.manshausen.no/our-cabins-houses",
  sources:[["Manshausen / construction history","https://www.manshausen.no/our-story"],["Architect / project","https://bystinessen.com/architecture/manshausen2/"]]
 },{
- id:"hanging-temple",name:"Hanging Temple (Xuankong Si)",year:"Historic",place:"Hunyuan, Shanxi, China",designer:"Historic builders; subsequent reconstructions",
+ id:"hanging-temple",historic:true,name:"Hanging Temple (Xuankong Si)",year:"Historic",place:"Hunyuan, Shanxi, China",designer:"Historic builders; subsequent reconstructions",
  family:"Inserted",scheme:"sockets",scale:"Complex suspended about 50 m above valley floor",
  ground:"Sheer rock face / sheltered cliff overhang",
  connection:"Long timber beams socketed into the cliff are the main cantilever support; slender posts beneath the pavilions are additional or later supports, often contacting lower rock ledges.",
