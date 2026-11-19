@@ -206,3 +206,32 @@ html{scroll-behavior:auto}.case,.photo-frame img{transition:none}
 .drawing-open{grid-column:3;grid-row:1}
 .archive-timeline{grid-template-columns:1fr;gap:5px}
 }
+
+/* Refined historical cliff architecture analysis plates */
+#detail:has(.plate-module){width:min(1170px,100vw)}
+.plate-module{margin:25px 0 18px;padding:18px 0 19px;border-top:1px solid #161616;border-bottom:1px solid #c6c6c6}
+.plate-module .archive-section-title{font-size:20px;margin:12px 0 18px}
+.plate-controls{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;
+ border-top:1px solid #dbdbdb;border-bottom:1px solid #dbdbdb;padding:10px 0;margin-bottom:0}
+.plate-controls button{font-size:10px;line-height:1.45;letter-spacing:.025em;
+ font-weight:400;padding:5px 1px;color:#888;border-bottom:1px solid transparent}
+.plate-controls button.active{color:#0033ff;border-bottom-color:#0033ff}
+.plate-controls button:hover{color:#0033ff}
+.plate-controls #plate-expand,.plate-controls #plate-save{color:#333}
+.plate-grow{flex:1 1 auto}
+.plate-window{background:#fff;border:1px solid #ddd;border-top:0;overflow-x:auto;
+ overscroll-behavior-inline:contain;scrollbar-width:thin;max-width:100%}
+.plate-sheet{width:100%;min-width:1010px}
+.plate-sheet svg{width:100%;height:auto;display:block;vector-effect:none}
+.plate-meta{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap;padding:11px 0 0;font-size:9px;color:#777;letter-spacing:.045em}
+.plate-warning{max-width:990px;font-size:10px;line-height:1.6;color:#777;margin:11px 0 0}
+@media(max-width:1170px){#detail:has(.plate-module){width:100vw}}
+@media(max-width:650px){
+.plate-module{padding:12px 0}
+.plate-controls{gap:6px 12px}
+.plate-controls button{font-size:9px}
+.plate-controls #plate-expand{display:none}
+.plate-sheet{min-width:910px}
+.plate-window:after{content:'';display:block}
+.plate-meta{font-size:8px;gap:6px}
+}
