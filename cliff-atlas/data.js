@@ -108,10 +108,22 @@ export const references = [
    "value": "127-page 2007 Korean government research publication listed in national archives",
    "status": "PUBLIC CATALOGUE, FULL REPORT NOT REVIEWED",
    "source": "https://www.archives.go.kr/next/newsearch/showDetailPopup.do?rc_code=1310377&rc_rfile_no=201003410667&rc_ritem_no=000000000001&sitePage=0-0-0"
+  },
+  {
+   "label": "Survey provenance",
+   "value": "Fieldwork in 2005; 127-page report published 2007-11-13",
+   "status": "OFFICIAL HERITAGE RESEARCH AND NATIONAL ARCHIVES",
+   "source": "https://www.archives.go.kr/next/newsearch/showDetailPopup.do?rc_code=1310377&rc_rfile_no=201003410667&rc_ritem_no=000000000001&sitePage=0-0-0"
+  },
+  {
+   "label": "Space within 6 × 3 bays",
+   "value": "Kitchen 1×3 bays on right; rooms, wooden floor and rear veranda",
+   "status": "PUBLISHED PLAN DESCRIPTION, NOT MEASURED LAYOUT SHEET",
+   "source": "https://www.news1.kr/amp/nk/culture-sports/4189371"
   }
  ],
- "technicalUnknowns": "Clear underside height, footing contact dimensions, individual column lengths, structural bearing stability and repair records.",
- "researchNote": "Highest research priority: National Research Institute for Cultural Heritage, 북한의 전통건축 — 황해남도 2 (2007). Its detailed report is listed but not yet examined directly.",
+ "technicalUnknowns": "Column-by-column length, natural-rock pad heights, stone plinth dimensions, lateral load resistance, rock quality and foundation connection drawings; 2007 report is catalogued but its individual pages remain unread.",
+ "researchNote": "Unlike the high-tech cantilever precedents, the documented system relies on natural rock outcrops + stone pad bearings. The surviving building cannot be dated to 923 merely because a monk's residence is referenced in a later chronicle.",
  "sources": [
   [
    "Academy of Korean Studies / building size, footing construction",
@@ -124,7 +136,94 @@ export const references = [
   [
    "National heritage research architecture survey programme",
    "https://www.nrich.go.kr/kor/page.do?menuIdx=339"
+  ],
+  [
+   "National Archives: original 127-page survey viewer",
+   "https://theme.archives.go.kr/viewer/common/archWebViewer.do?bsid=201003410667&gubun=search"
+  ],
+  [
+   "National institute: 2005 measured survey site list",
+   "https://www.nrich.go.kr/kor/page.do?menuIdx=339"
+  ],
+  [
+   "News1: 6×3 structural bays and rooms",
+   "https://www.news1.kr/amp/nk/culture-sports/4189371"
   ]
+ ],
+ "researchStatus": "2005 MEASURED SURVEY VERIFIED; 2007 REPORT REGISTERED; SHEETS NOT EXTRACTED",
+ "sourceUsage": "The National Archives record is public and provides an original-document viewer. Its 127 page images have not been read directly here; no measured column-to-rock details are inferred from the report title.",
+ "constructionTimeline": [
+  {
+   "phase": "923 / retrospective historical reference",
+   "headline": "A 1701 chronicle records earlier monastic activity",
+   "detail": "The temple chronology says monk I-eom stayed at Hyeonam late in life; it is not a construction record or a surviving 923 building.",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070854",
+   "status": "RETROSPECTIVE HISTORICAL RECORD"
+  },
+  {
+   "phase": "Mid-Joseon / surviving hall",
+   "headline": "Existing frame attributed to later rebuilding",
+   "detail": "The current 6-by-3-bay building represents later rebuilding and multiple modifications; no date should be attached to its foundation joints without a building-specific survey.",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070854",
+   "status": "BUILT FABRIC / HISTORIC CLASSIFICATION"
+  },
+  {
+   "phase": "2005 / national heritage measured survey",
+   "headline": "Fieldwork on Myeoeumsa Hyeonam hermitage",
+   "detail": "The National Research Institute for Cultural Heritage lists Hyeonam under its 2005 DPRK Buddhist heritage fieldwork programme: building plans, layouts, measured details and photography.",
+   "source": "https://www.nrich.go.kr/kor/page.do?menuIdx=339",
+   "status": "OFFICIAL SURVEY PROGRAMME"
+  },
+  {
+   "phase": "13 Nov 2007 / printed government report",
+   "headline": "127 page source registered, original image pages not retrieved",
+   "detail": "2007 national report combines Jahyesa Daeungjeon and Myeoeumsa Hyeonam. Registration CM00053206, identifier 11-1550011-000215-01. Direct viewer link is available but the individual drawing pages were not extractable through this research access.",
+   "source": "https://www.archives.go.kr/next/newsearch/showDetailPopup.do?rc_code=1310377&rc_rfile_no=201003410667&rc_ritem_no=000000000001&sitePage=0-0-0",
+   "status": "127-PAGE PUBLIC ARCHIVE CATALOGUE VERIFIED"
+  }
+ ],
+ "measuredDrawings": [
+  {
+   "label": "2007 127-page survey volume / national archive viewer",
+   "ref": "CM00053206",
+   "drawing": "11-1550011-000215-01",
+   "url": "https://theme.archives.go.kr/viewer/common/archWebViewer.do?bsid=201003410667&gubun=search",
+   "status": "PUBLIC DOCUMENT VIEWER; DRAWING PAGES NOT RETRIEVED"
+  },
+  {
+   "label": "National Research Institute 2005 fieldwork list",
+   "ref": "2005",
+   "drawing": "architectural measurement project",
+   "url": "https://www.nrich.go.kr/kor/page.do?menuIdx=339",
+   "status": "OFFICIAL FIELDWORK RECORD"
+  },
+  {
+   "label": "National Archives catalogue (127 pages)",
+   "ref": "2007",
+   "drawing": "CM00053206",
+   "url": "https://www.archives.go.kr/next/newsearch/showDetailPopup.do?rc_code=1310377&rc_rfile_no=201003410667&rc_ritem_no=000000000001&sitePage=0-0-0",
+   "status": "CATALOGUE VERIFIED"
+  }
+ ],
+ "loadPathNotes": [
+  {
+   "name": "Geometry",
+   "detail": "6 front bays span 11.2 m; 3 depth bays span 6.35 m. A surviving description says kitchen occupies 1 × 3 bays at right, and other rooms and rear deck occupy the remaining plan. These are plan counts, NOT individual bay-width measurements.",
+   "source": "https://www.news1.kr/amp/nk/culture-sports/4189371",
+   "status": "PUBLISHED BUILDING DESCRIPTION"
+  },
+  {
+   "name": "Ground bearing",
+   "detail": "The heritage encyclopedia states that tall natural rock outcrops form the substrate, stone pads are placed upon them, and tapering timber columns lean slightly inward. Compression passes through these individualized bearing points; no drilled tension anchor is documented.",
+   "source": "https://encykorea.aks.ac.kr/Article/E0070854",
+   "status": "HERITAGE TEXT + STRUCTURAL INTERPRETATION"
+  },
+  {
+   "name": "Archive limitation",
+   "detail": "The official measured-survey publication is located and its viewer opens, but the column-base geometry, rock slope dimensions, detailed joinery and actual individual column lengths cannot be quoted without reading the pages.",
+   "source": "https://theme.archives.go.kr/viewer/common/archWebViewer.do?bsid=201003410667&gubun=search",
+   "status": "SOURCE LOCATED — NOT FULLY INSPECTED"
+  }
  ]
 },
 {
@@ -256,7 +355,7 @@ export const references = [
  "designer": "Historic Japanese temple carpenters",
  "family": "Stilted",
  "scheme": "kasamori",
- "scale": "61 supports of different lengths; hall stands on rock ~16 m above lower level",
+ "scale": "Hall approx. 13.3 × 10.0 m; total height 27.7 m; 61 posts (longest approx. 9 m)",
  "ground": "High isolated natural rock prominence; rock-contact points at four sides",
  "connection": "A hall raised on all four sides of a rocky hillock by a dense timber post-and-penetrating-beam lattice. The posts have differing lengths to compensate for differing contact elevations on the irregular rock.",
  "materials": "Timber columns · wood girders / nuki through-ties · copper roof",
@@ -266,7 +365,7 @@ export const references = [
  "photo": "https://livedoor.blogimg.jp/darklunacy2000/imgs/1/5/1541ae7d.jpg",
  "photoFrom": "Architects Blog / Kasamori timber support grid",
  "photoLink": "https://www.pref.chiba.lg.jp/kyouiku/bunkazai/bunkazai/n111-001.html",
- "dimensionNote": "16m is approximate prominence height above adjacent lower ground; it is not the longest timber post. Column lengths vary by individual rock bearing.",
+ "dimensionNote": "13.3 × 10m is the building's reported width/depth; 27.7m its total ground-to-roof height; ~9m the longest of 61 varied timber props; the rocky prominence rises ~16m. These are four different measurements.",
  "technicalEvidence": [
   {
    "label": "Surviving hall date",
@@ -291,10 +390,34 @@ export const references = [
    "value": "3D scan of historic framing conducted in 2026",
    "status": "UNIVERSITY FIELDWORK REPORT",
    "source": "https://blog.t-kougei.ac.jp/ac/2026/05/25/7303/"
+  },
+  {
+   "label": "Hall dimensions / roof height",
+   "value": "13.3 × 10.0 m plan; 27.7 m total height",
+   "status": "PUBLISHED REGIONAL ARCHITECTURAL REPORT",
+   "source": "https://www.keiyobank.co.jp/sustainability/social/contribution/Information_magazine/miryoku/pdf/miryo24.pdf"
+  },
+  {
+   "label": "Longest timber post",
+   "value": "Approx. 9 m (61 posts of varying lengths)",
+   "status": "PUBLISHED REGIONAL ARCHITECTURAL REPORT",
+   "source": "https://www.keiyobank.co.jp/sustainability/social/contribution/Information_magazine/miryoku/pdf/miryo24.pdf"
+  },
+  {
+   "label": "Historic footing vs. present",
+   "value": "Originally direct-to-rock; now concrete foundations",
+   "status": "1960 RESTORATION ACCOUNT",
+   "source": "https://www.keiyobank.co.jp/sustainability/social/contribution/Information_magazine/miryoku/pdf/miryo24.pdf"
+  },
+  {
+   "label": "Seismic rock bolts and hold-downs",
+   "value": "2012–2013 added; diameter/length not provided",
+   "status": "MODERN REPAIR, NOT HISTORIC ANCHORAGE",
+   "source": "https://www.bunka.go.jp/seisaku/bunkazai/hogofukyu/pdf/kokko_hojyo_taisin16.pdf"
   }
  ],
- "technicalUnknowns": "Verified survey of all 61 individual post lengths and rock point positions, post section and joinery dimensions, original foundation geology, temporary frame assembly sequence.",
- "researchNote": "Tokyo Polytechnic University's 2026 survey is a valuable precedent for geometric scan-to-documentation on irregular historic sites. It is documentation, not evidence of robotic construction.",
+ "technicalUnknowns": "The eight original survey sheets are viewable, but their online images do not reliably resolve the 61 column-by-column measured support heights, joinery sizes or footing coordinates. The 1960 printed repair report has 57 text pages plus 24 plates and 17 drawings in catalogue; its complete plates have not been reviewed.",
+ "researchNote": "Critical chronological distinction: old timber feet originally contacted bare rock; modern concrete pads and later seismic rock bolts are conservation interventions. The 1597 building date and 1931 drawing registration are different facts.",
  "sources": [
   [
    "Japan Agency for Cultural Affairs / 1597 building",
@@ -311,7 +434,151 @@ export const references = [
   [
    "UTokyo historical section drawing catalogue (PDF)",
    "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/pdf/japanese_historical_arch202509.pdf"
+  ],
+  [
+   "UTokyo: original transverse section (00562)",
+   "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00562"
+  ],
+  [
+   "UTokyo: original longitudinal section (00567)",
+   "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00567"
+  ],
+  [
+   "UTokyo: original plan (00568)",
+   "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00568"
+  ],
+  [
+   "2003 Chiba report: dimensions & original/current footings (PDF)",
+   "https://www.keiyobank.co.jp/sustainability/social/contribution/Information_magazine/miryoku/pdf/miryo24.pdf"
+  ],
+  [
+   "Japan government: seismic repair detail / 2012–13 (PDF)",
+   "https://www.bunka.go.jp/seisaku/bunkazai/hogofukyu/pdf/kokko_hojyo_taisin16.pdf"
+  ],
+  [
+   "Chonan Town: building sequence from 1960 repair report (PDF)",
+   "https://www.town.chonan.chiba.jp/wp-content/uploads/2011/07/bab8956529ba93dfa7012abef5ad01cf-1.pdf"
+  ],
+  [
+   "1960 dismantling repair book / library catalogue",
+   "https://ci.nii.ac.jp/ncid/BN09981110"
   ]
+ ],
+ "researchStatus": "EIGHT MEASURED SHEETS OPENLY CATALOGUED; FOUR VIEWED",
+ "sourceUsage": "The University of Tokyo museum states permission is required for use of its scanned images. Original images are linked to the museum, not redistributed or rehosted here.",
+ "constructionTimeline": [
+  {
+   "phase": "1597 / historic construction",
+   "headline": "Build the timber legs first, then the hall",
+   "detail": "Chonan Town's historical note, drawing on the 1960 restoration report, describes a timber support frame erected on the rock first, a temporary shrine on it, then major work on the hall from around 1579, with completion about 1597.",
+   "source": "https://www.town.chonan.chiba.jp/wp-content/uploads/2011/07/bab8956529ba93dfa7012abef5ad01cf-1.pdf",
+   "status": "MUNICIPAL HISTORY CITING RESTORATION REPORT"
+  },
+  {
+   "phase": "By 1931 / measured drawing registration",
+   "headline": "Separate longitudinal and transverse sections",
+   "detail": "Eight actual measured sheets are in the University of Tokyo architectural museum. The building date 1597 is NOT the date of the drawing; their archival registration is Showa 6 (1931).",
+   "source": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00567",
+   "status": "ORIGINAL DRAWING ARCHIVE INSPECTED"
+  },
+  {
+   "phase": "1958–1960 / dismantling and repair",
+   "headline": "Direct rock bearings replaced by concrete foundations",
+   "detail": "A Chiba regional historical publication states timber feet originally sat directly on the rock without individual foundation stones; it illustrates the later concrete-bearing solution. The dismantling repair found significant rock erosion and timber decay.",
+   "source": "https://www.keiyobank.co.jp/sustainability/social/contribution/Information_magazine/miryoku/pdf/miryo24.pdf",
+   "status": "RESTORATION ACCOUNT / PHOTOGRAPH"
+  },
+  {
+   "phase": "2010–2013 / seismic diagnosis and retrofit",
+   "headline": "Post-base restraint and bedrock/soil stabilization",
+   "detail": "Assessment identified risk of post feet slipping from supports and stair collapse. Later work added metal base restraints, under-floor bracing, rock bolts around foundations and colored sprayed mortar. Anchors belong to conservation retrofit, NOT original 1597 joinery.",
+   "source": "https://www.bunka.go.jp/seisaku/bunkazai/hogofukyu/pdf/kokko_hojyo_taisin16.pdf",
+   "status": "JAPAN AGENCY FOR CULTURAL AFFAIRS / REPAIR REPORT"
+  }
+ ],
+ "measuredDrawings": [
+  {
+   "label": "Transverse section / 本堂断面図",
+   "ref": "00562",
+   "drawing": "016_028_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00562",
+   "status": "ORIGINAL IMAGE VIEWED"
+  },
+  {
+   "label": "Longitudinal section / 本堂縦断面図",
+   "ref": "00567",
+   "drawing": "016_034_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00567",
+   "status": "ORIGINAL IMAGE VIEWED"
+  },
+  {
+   "label": "Plan / 本堂平面図",
+   "ref": "00568",
+   "drawing": "016_035_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00568",
+   "status": "ORIGINAL IMAGE VIEWED"
+  },
+  {
+   "label": "Front elevation / 本堂正面図",
+   "ref": "00566",
+   "drawing": "016_033_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00566",
+   "status": "ORIGINAL IMAGE VIEWED"
+  },
+  {
+   "label": "Side elevation / 本堂側面図",
+   "ref": "00565",
+   "drawing": "016_032_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00565",
+   "status": "DIGITAL ARCHIVE INDEX"
+  },
+  {
+   "label": "Timber details / 本堂詳細図",
+   "ref": "00561",
+   "drawing": "016_027_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00561",
+   "status": "DIGITAL ARCHIVE INDEX"
+  },
+  {
+   "label": "Ceiling plan / 本堂天井見上図",
+   "ref": "00564",
+   "drawing": "016_030_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00564",
+   "status": "DIGITAL ARCHIVE INDEX"
+  },
+  {
+   "label": "Inner shrine detail / 本堂厨子詳細図",
+   "ref": "00563",
+   "drawing": "016_029_s",
+   "url": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00563",
+   "status": "DIGITAL ARCHIVE INDEX"
+  }
+ ],
+ "loadPathNotes": [
+  {
+   "name": "Site-contact logic",
+   "detail": "A three-dimensional lattice of wooden props rests at individually varying levels on an isolated rock hill; through-rails (nuki) connect them. The official 1931-registered elevations show the ground line varying beneath otherwise continuous upper floor framing.",
+   "source": "https://www.history.arch.t.u-tokyo.ac.jp/db/japanresearch/item.php?id=00567",
+   "status": "MEASURED DRAWING / GEOMETRIC INTERPRETATION"
+  },
+  {
+   "name": "As-built vs. restored interface",
+   "detail": "A published restoration account states original columns met the raw rock directly, whereas the present foundations are concrete. The present post-base connection cannot be assumed to match 1597.",
+   "source": "https://www.keiyobank.co.jp/sustainability/social/contribution/Information_magazine/miryoku/pdf/miryo24.pdf",
+   "status": "HISTORIC vs. 1960 COMPARISON"
+  },
+  {
+   "name": "Seismic failure mode",
+   "detail": "The 2010–2011 assessment identified column-foot dislocation under earthquake demand and lateral staircase instability. 2012–2013 interventions use metal restraint hardware and rock/soil stabilizing bolts.",
+   "source": "https://www.bunka.go.jp/seisaku/bunkazai/hogofukyu/pdf/kokko_hojyo_taisin16.pdf",
+   "status": "SEISMIC RETROFIT, NOT HISTORIC SYSTEM"
+  },
+  {
+   "name": "Construction sequence",
+   "detail": "Historic construction is described as support-frame-first, an interim hall built upon it, and only later construction of the permanent main hall. For the ENCI robotic question, study temporary stability while each new support point is added.",
+   "source": "https://www.town.chonan.chiba.jp/wp-content/uploads/2011/07/bab8956529ba93dfa7012abef5ad01cf-1.pdf",
+   "status": "MUNICIPAL ARCHIVAL INTERPRETATION"
+  }
  ]
 },
 {
