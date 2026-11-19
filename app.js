@@ -589,12 +589,13 @@ function drawBuildingBackdrop(s,data,len){
   const g=new THREE.ShapeGeometry(shape),p=g.attributes.position,vertices=[];
   for(let i=0;i<p.count;i++)vertices.push(...cutPosition(s,len,p.getX(i),p.getY(i),-.55).toArray());
   g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
-  const depthFade=Math.max(.25,Math.min(.68,.72-part.depth*.0019));
+  const depthFade=Math.min(.7,part.depth/350);
+  const ink=new THREE.Color(part.kind==='approximate'?'#e0d8cf':'#cdd3d8').lerp(new THREE.Color('#ffffff'),depthFade);
+  // Opaque pre-lightened fills stay in the EARTH-BEHIND draw pass. Using
+  // transparent here would make projected buildings show through solid ground.
   const face=new THREE.Mesh(g,new THREE.MeshBasicMaterial({
-   color:part.kind==='approximate'?'#e0d8cf':'#cdd3d8',
-   opacity:depthFade,transparent:true,side:THREE.DoubleSide,
-   depthWrite:false,depthTest:false
-  }));face.renderOrder=0.5;sectionFace.add(face);
+   color:ink,side:THREE.DoubleSide,depthWrite:false,depthTest:false
+  }));face.renderOrder=.5;sectionFace.add(face);
   const outline=[];
   for(let i=0;i<part.points.length;i++){
    const a=part.points[i],b=part.points[(i+1)%part.points.length];
@@ -603,7 +604,7 @@ function drawBuildingBackdrop(s,data,len){
   if(outline.length){
    const edges=new THREE.BufferGeometry();edges.setAttribute('position',new THREE.Float32BufferAttribute(outline,3));
    const line=new THREE.LineSegments(edges,new THREE.LineBasicMaterial({
-    color:'#91999d',transparent:true,opacity:.4+depthFade*.35,depthTest:false,depthWrite:false
+    color:new THREE.Color('#91999d').lerp(new THREE.Color('#ffffff'),.35+depthFade*.5),depthTest:false,depthWrite:false
    }));line.renderOrder=.8;sectionFace.add(line);
   }
  }
