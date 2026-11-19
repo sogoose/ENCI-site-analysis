@@ -9,7 +9,7 @@ const line=(x1,y1,x2,y2,c=ink,w=1.6,other="")=>'<line x1="'+x1+'" y1="'+y1+'" x2
 const path=(d,c=ink,w=1.5,other="")=>'<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="'+w+'" stroke-linecap="round" stroke-linejoin="round" '+other+'/>';
 const rect=(x,y,w,h,fill="none",stroke="none",sw=1,other="")=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" '+other+'/>';
 const poly=(p,fill="none",stroke=ink,sw=1.4)=>'<polygon points="'+p.map(x=>x.join(",")).join(" ")+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'"/>';
-const text=(x,y,s,size=12,color=ink,other="")=>'<text x="'+x+'" y="'+y+'" fill="'+color+'" font-family="Inter,Arial,sans-serif" font-size="'+size+'" '+other+'>'+s+'</text>';
+const text=(x,y,s,size=12,color=ink,other="")=>'<text x="'+x+'" y="'+y+'" fill="'+color+'" font-family="Inter,Arial,sans-serif" font-size="'+size+'" '+other+'>'+String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')+'</text>';
 const dot=(x,y,r=4,c=blue)=>'<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+c+'" stroke="#fff" stroke-width="1"/>';
 const tag=(x,y,index,title,description)=>text(x,y,index+"  /  "+title,14,ink,'font-weight="600"')+text(x,y+22,description,11,grey);
 const num=(x,y,n)=>'<circle cx="'+x+'" cy="'+y+'" r="13" fill="#fff" stroke="'+blue+'" stroke-width="1.5"/>'+text(x,y+4,n,12,blue,'text-anchor="middle" font-weight="600"');
