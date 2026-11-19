@@ -616,7 +616,7 @@ function drawBuildingSection(s,data,len){
   const geo=new THREE.ShapeGeometry(shape),attr=geo.attributes.position,positions=[];
   for(let i=0;i<attr.count;i++)positions.push(...cutPosition(s,len,attr.getX(i),attr.getY(i),.6).toArray());
   geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.computeBoundingSphere();
-  const material=new THREE.MeshBasicMaterial({color:part.kind==='approximate'?'#d9c9b6':'#cbd1d6',side:THREE.DoubleSide,depthTest:false,depthWrite:false});
+  const material=new THREE.MeshBasicMaterial({color:part.kind==='approximate'?'#9f907c':'#727d86',side:THREE.DoubleSide,depthTest:false,depthWrite:false});
   const mesh=new THREE.Mesh(geo,material);mesh.renderOrder=16;sectionFace.add(mesh);
  }
  const segments=[];const paths=[...data.polygons.map(p=>[...p.points,p.points[0]]),...data.lines.map(p=>p.points)];
@@ -705,6 +705,18 @@ function renderProfile(panel,s,rows,len){
  function node(tag,attrs,t,host=svg){const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(t!==undefined)e.textContent=t;host.append(e);return e}
  const defs=node('defs',{}),pattern=node('pattern',{id:'section-unknown',width:7,height:7,patternUnits:'userSpaceOnUse'},undefined,defs);node('path',{d:'M-1 1L1 -1 M0 7L7 0 M6 8L8 6',stroke:'#b9b4aa','stroke-width':.55},undefined,pattern);
  let outline='',mass='',run=[];const flush=()=>{if(run.length>1){const path=run.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2)).join(' ');outline+=path+' ';mass+=path+' L'+X(run.at(-1)[0])+' '+Y(min)+' L'+X(run[0][0])+' '+Y(min)+' Z '}run=[]};for(const p of current.points){if(Number.isFinite(p[1]))run.push(p);else flush()}flush();
+ 
+ if(buildings?.backdrop?.length){
+  // True building geometry is projected from behind the cut plane. These are
+  // light architectural silhouettes, not invented façade/window details.
+  for(const part of buildings.backdrop){
+   if(part.points.length<3)continue;
+   const d=part.points.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2)).join(' ')+' Z';
+   const strength=Math.max(.25,Math.min(.7,.72-part.depth*.0019));
+   node('path',{d,fill:part.kind==='approximate'?'#e2dcd4':'#d4d9dc',
+     stroke:'#999fa2','stroke-width':.65,'fill-opacity':strength,'stroke-opacity':.65});
+  }
+ }
  node('path',{d:mass,fill:geo?'url(#section-unknown)':'#d8d5cd',stroke:'none'});const clip=node('clipPath',{id:'section-earth'},undefined,defs);node('path',{d:mass},undefined,clip);const bands=node('g',{'clip-path':'url(#section-earth)'});
  for(const l of spans){const lo=Math.max(min,l.base),hi=Math.min(max,l.top);if(hi<=lo)continue;const rect=node('rect',{x:X(l.start),y:Y(hi),width:Math.max(0,X(l.end)-X(l.start)),height:Y(lo)-Y(hi),fill:['upper','transition'].includes(l.id)?'url(#section-unknown)':l.color,'fill-opacity':.86},undefined,bands);node('title',{},l.name+' · '+l.base.toFixed(1)+' to '+(Number.isFinite(l.top)?l.top.toFixed(1):'surface')+' m NAP',rect);if(Number.isFinite(l.top))node('line',{x1:X(l.start),x2:X(l.end),y1:Y(hi),y2:Y(hi),stroke:'#514c43','stroke-width':.6,'stroke-opacity':.5},undefined,bands)}
  if(compare)for(const r of rows.slice(0,-1)){let d='',pen=false;for(const [x,z] of r.points){if(!Number.isFinite(z)){pen=false;continue}d+=(pen?'L':'M')+X(x)+' '+Y(z)+' ';pen=true}node('path',{d,fill:'none',stroke:'#727272','stroke-width':.8,'stroke-dasharray':'4 4',opacity:.55})}
@@ -713,7 +725,7 @@ function renderProfile(panel,s,rows,len){
   for(const part of buildings.polygons){
    if(part.points.length<3)continue;
    const d=part.points.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2)).join(' ')+' Z';
-   node('path',{d,fill:part.kind==='approximate'?'#d9c9b6':'#cbd1d6',stroke:'#242628','stroke-width':1,'stroke-linejoin':'round'});
+   node('path',{d,fill:part.kind==='approximate'?'#9f907c':'#727d86',stroke:'#242628','stroke-width':1,'stroke-linejoin':'round'});
   }
   for(const part of buildings.lines){const d=part.points.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(2)+' '+Y(p[1]).toFixed(2)).join(' ');
    node('path',{d,fill:'none',stroke:'#303337','stroke-width':.9});}
@@ -735,8 +747,8 @@ function renderProfile(panel,s,rows,len){
  const bar=([10,20,25,50,100,200,500].filter(v=>v*scale<=Math.min(165,plotW*.34)).pop()||5),by=H-9,bx=X(0);node('rect',{x:bx,y:by-5,width:bar*scale/2,height:5,fill:'#222'});node('rect',{x:bx+bar*scale/2,y:by-5,width:bar*scale/2,height:5,fill:'white',stroke:'#222','stroke-width':.7});node('text',{x:bx+bar*scale+6,y:by,'font-size':9,fill:'#555'},bar+' m');
  const head=el('div',undefined,'section-heading'),leftHead=el('div'),num=el('span',id+' — '+id+'′','section-number'),meta=el('span',(cliffMode?'CLIFF SECTION':'SITE TRANSECT')+' / '+year+' / 1:1 V:H','section-meta');leftHead.append(num,meta);const actions=el('div',undefined,'section-actions');const cut=el('button',cliffCutaway?'PLAN ↗':'CUT ↗');cut.onclick=()=>cliffCutaway?sectionOverview():sectionSelect(s.id,true);const exp=el('button',sectionExpanded?'Reduce':'Enlarge');exp.onclick=()=>{sectionExpanded=!sectionExpanded;panel.classList.toggle('expanded',sectionExpanded);exp.textContent=sectionExpanded?'Reduce':'Enlarge'};const save=el('button','SVG ↓');save.onclick=()=>{const copy=svg.cloneNode(true);copy.setAttribute('xmlns',ns);const url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)],{type:'image/svg+xml'})),a=el('a');a.href=url;a.download='ENCI-section-'+id+'-'+year+'.svg';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};actions.append(cut,exp,save);head.append(leftHead,actions);panel.append(head,svg);
  if(geo){const k=el('div',undefined,'section-geokey');for(const l of (dgm?dgmLegend(spans):geology.layers))k.append(legendRow(l.name,l.color));if(dgm)k.append(legendRow('Unresolved / no model','#d8d5cd'));panel.append(k)}
- if(buildings||dsm?.length){const k=el('div',undefined,'section-geokey');if(buildings)k.append(legendRow('Building section · modelled / approximate','#cbd1d6'));if(dsm?.length)k.append(legendRow('2025 DSM returns · 4 m corridor','#b4513a'));panel.append(k)}
- if(landscape){const k=el('div',undefined,'section-geokey landscape-key');if(landscape.available.reserve)k.append(legendRow('Natura 2000 · current','#24734c'));if(landscape.available.water)k.append(legendRow('Surface water · 2020','#3485ad','line'));if(landscape.available.forest)k.append(legendRow('Forest · 2020','#386949','tree'));panel.append(k);if(landscapeStatus)panel.append(sub(landscapeStatus));panel.append(sub('Forest symbols are schematic (not measured trees). Water line marks classified surface, not water depth. Natura 2000 sampled along cut; 2020 raster cells 10 m.'))}panel.append(sub((year===2026?'Terrain: uploaded mesh · 2 m samples':'Historical terrain · inferred')+(geo?(dgm?' / DGM 69w · 100 m cells, not surveyed contacts':' / schematic REGIS reference'):' / graphical cut base')+(compare?' / historic outlines: inferred':'')+'. Fill and submerged ground not independently verified. DSM includes roofs and vegetation, and does not replace the terrain surface.'));
+ if(buildings||dsm?.length){const k=el('div',undefined,'section-geokey');if(buildings?.polygons?.length)k.append(legendRow('Buildings cut by section','#727d86'));if(buildings?.backdrop?.length)k.append(legendRow('Buildings behind cut · projected','#d4d9dc'));if(dsm?.length)k.append(legendRow('2025 DSM returns · 4 m corridor','#b4513a'));panel.append(k)}
+ if(landscape){const k=el('div',undefined,'section-geokey landscape-key');if(landscape.available.reserve)k.append(legendRow('Natura 2000 · current','#24734c'));if(landscape.available.water)k.append(legendRow('Surface water · 2020','#3485ad','line'));if(landscape.available.forest)k.append(legendRow('Forest · 2020','#386949','tree'));panel.append(k);if(landscapeStatus)panel.append(sub(landscapeStatus));panel.append(sub('Forest symbols are schematic (not measured trees). Water line marks classified surface, not water depth. Natura 2000 sampled along cut; 2020 raster cells 10 m.'))}panel.append(sub((year===2026?'Terrain: uploaded mesh · 2 m samples':'Historical terrain · inferred')+(geo?(dgm?' / DGM 69w · 100 m cells, not surveyed contacts':' / schematic REGIS reference'):' / graphical cut base')+(compare?' / historic outlines: inferred':'')+'. Fill and submerged ground not independently verified. Buildings behind the plane are projected silhouettes without invented facade details. DSM includes roofs and vegetation and does not replace the terrain surface.'));
 }
 
 async function fetchReserve(){
