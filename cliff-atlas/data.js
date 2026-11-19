@@ -66,18 +66,33 @@ export const references = [
  photoLink:"https://www.myguidegibraltar.com/events/malaga-or-rincon-de-la-victoria-caminito-del-rey-day-trip",
  sources:[["Rehabilitation contractor / attachment method","https://www.sando.com/en/proyectos/rehabilitation-of-the-caminito-del-rey"],["Restoration case study","https://www.mdpi.com/2073-445X/12/8/1569"]]
 },{
- id:"trollstigen",name:"Trollstigen Tourist Route",year:"2012",place:"Rauma, Norway",designer:"Reiulf Ramstad Arkitekter",
- family:"Founded",scheme:"stepped",scale:"Visitor centre approx. 1,800 m²; multiple platforms",
- ground:"Mountain rock and stepped, irregular terrain",
- connection:"Cast-in-place concrete elements adapt to the rock outcrops, carrying walkways and projected weathering-steel viewing terraces.",
- materials:"Cast-in-place concrete · weathering steel",
- principle:"Terrain-conforming foundations / projected terraces",
- description:"The route articulates a sequence of small architectural interventions against rock and water, demonstrating how a composite set of supports can fit uneven topography.",
- evidence:"Published project material confirms cast-in-place concrete and Cor-ten; exact anchor locations are not documented in this archive.",
- photo:"https://i.mooool.com/img/2018/07/mooool-RRA_Trollstigen33.jpeg",
- photoFrom:"Mooool / Reiulf Ramstad project gallery",
- photoLink:"https://mooool.com/trollstigen-national-tourist-routes-in-norway-by-reiulf-ramstad-architects.html",
- sources:[["Architecture Norway / built project","https://architecturenorway.no/projects/travelling/trollstigen-2010-2012/"],["Project construction description","https://www.e-architect.com/norway/national-tourist-route-trollstigen"]]
+ "id": "zenbo",
+ "name": "Zenbo Seinei",
+ "year": "2022",
+ "place": "Awaji Island, Hyogo, Japan",
+ "designer": "Shigeru Ban Architects / Design Office Momi + Holzstr",
+ "family": "Cantilevered",
+ "scheme": "vierendeel",
+ "scale": "7.2 m wide × 90 m long; 982 m² floor area",
+ "ground": "Steep forested cliff-edge slope",
+ "connection": "Wooden Vierendeel truss with a 21 m span and 12 m end cantilever, elevated above two steel lattice support bases.",
+ "materials": "Japanese cedar · engineered timber · structural steel · rigid timber connectors",
+ "principle": "Lattice column bases + long-span timber Vierendeel",
+ "description": "A genuinely elevated meditation retreat rather than a deck laid on the ground. Its structural tube makes a long overhang possible with localized steel support bases on a difficult slope.",
+ "evidence": "The architect reports the 21 m span and 12 m cantilever. Connector supplier Stroog documents two lattice columns, bespoke rigid joints and lag-screw connectors. Foundation details are not independently verified.",
+ "photo": "https://www.arkitera.com/wp-content/uploads/2022/08/zenboseinei6.webp",
+ "photoFrom": "Arkitera / project photograph",
+ "photoLink": "https://shigerubanarchitects.com/works/cultural/zen-wellness-seinei/",
+ "sources": [
+  [
+   "Architect: dimensions and Vierendeel structure",
+   "https://shigerubanarchitects.com/works/cultural/zen-wellness-seinei/"
+  ],
+  [
+   "Stroog: columns and tested structural joints",
+   "https://stroog.com/en/works/zenbo-seinei/"
+  ]
+ ]
 },{
  id:"grand-canyon",name:"Grand Canyon Skywalk",year:"2007",place:"Grand Canyon West, USA",designer:"Lochsa Engineering / Hualapai Nation",
  family:"Cantilevered",scheme:"micropile",scale:"70 ft / approximately 21 m projection",
@@ -87,9 +102,9 @@ export const references = [
  principle:"Deep rock micropile group / overturning restraint",
  description:"A long cantilever couples a large steel superstructure to a comparatively small foundation zone, making uplift control and native rock capacity decisive.",
  evidence:"The engineering firm documents the 70 ft cantilever and rock-drilled micropile groups.",
- photo:"https://cdn.fishki.net/upload/post/201402/06/1242635/smotrovaya-grand-kanyon-17.jpg",
- photoFrom:"Fishki / Grand Canyon Skywalk",
- photoLink:"https://grandcanyonwest.com/things-to-do/skywalk/",
+ photo:"https://upload.wikimedia.org/wikipedia/commons/2/25/Grand_Canyon_Skywalk_-_aerial.jpg",
+ photoFrom:"Werner Keulen / Wikimedia Commons · CC BY-SA 3.0",
+ photoLink:"https://commons.wikimedia.org/wiki/File:Grand_Canyon_Skywalk_-_aerial.jpg",
  sources:[["Structural engineer / foundation system","https://www.lochsa.com/projects/skywalk-at-the-grand-canyon"],["Official owner / project dimensions","https://grandcanyonwest.com/things-to-do/skywalk/"]]
 },{
  id:"manshausen",name:"Manshausen Sea Cabins",year:"2015",place:"Steigen, Norway",designer:"Snorre Stinessen / Stinessen Arkitektur",
@@ -118,43 +133,96 @@ export const references = [
  photoLink:"https://www.seetao.com/details/8687.html",
  sources:[["Timber temple structural research / drawings","https://www.nature.com/articles/s40494-025-01608-y"],["Historic construction overview","https://en.chinaculture.org/library/2008-02/15/content_32449.htm"]]
 },{
- id:"cliff-palace",name:"Cliff Palace, Mesa Verde",year:"c. 1190–1270",place:"Colorado, USA",designer:"Ancestral Pueblo builders",
- family:"Founded",scheme:"alcove",scale:"150 rooms and 23 kivas",
- ground:"Cliff House Sandstone alcove",
- connection:"Sandstone masonry and earthen mortar built on sheltered rock ledges, locally levelled surfaces, and in some cases accumulated fill.",
- materials:"Sandstone blocks · earthen mortar · timber",
- principle:"Rock-shelf bearing / masonry infill",
- description:"A natural overhang performs as roof and shelter; settlement, retaining walls and contact with irregular shelf geology become the central structural interface.",
- evidence:"NPS documents scale and material; the specific diagram expresses an alcove-settlement typology rather than a measured section.",
- photo:"https://www.explore.com/img/gallery/explore-the-best-of-colorado-on-a-road-trip-through-its-iconic-natural-wonders/mesa-verde-and-great-sand-dunes-1730287325.jpg",
- photoFrom:"Explore / Mesa Verde Cliff Palace",
- photoLink:"https://www.nps.gov/meve/learn/historyculture/cliff_dwellings_home.htm",
- sources:[["NPS / cliff dwellings","https://www.nps.gov/meve/learn/historyculture/cliff_dwellings_home.htm"],["NPS / masonry and alcove geology","https://www.nps.gov/articles/mesaverde.htm"]]
+ "id": "maijishan",
+ "name": "Maijishan Cliff Galleries",
+ "year": "Historic / conserved",
+ "place": "Tianshui, Gansu, China",
+ "designer": "Historic cave builders / Dunhuang Academy conservators",
+ "family": "Anchored",
+ "scheme": "galleries",
+ "scale": "Approx. 1.5 km of elevated cliff galleries",
+ "ground": "Near-vertical sandstone cliff face",
+ "connection": "Historic timber plank roads used rock sockets; modern repaired galleries use steel walkways and stairs tied to the cliff. Historic sockets must not be confused with current steel hardware.",
+ "materials": "Sandstone · historical timber · modern steel",
+ "principle": "Rock-inserted beams / cliff-fixed steel gallery",
+ "description": "Circulation hangs from the cliff itself instead of forming a route on the ground. The still-used terraces combine an ancient interface logic with modern conservation engineering.",
+ "evidence": "Dunhuang Academy photographs confirm real elevated galleries; technical studies document old beam sockets. Specific current anchor sizes and spacing are not established.",
+ "photo": "https://www.dha.ac.cn/__local/4/15/B9/B2CB584EE1502086FFBC37AFED9_94202E1E_1ABED7.png",
+ "photoFrom": "Dunhuang Academy / conservation photograph",
+ "photoLink": "https://www.dha.ac.cn/info/1018/7106.htm",
+ "sources": [
+  [
+   "Dunhuang Academy / built galleries",
+   "https://www.dha.ac.cn/info/1018/7106.htm"
+  ],
+  [
+   "Historical plank-road sockets study (PDF)",
+   "https://ygx.sxu.edu.cn/db/%E6%9C%9F%E5%88%8A/dhyj/dhyj2023/2303pdf/230305.pdf"
+  ],
+  [
+   "Getty / stabilization and conservation",
+   "https://www.getty.edu/conservation/publications_resources/pdf_publications/pdf/silkroad4.pdf"
+  ]
+ ]
 },{
- id:"sumela",name:"Sümela Monastery",year:"Historic",place:"Altındere Valley, Türkiye",designer:"Historic monastery builders and later restorers",
- family:"Founded",scheme:"cliffmasonry",scale:"Multi-building cliff monastery",
- ground:"Steep rock cliff and natural cavities",
- connection:"Stone-masonry buildings formed against a sheer rock face, incorporating caves and ledges; modern safety work also stabilizes the surrounding rock.",
- materials:"Stone and brick masonry · timber",
- principle:"Cliff ledge + wall integration",
- description:"The monastery blends natural excavated spaces and constructed enclosure. It suggests a strategy of using topography as a continuous spatial boundary.",
- evidence:"UNESCO documents cliff construction and centuries of additions; modern stabilization measures are separate from historic attachments.",
- photo:"https://www.sundaynews.tw/userfiles/images/sumela_monastery.jpg",
- photoFrom:"Sundaynews / Sümela monastery",
- photoLink:"https://whc.unesco.org/en/tentativelists/1397",
- sources:[["UNESCO / historic complex","https://whc.unesco.org/en/tentativelists/1397/"],["Restoration and rock stabilization report","https://civil-protection-knowledge-network.europa.eu/media/sumela-monastery-restoration-and-rock-reconstruction-works"]]
+ "id": "fenghuang",
+ "name": "Fenghuang Diaojiaolou",
+ "year": "Historic vernacular / extant",
+ "place": "Fenghuang, Hunan, China",
+ "designer": "Regional Miao / Tujia and local vernacular traditions",
+ "family": "Founded",
+ "scheme": "stilts",
+ "scale": "Multi-storey linear timber stilt-house group",
+ "ground": "Uneven stone embankment / river-edge drop",
+ "connection": "Rear rooms meet a raised road and stone slope; long front timber posts bear on lower river-edge supports while inhabited floors extend outward over water.",
+ "materials": "Wood posts and beams · stone retaining bases · roof tile",
+ "principle": "Rear slope bearing + long timber stilts",
+ "description": "A vernacular cross-section in which the building's rear stands near higher ground while the front overhangs a void. Unlike Hanging Temple, the load runs mainly into posts rather than rock-inserted beams.",
+ "evidence": "Architectural research documents actual surviving stilt houses, their overhanging rooms and timber supports. The diagram illustrates a typology rather than an exact measured house.",
+ "photo": "https://x0.ifengimg.com/ucms/2022_43/A6FCC665CCCAF152AA261E6B65A8FFD239208B20_size1704_w2560_h1654.jpg",
+ "photoFrom": "ifeng Travel / riverside timber houses",
+ "photoLink": "https://travel.ifeng.com/c/8KEXBrp7cAe",
+ "sources": [
+  [
+   "Buildings (2025): Fenghuang stilt-house morphology",
+   "https://www.mdpi.com/2075-5309/15/1/119"
+  ],
+  [
+   "UNESCO: traditional Dong stilt architecture",
+   "https://whc.unesco.org/document/140587"
+  ]
+ ]
 },{
- id:"fallingwater",name:"Fallingwater",year:"1937",place:"Mill Run, Pennsylvania, USA",designer:"Frank Lloyd Wright",
- family:"Cantilevered",scheme:"rc",scale:"Multi-storey residence / cantilevered terraces",
- ground:"Pottsville sandstone ledges / Bear Run",
- connection:"Reinforced-concrete terraces and beams cantilever from a stone-and-concrete structural core; local rock and stream guide the foundation and geometry.",
- materials:"Reinforced concrete · sandstone · steel",
- principle:"RC cantilever / load path through core",
- description:"The architecture takes its datums from horizontal stone strata. The terraces expose the difference between a visible rock-like composition and the actual RC bending system.",
- evidence:"The project archive identifies locally quarried Pottsville sandstone and anchored concrete terraces; fine reinforcement detailing needs specialist construction drawings.",
- photo:"https://hips.hearstapps.com/hmg-prod/images/fallingwater-frank-lloyd-wright-1606675201.jpg?crop=1xw%3A1xh%3Bcenter%2Ctop&resize=980%3A%2A",
- photoFrom:"Harper's Bazaar / Fallingwater photo",
- photoLink:"https://fallingwater.org/history/the-kaufmanns-fallingwater/designing-fallingwater/",
- sources:[["Fallingwater / official project history","https://fallingwater.org/history/the-kaufmanns-fallingwater/designing-fallingwater/"],["Structural engineering assessment (PDF)","https://fallingwater.org/wp-content/uploads/2018/08/2000-Scientific-American.pdf"]]
+ "id": "mingyue",
+ "name": "Mingyue Gorge Plank Road",
+ "year": "Historic route / rebuilt",
+ "place": "Guangyuan, Sichuan, China",
+ "designer": "Historic Shu Road carpenters / modern rebuilders",
+ "family": "Inserted",
+ "scheme": "ancientroad",
+ "scale": "Approx. 2 km of rebuilt cliff-route walkway",
+ "ground": "Near-vertical gorge rock, Jialing River",
+ "connection": "Timber crossbeams inserted into holes chiseled in the cliff, often with lower sockets for timber props and diagonal braces; boards span between repeated rock sockets.",
+ "materials": "Timber crossbeams and posts · rock sockets · decking",
+ "principle": "Rock sockets + under-deck timber struts",
+ "description": "An intentionally built overhead route, not a path on the ground. The current construction follows original support holes, offering a physically realized historical method of serial rock attachment.",
+ "evidence": "Current walkway is rebuilt, not 2,000-year-old timber. Contemporary reports describe three rows of rock sockets and a restored walking structure; the detail is schematic.",
+ "photo": "https://img.pconline.com.cn/images/upload/upc/tx/photoblog/1405/03/c8/33822832_33822832_1399125322031.jpg",
+ "photoFrom": "PConline / Mingyue Gorge photograph",
+ "photoLink": "https://www.atlasofchina.com/places/guangyuan-mingyue-gorge/",
+ "sources": [
+  [
+   "Modern restored route and original socket evidence",
+   "https://www.atlasofchina.com/places/guangyuan-mingyue-gorge/"
+  ],
+  [
+   "Historic Shu Road support design",
+   "https://qinshuroads.org/docs/html/Shu_Roads_Introduction.htm"
+  ],
+  [
+   "2024 account of three rows of sockets",
+   "https://efile.fara.gov/docs/3457-Informational-Materials-20241213-612.pdf"
+  ]
+ ]
 }
 ];
