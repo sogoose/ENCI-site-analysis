@@ -1,7 +1,7 @@
 import {references} from './data.js?v=7';
 import {diagramFor} from './diagrams.js?v=9';
 import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
-import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=12';
+import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=13';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
@@ -73,14 +73,15 @@ function openReference(id,keepFocus=false){
  '<div class="archive-section-top"><span class="kicker">STRUCTURAL AXONOMETRIC / SOURCE-BASED</span><span class="archive-status">GEOMETRY / DIAGRAMMATIC — NOT A MEASURED RECONSTRUCTION</span></div>'+
  '<h3 class="archive-section-title">Timber × cliff / structural reading in three dimensions</h3>'+
  '<div class="plate-controls" role="group" aria-label="Axonometric view">'+
- '<button type="button" data-axon="assembly" aria-pressed="true" class="active">01 / FULL STRUCTURE</button>'+
- '<button type="button" data-axon="contact" aria-pressed="false">02 / SUPPORTS ONLY</button>'+
+ '<button type="button" data-axon="assembly" aria-pressed="true" class="active">01 / ROOF + STRUCTURE</button>'+
+ '<button type="button" data-axon="frame" aria-pressed="false">02 / TIMBER FRAME</button>'+
+ '<button type="button" data-axon="contact" aria-pressed="false">03 / SUPPORTS ONLY</button>'+
  '<span class="plate-grow"></span>'+
  '<button type="button" id="axon-expand">OPEN FULL SIZE ↗</button>'+
  '<button type="button" id="axon-save">SVG ↓</button></div>'+
  '<div class="plate-window" tabindex="0" aria-label="Axonometric diagram scroll region"><div id="axon-sheet" class="plate-sheet">'+axonPlate(r.id,'assembly')+'</div></div>'+
- '<div class="plate-meta"><span>GREY / ROCK SCHEMATIC</span><span>BROWN / TIMBER STRUCTURE</span><span>BLUE / REPORTED STRUCTURAL CONNECTION</span></div>'+
- '<p class="plate-warning">Only documented structural relationships are represented. The diagram does NOT reconstruct the roof design, cliff survey, actual number or spacing of sockets, historic joinery dimensions or footing geometry. Timber bay placement is representative, not an as-built model. See linked research sources for each claim.</p>'+
+ '<div class="plate-meta"><span>GREY / ROCK</span><span>CLAY / SCHEMATIC ROOF TILES</span><span>BROWN / TIMBER</span><span>BLUE / GROUND CONNECTION</span></div>'+
+ '<p class="plate-warning">Roof typologies are based on published architectural descriptions and photographs: Podok has layered Korean tiled roof forms, and Xuankong has tiled pavilions with projecting eaves. Tile courses, roof slope, roof framing and bay placement are schematic, NOT traced from as-built drawings. Switch to TIMBER FRAME or SUPPORTS ONLY to inspect rock attachment without the roof. See primary sources below.</p>'+
  '</section>':'';
  const detailedPlate=hasStructuralPlate(r.id)?
   '<section class="plate-module" aria-label="Refined analytical drawings">'+
