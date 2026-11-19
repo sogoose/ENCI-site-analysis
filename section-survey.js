@@ -67,3 +67,68 @@ export function dsmEnvelope(samples,len,bin=1){
  for(let j=0;j+1<samples.length;j+=2){const d=samples[j],h=samples[j+1];if(d>=0&&d<len&&Number.isFinite(h))cells[Math.min(cells.length-1,Math.floor(d/bin))].push(h)}
  return cells.map((c,i)=>{if(c.length<3)return null;c.sort((a,b)=>a-b);return [(i+.5)*bin,c[Math.floor(.85*(c.length-1))]]});
 }
+
+/**
+ * Project buildings located BEHIND the vertical cut plane into section
+ * coordinates. Used as a light grey architectural backdrop in SVG/DXF.
+ * 3D presentation separately uses the real clipped meshes (not hulls).
+ * The outline is intentionally a silhouette approximation, not a
+ * fabricated façade with invented openings.
+ */
+function silhouetteHull(points){
+ if(points.length<3)return [];
+ const pts=[...new Map(points.map(p=>[Math.round(p[0]*8)+','+Math.round(p[1]*8),p])).values()];
+ pts.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+ if(pts.length<3)return [];
+ const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+ const lower=[],upper=[];
+ for(const p of pts){while(lower.length>=2&&cross(lower.at(-2),lower.at(-1),p)<=0)lower.pop();lower.push(p)}
+ for(let i=pts.length-1;i>=0;i--){const p=pts[i];while(upper.length>=2&&cross(upper.at(-2),upper.at(-1),p)<=0)upper.pop();upper.push(p)}
+ lower.pop();upper.pop();
+ return lower.concat(upper);
+}
+export function projectBuildingBackdrop(roots,s,{flip=false,maxDepth=220}={}){
+ const dx=s.b[0]-s.a[0],dy=s.b[1]-s.a[1],len=Math.hypot(dx,dy);
+ if(len<=0)return [];
+ const ux=dx/len,uy=dy/len,normalX=uy,normalZ=ux,viewSign=flip?-1:1;
+ const result=[];
+ for(const root of roots){
+  if(!root)continue;root.updateMatrixWorld(true);
+  const kind=root.userData?.atlasIndustrial||root.userData?.atlasViewing?'approximate':'modelled';
+  root.traverse(mesh=>{
+   if(!mesh.isMesh||!mesh.geometry?.attributes?.position)return;
+   const attr=mesh.geometry.attributes.position,box=new THREE.Box3().setFromObject(mesh);
+   if(box.isEmpty())return;
+   // A world AABB lets us reject faraway / wrong-side meshes cheaply.
+   const corners=[[box.min.x,box.min.z],[box.min.x,box.max.z],[box.max.x,box.min.z],[box.max.x,box.max.z]];
+   const bounds=corners.map(([x,z])=>({
+    d:(x-s.a[0])*ux+(-z-s.a[1])*uy,
+    depth:-((x-s.a[0])*normalX+(z+s.a[1])*normalZ)*viewSign
+   }));
+   if(Math.max(...bounds.map(v=>v.d))<0||Math.min(...bounds.map(v=>v.d))>len||
+      Math.max(...bounds.map(v=>v.depth))<0||Math.min(...bounds.map(v=>v.depth))>maxDepth)return;
+   const points=[],depths=[],v=new THREE.Vector3();
+   // Small, measured geometric projection, without fictitious façade details.
+   const step=Math.max(1,Math.floor(attr.count/12000));
+   for(let i=0;i<attr.count;i+=step){
+    v.fromBufferAttribute(attr,i).applyMatrix4(mesh.matrixWorld);
+    const d=(v.x-s.a[0])*ux+(-v.z-s.a[1])*uy;
+    const depth=-((v.x-s.a[0])*normalX+(v.z+s.a[1])*normalZ)*viewSign;
+    if(d>=0&&d<=len&&depth>=.05&&depth<=maxDepth&&Number.isFinite(v.y)){
+     points.push([d,v.y]);depths.push(depth)
+    }
+   }
+   const hull=silhouetteHull(points);
+   if(hull.length<3) return;
+   const area=Math.abs(hull.reduce((sum,p,i)=>{
+     const q=hull[(i+1)%hull.length];return sum+p[0]*q[1]-q[0]*p[1]
+   },0))*.5;
+   if(area<.5)return;
+   const depth=depths.reduce((a,b)=>a+b,0)/depths.length;
+   result.push({points:hull,depth,kind,name:mesh.name||root.name||'Building'})
+  })
+ }
+ // Background silhouettes are painted back-to-front, distinct from the cut.
+ result.sort((a,b)=>b.depth-a.depth);
+ return result.slice(0,450)
+}
