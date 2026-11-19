@@ -231,3 +231,10 @@ body.views-mode #photo>img{max-height:32vh;width:100%;object-fit:contain;object-
  #terrain-focus{bottom:calc(var(--footer-clearance,100px) + 45px);
   max-height:calc(100dvh - var(--footer-clearance,100px) - 90px)}
 }
+
+/* Small, intentionally discreet jump to the separate architectural archive. */
+.brand-group{display:flex;align-items:baseline;gap:14px;flex-shrink:0}
+.micro-atlas-link{font-size:9px;letter-spacing:.055em;font-weight:400;color:#aaa;
+ white-space:nowrap;line-height:1.1;text-decoration:none;transition:color .15s ease}
+.micro-atlas-link:hover,.micro-atlas-link:focus-visible{color:#0033ff}
+@media(max-width:780px){.brand-group{gap:9px}.micro-atlas-link{font-size:9px;color:#989898}}
