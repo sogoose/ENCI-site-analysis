@@ -58,7 +58,7 @@ shore:()=>[
 sockets:()=>[
  // The rock-inserted beams carry cantilevered floor framing; visible lower
  // timber posts also reach intermittent rock ledges below the pavilions.
- rock("M0 0 H112 L138 18 115 44 132 78 120 109 141 141 159 161 191 166 210 180 H0 Z"),
+ rock("M0 0 H112 L138 18 115 44 132 78 120 109 141 141 159 161 217 164 237 180 H0 Z"),
  rock("M215 180 L233 155 250 152 276 173 290 180 Z"),
  '<path d="M91 70 H326 M93 110 H325" stroke="#88694a" stroke-width="8.5" stroke-linecap="square"/>',
  blue("M46 69 H151 M50 109 H150",3.5),node(72,70),node(74,110),

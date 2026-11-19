@@ -1,10 +1,10 @@
-import {references} from './data.js?v=1';
-import {diagramFor} from './diagrams.js?v=1';
+import {references} from './data.js?v=2';
+import {diagramFor} from './diagrams.js?v=2';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const families=['All','Anchored','Cantilevered','Inserted','Founded'];
+const families=['All','Anchored','Cantilevered','Inserted','Stilted'];
 let family='All',query='',shown=[...references],opened=null,returnFocus=null;
 function field(label,value){return '<div class="field"><span class="field-label">'+esc(label)+'</span><span class="field-value">'+esc(value)+'</span></div>'}
 function photo(r,large){
