@@ -235,3 +235,13 @@ html{scroll-behavior:auto}.case,.photo-frame img{transition:none}
 .plate-window:after{content:'';display:block}
 .plate-meta{font-size:8px;gap:6px}
 }
+
+/* Axon sketches keep the existing editorial grid while exposing the assembled
+   structural relationships as scaled vector drawings, never raster artwork. */
+.case-diagram.axon-mini{background:#fff;border-color:#dcdedc}
+.case-diagram.axon-mini svg{width:100%;height:100%;display:block}
+.axon-module{border-top-color:#0033ff}
+.axon-module .plate-sheet{min-width:920px}
+.axon-module .plate-window{background:#fff}
+.axon-module .plate-meta{letter-spacing:.025em}
+@media(max-width:650px){.axon-module .plate-sheet{min-width:830px}}

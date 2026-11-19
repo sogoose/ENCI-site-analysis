@@ -45,6 +45,12 @@ export const references = [
    "value": "Timber core enclosed by 19 copper bands; renewed in 1511",
    "status": "HISTORICAL MATERIAL ACCOUNT",
    "source": "https://www.fnnews.com/news/202101020803013265"
+  },
+  {
+   "label": "Structural axon / documented relation",
+   "value": "One wooden hall set against a natural cave; front edge sustained by one copper-sheathed timber prop and restrained to the rock by historical chains.",
+   "status": "STRUCTURAL TYPE ONLY / NO 3D SURVEY",
+   "source": "https://encykorea.aks.ac.kr/Article/E0023245"
   }
  ],
  "technicalUnknowns": "Actual copper skin gauge, timber core diameter, top connection, iron-chain anchorage, foot-to-rock construction joint, modern conservation status.",
@@ -61,6 +67,14 @@ export const references = [
   [
    "Historic photographs and 19 copper bands",
    "https://www.fnnews.com/news/202101020803013265"
+  ],
+  [
+   "Academy of Korean Studies / one bay, 7.3m post and roof types",
+   "https://encykorea.aks.ac.kr/Article/E0070871"
+  ],
+  [
+   "AKS / metal chain and rock fixing principle",
+   "https://encykorea.aks.ac.kr/Article/E0007529"
   ]
  ]
 },
@@ -763,7 +777,7 @@ export const references = [
  photo:"https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Datong_314.jpg/960px-Datong_314.jpg",
  photoFrom:"G41rn8 / Wikimedia Commons · CC BY-SA 4.0",
  photoLink:"https://commons.wikimedia.org/wiki/File:Datong_314.jpg",
- sources:[["Timber temple structural research / drawings","https://www.nature.com/articles/s40494-025-01608-y"],["Historic construction overview","https://en.chinaculture.org/library/2008-02/15/content_32449.htm"],["Photo and explanation of supplemental posts","https://commons.wikimedia.org/wiki/File:Datong_314.jpg"]]
+ sources:[["Timber temple structural research / drawings","https://www.nature.com/articles/s40494-025-01608-y"],["Historic construction overview","https://en.chinaculture.org/library/2008-02/15/content_32449.htm"],["Photo and explanation of supplemental posts","https://commons.wikimedia.org/wiki/File:Datong_314.jpg"],["Hengshan Scenic Area Authority / rock beams and support principles","https://www.byhs.net.cn/news_detial/9.html"],["Heritage Science / structural and seismic assessment","https://www.nature.com/articles/s40494-025-01608-y"]],technicalEvidence:[{"label":"Main timber rock beams","value":"Hengshan scenic authority describes 27 major timber crossbeams, around Ø0.5 m; their exact 3D placements are not represented here.","status":"SCENIC AREA AUTHORITY / PUBLISHED ACCOUNT","source":"https://www.byhs.net.cn/news_detial/9.html"},{"label":"Supplemental posts","value":"Authority describes 30 vertical wooden posts arranged beneath two pavilions and a walkway; locations differ from this schematic.","status":"SCENIC AREA AUTHORITY / PUBLISHED ACCOUNT","source":"https://www.byhs.net.cn/news_detial/9.html"},{"label":"Geology","value":"Ordovician limestone cliff with concave overhang providing natural weather protection.","status":"SCENIC AREA AUTHORITY / SITE GEOLOGY","source":"https://www.byhs.net.cn/news_detial/9.html"}]
 },{
  "id": "maijishan",
  "name": "Maijishan Cliff Galleries",

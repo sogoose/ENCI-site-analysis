@@ -1,7 +1,7 @@
 import {references} from './data.js?v=7';
 import {diagramFor} from './diagrams.js?v=9';
 import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
-import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=11';
+import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=12';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
@@ -132,8 +132,8 @@ function openReference(id,keepFocus=false){
  '<p class="detail-diagram-label">Conceptual load-path diagram, not an as-built engineering section or to scale. Blue indicates rock attachment.</p></div>'+
  '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+(r.dimensionNote?field('DIMENSION STATUS',r.dimensionNote):'')+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
  '<div class="detail-summary"><div><span class="kicker">STRUCTURAL LOGIC / 01</span><h3>'+esc(r.connection)+'</h3></div><div><p>'+esc(r.description)+'</p></div></div>'+
- structuralEvidence+
- axonModule+detailedPlate+originalArchive+timelineUI+analysisUI+
+ axonModule+structuralEvidence+
+ detailedPlate+originalArchive+timelineUI+analysisUI+
  '<div class="detail-warning"><strong>Evidence / limitation.</strong> '+esc(r.evidence)+'</div>'+
  '<div class="source-title">TECHNICAL SOURCES & ORIGINAL DRAWINGS / WHERE AVAILABLE</div>'+
  sources+
