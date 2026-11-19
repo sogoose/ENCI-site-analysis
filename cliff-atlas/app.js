@@ -1,10 +1,10 @@
-import {references} from './data.js?v=6';
+import {references} from './data.js?v=7';
 import {diagramFor} from './diagrams.js?v=6';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const families=['Historic','All','Korea','Anchored','Cantilevered','Inserted','Stilted','Founded'];
+const families=['Historic','Archives','All','Korea','Anchored','Cantilevered','Inserted','Stilted','Founded'];
 let family='Historic',query='',shown=[...references],opened=null,returnFocus=null;
 function field(label,value){return '<div class="field"><span class="field-label">'+esc(label)+'</span><span class="field-value">'+esc(value)+'</span></div>'}
 function photo(r,large){
@@ -21,7 +21,7 @@ function fallback(root){
 function renderTabs(){
  filters.replaceChildren();
  for(const f of families){
-  const n=f==='All'?references.length:references.filter(x=>f==='Korea'?x.place.includes('Korea'):f==='Historic'?!!x.historic:x.family===f).length;
+  const n=f==='All'?references.length:references.filter(x=>f==='Korea'?x.place.includes('Korea'):f==='Historic'?!!x.historic:f==='Archives'?!!x.measuredDrawings?.length:x.family===f).length;
   const b=document.createElement('button');b.type='button';
   b.className='filter'+(f===family?' active':'');b.setAttribute('aria-pressed',String(f===family));
   b.innerHTML=esc(f)+' <span class="count">'+n+'</span>';
@@ -39,13 +39,13 @@ function createCard(r){
  '<div class="case-name-row"><span class="case-title">'+esc(r.name)+'</span><span class="case-year">'+esc(r.year)+'</span></div>'+
  '<div class="case-place">'+esc(r.place)+'</div>'+
  '<div class="case-fields">'+field('SCALE',r.scale)+field('TERRAIN / GROUND',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIAL',r.materials)+'</div>'+
- '<div class="case-open"><span>'+esc(r.designer)+'</span><span>OPEN ↗</span></div>';
+ '<div class="case-open"><span>'+esc(r.measuredDrawings?.length?'ARCHIVE / '+r.measuredDrawings.length+' SOURCE RECORDS':r.designer)+'</span><span>OPEN ↗</span></div>';
  el.addEventListener('click',()=>openReference(r.id));return el;
 }
 function render(){
  renderTabs();
  const q=query.trim().toLowerCase();
- shown=references.filter(r=>(family==='All'||(family==='Korea'?r.place.includes('Korea'):family==='Historic'?!!r.historic:r.family===family))&&(!q||
+ shown=references.filter(r=>(family==='All'||(family==='Korea'?r.place.includes('Korea'):family==='Historic'?!!r.historic:family==='Archives'?!!r.measuredDrawings?.length:r.family===family))&&(!q||
  [r.name,r.year,r.place,r.designer,r.family,r.scale,r.connection,r.principle,r.materials,r.ground].some(v=>String(v).toLowerCase().includes(q))));
  grid.replaceChildren();
  if(!shown.length){const p=document.createElement('p');p.className='empty';p.textContent='No built references match this query.';grid.append(p)}
@@ -65,6 +65,33 @@ function openReference(id,keepFocus=false){
  ).join('')+
  (r.technicalUnknowns?'<div class="technical-unknown"><b>NOT VERIFIED / </b>'+esc(r.technicalUnknowns)+'</div>':'')+
  (r.researchNote?'<p class="technical-note">'+esc(r.researchNote)+'</p>':'')+'</section>':'';
+
+ const originalArchive=r.measuredDrawings?.length?
+  '<section class="primary-archive"><div class="archive-section-top"><span class="kicker">PRIMARY MATERIAL / 02</span><span class="archive-status">'+esc(r.researchStatus||'ARCHIVAL MATERIAL')+'</span></div>'+
+  '<h3 class="archive-section-title">Measured drawings & original survey records</h3>'+
+  (r.sourceUsage?'<p class="archive-usage">'+esc(r.sourceUsage)+'</p>':'')+
+  r.measuredDrawings.map(item=>
+    '<a class="archive-drawing-link" href="'+esc(item.url)+'" target="_blank" rel="noopener noreferrer">'+
+    '<span class="drawing-number">'+esc(item.ref)+'</span>'+
+    '<span class="drawing-desc">'+esc(item.label)+'<small>'+esc(item.drawing)+'</small></span>'+
+    '<span class="drawing-tag">'+esc(item.status)+'</span><span class="drawing-open">↗</span></a>'
+  ).join('')+'</section>':'';
+ const timelineUI=r.constructionTimeline?.length?
+  '<section class="primary-archive"><div class="archive-section-top"><span class="kicker">CONSTRUCTION TIMELINE / 03</span></div>'+
+  '<h3 class="archive-section-title">Original fabric vs. later restoration</h3>'+
+  r.constructionTimeline.map(item=>
+   '<div class="archive-timeline"><div class="archive-timeline-date">'+esc(item.phase)+'</div>'+
+   '<div class="archive-timeline-copy"><strong>'+esc(item.headline)+'</strong><p>'+esc(item.detail)+'</p>'+
+   '<a href="'+esc(item.source)+'" target="_blank" rel="noopener noreferrer">'+esc(item.status)+' ↗</a></div></div>'
+  ).join('')+'</section>':'';
+ const analysisUI=r.loadPathNotes?.length?
+  '<section class="primary-archive"><div class="archive-section-top"><span class="kicker">GEOMETRY × GROUND / 04</span></div>'+
+  '<h3 class="archive-section-title">How the rock becomes structure</h3>'+
+  r.loadPathNotes.map((item,i)=>
+   '<div class="archive-analysis"><div class="archive-analysis-num">'+String(i+1).padStart(2,'0')+'</div><div>'+
+   '<h4>'+esc(item.name)+'</h4><p>'+esc(item.detail)+'</p>'+
+   '<a href="'+esc(item.source)+'" target="_blank" rel="noopener noreferrer">'+esc(item.status)+' ↗</a></div></div>'
+  ).join('')+'</section>':'';
  const sources=r.sources.map(pair=>'<a class="source-link" href="'+esc(pair[1])+'" target="_blank" rel="noopener noreferrer"><span>'+esc(pair[0])+'</span><span>↗</span></a>').join('');
  detail.innerHTML=
  '<h2 class="detail-title" id="detail-title">'+esc(r.name)+'</h2>'+
@@ -76,6 +103,7 @@ function openReference(id,keepFocus=false){
  '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+(r.dimensionNote?field('DIMENSION STATUS',r.dimensionNote):'')+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
  '<div class="detail-summary"><div><span class="kicker">STRUCTURAL LOGIC / 01</span><h3>'+esc(r.connection)+'</h3></div><div><p>'+esc(r.description)+'</p></div></div>'+
  structuralEvidence+
+ originalArchive+timelineUI+analysisUI+
  '<div class="detail-warning"><strong>Evidence / limitation.</strong> '+esc(r.evidence)+'</div>'+
  '<div class="source-title">TECHNICAL SOURCES & ORIGINAL DRAWINGS / WHERE AVAILABLE</div>'+
  sources+
