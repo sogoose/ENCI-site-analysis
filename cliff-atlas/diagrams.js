@@ -5,6 +5,35 @@ const blue=(d,w=2.8)=>str(d,w,"#0033ff");
 const node=(x,y)=>`<circle cx="${x}" cy="${y}" r="3" fill="#0033ff"/>`;
 const label=(x,y,t)=>`<text x="${x}" y="${y}" font-size="7.7" font-weight="500" fill="#696c6e" letter-spacing=".08em">${t}</text>`;
 const types={
+
+"cable-ovo":()=>[
+ rock("M0 0 H118 L131 29 117 63 138 90 120 128 136 151 122 180 H0 Z"),
+ '<path d="M204 50 Q260 19 297 82 Q318 119 286 156 Q251 183 215 140 Q191 110 204 50Z" fill="#e2e8e5" fill-opacity=".8" stroke="#263333" stroke-width="2"/>',
+ str("M211 70Q251 40 288 67 M204 110H305 M216 143H285 M250 40V166",1.1),
+ blue("M119 18L245 42 M123 48L213 61 M121 127L211 134",1.8),
+ ...[[119,18],[123,48],[121,127]].map(([x,y])=>node(x,y)),
+ str("M133 107H202",1.3,"#777"),
+ label(141,17,"TENSION CABLES"),label(257,123,"POD"),
+ label(14,170,"ROCK ANCHORS"),label(142,176,"POSITIONS / COUNT SCHEMATIC")
+].join(""),
+"cable-skylodge":()=>[
+ rock("M0 0 H126 L121 33 139 62 123 105 142 139 129 180 H0 Z"),
+ '<path d="M161 61L194 45H320L350 68V109L320 127H194L161 109Z" fill="#e2e8e5" fill-opacity=".85" stroke="#28332f" stroke-width="1.9"/>',
+ str("M194 45V127 M320 45V127 M161 61H350 M161 109H350 M236 47V125 M278 47V125",.9),
+ blue("M123 12L194 45 M129 25L320 45",1.9),node(123,12),node(129,25),
+ str("M129 156L210 127 M130 119L164 109",2,"#777"),
+ label(149,18,"CABLE RESTRAINT"),label(169,142,"VISIBLE RIGID MEMBER"),label(144,171,"LOAD SHARE / JOINTS UNKNOWN")
+].join(""),
+"cable-walk":()=>[
+ rock("M0 0H129L119 41 132 76 122 110 136 145 125 180H0Z"),
+ '<path d="M128 88 Q240 132 346 82 L346 92 Q240 145 128 98Z" fill="#d8d9d2" stroke="#222" stroke-width="1.8"/>',
+ str("M128 69Q240 113 346 62 M128 69V88 M184 89V109 M242 97V114 M295 83V105 M346 62V82",1),
+ blue("M114 12L182 106 M121 26L241 115 M118 41L297 103 M130 55L346 87",1.6),
+ ...[[114,12],[121,26],[118,41],[130,55]].map(([x,y])=>node(x,y)),
+ label(148,32,"INCLINED CABLES"),label(152,148,"CURVED SEGMENT / N.T.S."),
+ label(10,172,"ROCK FACE")
+].join(""),
+
 rods:()=>[
  rock("M0 120 L65 119 100 126 140 137 184 141 235 158 320 164 380 167 V180 H0 Z"),
  `<rect x="89" y="38" width="231" height="67" fill="#fcfcfa" stroke="#202020" stroke-width="2.4"/>`,

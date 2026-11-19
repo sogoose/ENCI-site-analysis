@@ -2,6 +2,133 @@
 // A site-derived diagram is interpretive, NOT an as-built engineering section.
 export const references = [
 {
+ "id": "ovo-patagonia",
+ "name": "OVO Patagonia",
+ "year": "2024 opening",
+ "place": "El Chaltén, Santa Cruz, Argentina",
+ "designer": "Perspectiva Aérea / Ezequiel Ruete & Luis Aparicio",
+ "historic": false,
+ "cable": true,
+ "family": "Cable",
+ "scheme": "cable-ovo",
+ "scale": "4 capsules; 18 m² each; reported approx. 2 tonnes per unit",
+ "ground": "Exposed steep mountain rock face, Patagonia",
+ "connection": "Steel capsule frame held on the cliff by a system of anchors and tension cables. Project description emphasizes reversible connections and low-impact access. Exact load sharing between cable connections and other rock contacts has not been established.",
+ "materials": "Steel frame · polycarbonate shell · steel tension cables · rock anchors",
+ "principle": "Rock anchors + tension cables / lightweight capsule",
+ "description": "Four vertical ovoid inhabitable units use climbing-derived rigging and an aerial elevator for installation instead of constructing a heavy access road. Useful as an architectural-scale example of modular cliff construction, rather than as a tourism programme precedent.",
+ "evidence": "Designer description published by METALOCUS confirms the anchors and tension cables. 2023 press reports five cables rated at 3,000 kg each; a 2024 founder interview describes nine anchors and two overlapping stabilization systems. The reports do not define rating type, anchor allocation, or an equivalent set of structural design values. Section diagram represents component roles, NOT actual cable positions or counts.",
+ "photo": "https://www.metalocus.es/sites/default/files/2025-07/metalocus_Perspectiva%20Aerea_OVO-PATAGONIA_07.jpg",
+ "photoFrom": "OVO Patagonia / Perspectiva Aérea via METALOCUS",
+ "photoLink": "https://www.metalocus.es/en/news/rest-edge-abyss-ovo-patagonia-perspectiva-aerea",
+ "dimensionNote": "Design team states 18 m² per capsule. Do not confuse the reported elevation above valley with building dimensions.",
+ "technicalEvidence": [
+  {
+   "label": "Inhabitable unit",
+   "value": "18 m²; four capsules",
+   "status": "DESIGNER PROJECT DESCRIPTION",
+   "source": "https://www.metalocus.es/en/news/rest-edge-abyss-ovo-patagonia-perspectiva-aerea"
+  },
+  {
+   "label": "Cable system",
+   "value": "Five steel cables; reported 3,000 kg per cable",
+   "status": "2023 PRESS / CAPACITY TYPE UNKNOWN",
+   "source": "https://www.lanacion.com.ar/revista-lugares/como-son-las-capsulas-de-vidrio-con-vista-al-fitz-roy-que-se-estrenan-en-el-chalten-nid30092023/"
+  },
+  {
+   "label": "Redundancy and mass",
+   "value": "Approx. 2 tonnes per capsule; nine anchors and two overlapping stabilization systems reported",
+   "status": "2024 FOUNDER INTERVIEW / SCOPE & RATING TYPE UNSPECIFIED",
+   "source": "https://tollbit.forbes.com/sites/annabel/2024/07/22/this-new-extreme-hotel-in-patagonia-takes-adventure-travel-to-new-heights/"
+  },
+  {
+   "label": "Installation",
+   "value": "Aerial elevator; specialist high-altitude team",
+   "status": "FOUNDER INTERVIEW / CONSTRUCTION ACCOUNT",
+   "source": "https://tollbit.forbes.com/sites/annabel/2024/07/22/this-new-extreme-hotel-in-patagonia-takes-adventure-travel-to-new-heights/"
+  }
+ ],
+ "technicalUnknowns": "Cable diameter and material grade, exact inclination, anchor depth, termination hardware, preload, structural load sharing and rating basis.",
+ "sources": [
+  [
+   "Designer project description and photographs",
+   "https://www.metalocus.es/en/news/rest-edge-abyss-ovo-patagonia-perspectiva-aerea"
+  ],
+  [
+   "Design studio",
+   "https://perspectiva-aerea.com/"
+  ],
+  [
+   "2023 construction report",
+   "https://www.lanacion.com.ar/revista-lugares/como-son-las-capsulas-de-vidrio-con-vista-al-fitz-roy-que-se-estrenan-en-el-chalten-nid30092023/"
+  ],
+  [
+   "2024 founder interview",
+   "https://tollbit.forbes.com/sites/annabel/2024/07/22/this-new-extreme-hotel-in-patagonia-takes-adventure-travel-to-new-heights/"
+  ]
+ ]
+},
+{
+ "id": "skylodge",
+ "name": "Skylodge Adventure Suites",
+ "year": "Documented 2015",
+ "place": "Sacred Valley, Cusco, Peru",
+ "designer": "Natura Vive / Ario Ferri",
+ "historic": false,
+ "cable": true,
+ "family": "Cable",
+ "scheme": "cable-skylodge",
+ "scale": "3 original capsules; reported 24 × 8 × 8 ft (approx. 7.3 × 2.4 × 2.4 m)",
+ "ground": "Steep exposed rock face above Sacred Valley",
+ "connection": "Steel cables anchor and stabilize the aluminum-framed modules against the cliff. Photographs also show rigid members beneath some modules. Do not assume that the capsules are supported exclusively by cables or that the nearby via-ferrata cables are load-bearing components of the rooms.",
+ "materials": "Aerospace aluminum frame · polycarbonate · steel cables · rock connections",
+ "principle": "Cable restraint + rigid supports / rock-fixed capsule",
+ "description": "Lightweight prefabricated pods were transported to an inaccessible cliff as separate modules and assembled using climbing equipment, ropes and pulleys. This is an assembly and attachment precedent, independent of its lodging programme.",
+ "evidence": "Natura Vive confirms the three original capsule suites and materials. Arch2O specifically describes steel cables anchoring and stabilizing the modules. The designer interview confirms three modules per suite and rope/pulley installation. The supporting frame and connections are not fully surveyed; diagram is conceptual.",
+ "photo": "https://codi-blog-media.s3.amazonaws.com/media/original_images/20180701_083104.jpg",
+ "photoFrom": "The Casual Adventurer / photograph of capsule underside",
+ "photoLink": "https://thecasualadventurer.com/trips/international/sleeping-edge-cliff-peru/",
+ "technicalEvidence": [
+  {
+   "label": "Unit dimensions",
+   "value": "24 × 8 × 8 ft, approximately 7.3 × 2.4 × 2.4 m",
+   "status": "2015 PUBLISHED PROJECT DESCRIPTION",
+   "source": "https://www.designboom.com/architecture/skylodge-adventure-suites-natura-vive-glass-pods-peru-07-09-2015/"
+  },
+  {
+   "label": "Rock connection",
+   "value": "Structural steel cables used to anchor and stabilize pods",
+   "status": "ARCHITECTURAL PROJECT REPORT",
+   "source": "https://www.arch2o.com/skylodge-adventure-suites-natura-vive/"
+  },
+  {
+   "label": "Assembly sequence",
+   "value": "3 modules per suite; 9 modules for the original 3 suites; ropes, cables and pulleys",
+   "status": "DESIGNER INTERVIEW",
+   "source": "https://www.cladglobal.com/architecture-design-features?codeid=30341&p=1&source=home"
+  }
+ ],
+ "technicalUnknowns": "Exact cable layout and diameter, anchor embedment, force share between cables and rigid members, as-built support joints.",
+ "sources": [
+  [
+   "Natura Vive / official project",
+   "https://naturavive.com/web/skylodge-adventure-suites/"
+  ],
+  [
+   "Dimensions and materials",
+   "https://www.designboom.com/architecture/skylodge-adventure-suites-natura-vive-glass-pods-peru-07-09-2015/"
+  ],
+  [
+   "Cable anchorage description",
+   "https://www.arch2o.com/skylodge-adventure-suites-natura-vive/"
+  ],
+  [
+   "Designer interview / modular installation",
+   "https://www.cladglobal.com/architecture-design-features?codeid=30341&p=1&source=home"
+  ]
+ ]
+},
+{
  "id": "podokam",
  "historic": true,
  "name": "Podok Hermitage · 보덕암",
@@ -670,18 +797,69 @@ export const references = [
  photoLink:"https://juvet.com/landskapsromma",
  sources:[["Project & structural description","https://www.area-arch.it/en/juvet-landscape-hotel/"],["Published plans and project review (PDF)","https://www.coam.org/media/Default%20Files/fundacion/biblioteca/revista-arquitectura-100/2008-2012/docs/revista-arquitectura-2010-n360-pag40-45.pdf"]]
 },{
- id:"capilano",name:"Capilano Cliffwalk",year:"2011",place:"North Vancouver, Canada",designer:"Pheidias Project Management / structural consultants",
- family:"Anchored",scheme:"rockwalk",scale:"Cliffside pedestrian walkway",
- ground:"Steep granite canyon face",
- connection:"Steel walkway members connected through rock anchors; rockfall and cliff-stability systems include bolts and protective fencing.",
- materials:"Structural steel · steel cables · anchors · decking",
- principle:"Rock anchors / cliff brackets",
- description:"A suspended and cantilevered walkway follows the face of a canyon. The critical interface is between engineered steelwork and an uneven, stability-assessed natural rock wall.",
- evidence:"Rock bolts and stability works are documented in engineering papers; schematic bracket spacing and anchor layout are not as-built dimensions.",
- photo:"https://globalduniya.ca/uploads/tours/gallery/TP-0902-9829/Cliffwalk_at_Capilano_Suspension_Bridge_Vancouver_%2830852712848%29.jpg",
- photoFrom:"Globalduniya / Capilano Cliffwalk photo",
- photoLink:"https://globalduniya.ca/attraction/capilano-suspension-bridge",
- sources:[["Design and construction paper (PDF)","https://conf.tac-atc.ca/english/annualconference/tac2011/docs/s1/larose.pdf"],["Steel construction reference","https://www.cisc-icca.ca/projects/capilano-cliffwalk-2/"]]
+ "id": "capilano",
+ "name": "Capilano Cliffwalk",
+ "year": "2011",
+ "place": "North Vancouver, Canada",
+ "designer": "Pheidias Project Management / structural consultants",
+ "family": "Anchored",
+ "scheme": "cable-walk",
+ "scale": "213 m overall; approx. 20 m cable-supported curved segment; 0.5 m typical width",
+ "ground": "Steep granite canyon face",
+ "connection": "The majority of the 213 m route uses rigid cantilevered walkway supports. A separate curved segment uses nine inclined structural cables attached high on the cliff. These are not the guardrail mesh cables.",
+ "materials": "Structural steel · steel cables · anchors · decking",
+ "principle": "Curved cable-supported segment + separate rigid cantilever route",
+ "description": "A suspended and cantilevered walkway follows the face of a canyon. The critical interface is between engineered steelwork and an uneven, stability-assessed natural rock wall.",
+ "evidence": "2011 engineering paper confirms a 213 m route, majority projecting 3 m, and cable-supported curved bridge. ENR construction report gives nine cables and 65 ft curved bridge, 10–16 ft rock bolts within the project. These bolt lengths are project-wide and not necessarily the cable termination embedment.",
+ "photo": "https://cdn.getyourguide.com/img/tour/8da6630483c44700.jpeg/145.jpg",
+ "photoFrom": "GetYourGuide / cable-supported curved Cliffwalk segment",
+ "photoLink": "https://www.getyourguide.com/vancouver-l189/north-shore-capilano-suspension-bridge-and-grouse-mountain-t26644/",
+ "sources": [
+  [
+   "Design and construction paper (PDF)",
+   "https://conf.tac-atc.ca/english/annualconference/tac2011/docs/s1/larose.pdf"
+  ],
+  [
+   "Steel construction reference",
+   "https://www.cisc-icca.ca/projects/capilano-cliffwalk-2/"
+  ],
+  [
+   "2011 engineering paper abstract",
+   "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/conference-papers/design-and-construction-of-the-capilano-cliffwalk/"
+  ],
+  [
+   "Construction report with nine cable supports",
+   "https://www.enr.com/articles/18870-vancouver-footbridge-clings-to-cliff"
+  ]
+ ],
+ "cable": true,
+ "technicalEvidence": [
+  {
+   "label": "Curved cable-supported segment",
+   "value": "65 ft (approx. 20 m); nine inclined cables",
+   "status": "ENGINEERING CONSTRUCTION REPORT",
+   "source": "https://www.enr.com/articles/18870-vancouver-footbridge-clings-to-cliff"
+  },
+  {
+   "label": "Total route",
+   "value": "213 m; typical 3 m projection from cliff",
+   "status": "2011 DESIGN AND CONSTRUCTION PAPER",
+   "source": "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/conference-papers/design-and-construction-of-the-capilano-cliffwalk/"
+  },
+  {
+   "label": "Rock bolts",
+   "value": "10–16 ft (approx. 3–4.9 m), reported for walkway project",
+   "status": "PROJECT-WIDE BOLTS / NOT CABLE-SPECIFIC",
+   "source": "https://www.enr.com/articles/18870-vancouver-footbridge-clings-to-cliff"
+  },
+  {
+   "label": "Field-to-fabrication",
+   "value": "Surveyed installed anchor plates; 3D detailing of steelwork; final closure mismatch 15 mm",
+   "status": "2011 DESIGN AND CONSTRUCTION PAPER",
+   "source": "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/conference-papers/design-and-construction-of-the-capilano-cliffwalk/"
+  }
+ ],
+ "technicalUnknowns": "Cable diameters, terminal hardware dimensions and cable-specific rock anchor depths not established from cited summaries."
 },{
  id:"glacier",name:"Glacier Skywalk",year:"2014",place:"Jasper, Alberta, Canada",designer:"Sturgess Architecture / structural & geotechnical team",
  family:"Cantilevered",scheme:"micropile",scale:"Curved glass-floor observation platform",
