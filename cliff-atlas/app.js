@@ -1,5 +1,6 @@
 import {references} from './data.js?v=7';
 import {diagramFor} from './diagrams.js?v=6';
+import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=8';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
@@ -66,6 +67,20 @@ function openReference(id,keepFocus=false){
  (r.technicalUnknowns?'<div class="technical-unknown"><b>NOT VERIFIED / </b>'+esc(r.technicalUnknowns)+'</div>':'')+
  (r.researchNote?'<p class="technical-note">'+esc(r.researchNote)+'</p>':'')+'</section>':'';
 
+ const detailedPlate=hasStructuralPlate(r.id)?
+  '<section class="plate-module" aria-label="Refined analytical drawings">'+
+  '<div class="archive-section-top"><span class="kicker">ARCHITECTURAL ANALYSIS / VECTOR DRAWINGS</span><span class="archive-status">ORIGINAL INTERPRETATION · NOT MEASURED</span></div>'+
+  '<h3 class="archive-section-title">Rock × timber / reconstructed structural reading</h3>'+
+  '<div class="plate-controls" role="group" aria-label="Choose drawing view">'+
+  '<button type="button" data-plate="section" class="active" aria-pressed="true">01 / STRUCTURAL SECTION</button>'+
+  '<button type="button" data-plate="joint" aria-pressed="false">02 / ROCK CONTACT</button>'+
+  '<span class="plate-grow"></span>'+
+  '<button type="button" id="plate-expand">OPEN FULL SIZE ↗</button>'+
+  '<button type="button" id="plate-save">SVG ↓</button></div>'+
+  '<div class="plate-window" tabindex="0" aria-label="Scrollable technical section drawing"><div id="plate-sheet" class="plate-sheet">'+structuralPlate(r.id,"section")+'</div></div>'+
+  '<div class="plate-meta"><span>HATCH / NATURAL ROCK</span><span>BLUE / LOAD PATH &amp; ROCK CONTACT</span><span>TIMBER / SCHEMATIC FRAME</span></div>'+
+  '<p class="plate-warning">The analytical redrawings distinguish documented construction principles from unknown dimensions. They are neither tracings of the original survey plates nor 1:5 construction drawings. For original dimensioned materials, open the linked archival sheets below.</p>'+
+  '</section>':'';
  const originalArchive=r.measuredDrawings?.length?
   '<section class="primary-archive"><div class="archive-section-top"><span class="kicker">PRIMARY MATERIAL / 02</span><span class="archive-status">'+esc(r.researchStatus||'ARCHIVAL MATERIAL')+'</span></div>'+
   '<h3 class="archive-section-title">Measured drawings & original survey records</h3>'+
@@ -103,11 +118,38 @@ function openReference(id,keepFocus=false){
  '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+(r.dimensionNote?field('DIMENSION STATUS',r.dimensionNote):'')+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
  '<div class="detail-summary"><div><span class="kicker">STRUCTURAL LOGIC / 01</span><h3>'+esc(r.connection)+'</h3></div><div><p>'+esc(r.description)+'</p></div></div>'+
  structuralEvidence+
- originalArchive+timelineUI+analysisUI+
+ detailedPlate+originalArchive+timelineUI+analysisUI+
  '<div class="detail-warning"><strong>Evidence / limitation.</strong> '+esc(r.evidence)+'</div>'+
  '<div class="source-title">TECHNICAL SOURCES & ORIGINAL DRAWINGS / WHERE AVAILABLE</div>'+
  sources+
  '<a class="source-link" href="'+esc(r.photoLink)+'" target="_blank" rel="noopener noreferrer"><span>Photographic project source</span><span>↗</span></a>';
+
+ const plateNode=detail.querySelector('.plate-module');
+ if(plateNode){
+  let mode='section';
+  const sheet=plateNode.querySelector('#plate-sheet');
+  const svgContent=()=>structuralPlate(r.id,mode);
+  const outputFile=()=>{
+   const drawing=svgContent();
+   const blob=new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n',drawing],{type:'image/svg+xml'});
+   return {blob,url:URL.createObjectURL(blob)}
+  };
+  plateNode.querySelectorAll('[data-plate]').forEach(button=>button.addEventListener('click',()=>{
+   mode=button.dataset.plate;
+   sheet.innerHTML=svgContent();
+   plateNode.querySelectorAll('[data-plate]').forEach(b=>{const active=b===button;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+  }));
+  plateNode.querySelector('#plate-save').addEventListener('click',()=>{
+   const f=outputFile(),a=document.createElement('a');
+   a.href=f.url;a.download='CliffAtlas_'+r.id+'_'+mode+'_interpretive.svg';a.click();
+   setTimeout(()=>URL.revokeObjectURL(f.url),30000)
+  });
+  plateNode.querySelector('#plate-expand').addEventListener('click',()=>{
+   const f=outputFile();const win=window.open(f.url,'_blank','noopener');
+   if(!win){const a=document.createElement('a');a.href=f.url;a.download='CliffAtlas_'+r.id+'_'+mode+'_interpretive.svg';a.click()}
+   setTimeout(()=>URL.revokeObjectURL(f.url),180000)
+  });
+ }
  fallback(detail);
  if(!dialog.open)dialog.showModal();
  $('.detail-shell').scrollTop=0;
