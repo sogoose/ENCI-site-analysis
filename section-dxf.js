@@ -51,7 +51,8 @@ export function buildSectionDxf({s,points,spans=[],floor,landscape=null,history=
  }
  for(const row of history){const name=layer('HISTORICAL_'+row.y,8);runs(row.points,r=>path(name,r))}
  if(buildings){
-  layer('BUILDINGS_MODELLED',8,'#cbd1d6');layer('BUILDINGS_APPROXIMATE',32,'#d9c9b6');
+  layer('BUILDINGS_MODELLED',8,'#727d86');layer('BUILDINGS_APPROXIMATE',32,'#9f907c');layer('BUILDINGS_BACKDROP_MODELLED',8,'#d4d9dc');layer('BUILDINGS_BACKDROP_APPROXIMATE',32,'#e2dcd4');
+  for(const shape of buildings.backdrop||[]){const name=shape.kind==='approximate'?'BUILDINGS_BACKDROP_APPROXIMATE':'BUILDINGS_BACKDROP_MODELLED';path(name,shape.points,true)}
   for(const shape of buildings.polygons){const name=shape.kind==='approximate'?'BUILDINGS_APPROXIMATE':'BUILDINGS_MODELLED';path(name,shape.points,true)}
   for(const shape of buildings.lines){const name=shape.kind==='approximate'?'BUILDINGS_APPROXIMATE':'BUILDINGS_MODELLED';path(name,shape.points)}
  }
@@ -71,6 +72,6 @@ export function buildSectionDxf({s,points,spans=[],floor,landscape=null,history=
  text('SECTION_LABELS',0,top+unit*.14,id,unit*.018);text('SECTION_LABELS',len,top+unit*.14,id+"'",unit*.018);
  const side=flip?len+unit*.028:-unit*.028,tick=top-floor>160?50:top-floor>75?25:10;for(let h=Math.ceil(floor/tick)*tick;h<=top;h+=tick){path('SECTION_DIMENSIONS',[[flip?len:0,h],[side,h]]);text('SECTION_DIMENSIONS',side+(flip?1:-1)*unit*.035,h,(h>0?'+':'')+h,unit*.009)}
  text('SECTION_LABELS',side,top+unit*.045,'m NAP',unit*.009);
- return w.finish('ENCI '+year+' / '+s.id+' / local Rhino XYZ metres / Z = NAP - '+zOffset+' m / modelled geology and schematic landscape; 2025 DSM corridor samples and building intersections on separate layers; water depth unknown');
+ return w.finish('ENCI '+year+' / '+s.id+' / local Rhino XYZ metres / Z = NAP - '+zOffset+' m / modelled geology and schematic landscape; 2025 DSM returns, intersected building solids and behind-cut projected building outlines on separate layers; water depth unknown');
 }
 export function buildGuidesDxf({cuts,zOffset=0,year=2026}){const w=writer();w.layer('SECTION_GUIDES',7);w.layer('SECTION_LABELS',7);for(const {s,points} of cuts){runs(points,r=>w.poly('SECTION_GUIDES',r.map(([d,h])=>sectionPoint(s,d,h,zOffset))));const middle=Math.hypot(s.b[0]-s.a[0],s.b[1]-s.a[1])/2,h=heights(points,middle);if(Number.isFinite(h))w.text('SECTION_LABELS',sectionPoint(s,middle,h,zOffset),s.id.replace(/^S0*/,''),7)}return w.finish('ENCI '+year+' / local Rhino XYZ metres / Z = NAP - '+zOffset+' m')}
