@@ -1,4 +1,4 @@
-import {references} from './data.js?v=4';
+import {references} from './data.js?v=5';
 import {diagramFor} from './diagrams.js?v=3';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
@@ -57,6 +57,14 @@ function openReference(id,keepFocus=false){
  if(!keepFocus)returnFocus=document.activeElement;
  opened=id;const n=references.indexOf(r);
  $('#detail-index').textContent=String(n+1).padStart(2,'0')+' / '+String(references.length).padStart(2,'0')+' — '+r.family.toUpperCase();
+ const structuralEvidence=r.technicalEvidence?.length?
+ '<section class="technical-block"><div class="source-title">STRUCTURAL DIMENSIONS / EVIDENCE STATUS</div>'+
+ r.technicalEvidence.map(item=>
+ '<div class="technical-row"><div class="technical-row-label">'+esc(item.label)+'</div><div class="technical-row-value">'+esc(item.value)+'</div>'+
+ '<div class="technical-row-status"><span>'+esc(item.status)+'</span> <a href="'+esc(item.source)+'" target="_blank" rel="noopener noreferrer">SOURCE ↗</a></div></div>'
+ ).join('')+
+ (r.technicalUnknowns?'<div class="technical-unknown"><b>NOT VERIFIED / </b>'+esc(r.technicalUnknowns)+'</div>':'')+
+ (r.researchNote?'<p class="technical-note">'+esc(r.researchNote)+'</p>':'')+'</section>':'';
  const sources=r.sources.map(pair=>'<a class="source-link" href="'+esc(pair[1])+'" target="_blank" rel="noopener noreferrer"><span>'+esc(pair[0])+'</span><span>↗</span></a>').join('');
  detail.innerHTML=
  '<h2 class="detail-title" id="detail-title">'+esc(r.name)+'</h2>'+
@@ -67,6 +75,7 @@ function openReference(id,keepFocus=false){
  '<p class="detail-diagram-label">Conceptual load-path diagram, not an as-built engineering section or to scale. Blue indicates rock attachment.</p></div>'+
  '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+(r.dimensionNote?field('DIMENSION STATUS',r.dimensionNote):'')+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
  '<div class="detail-summary"><div><span class="kicker">STRUCTURAL LOGIC / 01</span><h3>'+esc(r.connection)+'</h3></div><div><p>'+esc(r.description)+'</p></div></div>'+
+ structuralEvidence+
  '<div class="detail-warning"><strong>Evidence / limitation.</strong> '+esc(r.evidence)+'</div>'+
  '<div class="source-title">TECHNICAL SOURCES & ORIGINAL DRAWINGS / WHERE AVAILABLE</div>'+
  sources+

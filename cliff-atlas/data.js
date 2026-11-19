@@ -258,7 +258,23 @@ export const references = [
    "https://www.ii.re.kr/storage/report/BB0000026308.pdf"
   ]
  ],
- "dimensionNote": "~20 m is a published account of the tall support posts, not a verified measured drawing. Hall width, plan depth, post spacing, and footing detail remain unknown."
+ "dimensionNote": "~20 m is a published account of the tall support posts, not a verified measured drawing. Hall width, plan depth, post spacing, and footing detail remain unknown.",
+ "technicalEvidence": [
+  {
+   "label": "Visible support height",
+   "value": "Approximately 20 m",
+   "status": "REPORTED, NOT MEASURED",
+   "source": "https://biz.heraldcorp.com/article/10573774"
+  },
+  {
+   "label": "Rock-column contact",
+   "value": "Columns visibly reach uneven lower ledges",
+   "status": "PHOTOGRAPHIC EVIDENCE",
+   "source": "https://www.ohmynews.com/NWS_Web/view/at_pg.aspx?CNTN_CD=A0003091589"
+  }
+ ],
+ "technicalUnknowns": "Verified hall footprint; timber column section and spacing; actual post free height; foundation restraint / ledge bearing dimensions; lateral bracing and rock interface.",
+ "researchNote": "The c.20 m figure is a reporter's description of support height, not a surveyed free-column dimension. The hall has undergone later repair; do not treat it as an untouched ancient structure."
 },
 {
  "id": "yonggwolsan",
@@ -296,7 +312,29 @@ export const references = [
    "https://www.joongang.co.kr/article/25186979"
   ]
  ],
- "dimensionNote": "1,096 m is the combined deck-route length after the 2023 extension, not a single structural span. ~1.5 m is a reported approximate deck width. Individual module spans, post heights and anchorage depths are not published."
+ "dimensionNote": "1,096 m is the combined deck-route length after the 2023 extension, not a single structural span. ~1.5 m is a reported approximate deck width. Individual module spans, post heights and anchorage depths are not published.",
+ "technicalEvidence": [
+  {
+   "label": "Completed route",
+   "value": "1,096 m total × approx. 1.5 m walking width",
+   "status": "PUBLIC ROUTE / REPORTED WIDTH",
+   "source": "https://v.daum.net/v/20230825000255915"
+  },
+  {
+   "label": "Construction access",
+   "value": "Materials moved by helicopter; steel elements drilled into steep rock",
+   "status": "SITE CONSTRUCTION REPORT",
+   "source": "https://v.daum.net/v/20230825000255915"
+  },
+  {
+   "label": "2026 supplement design brief",
+   "value": "Proposed 150 m × 1.8 m new stone-step-area deck",
+   "status": "NEW WORK — NOT EXISTING AS-BUILT",
+   "source": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01311339&bidPbancOrd=000&fileSeq=1&fileType=&prcmBsneSeCd=05"
+  }
+ ],
+ "technicalUnknowns": "Existing individual deck module span; spacing and section of steel support posts; post free height; drill diameter, anchor embedment and tested pull-out capacities.",
+ "researchNote": "Do not transfer 1.8 m from a 2026 design assignment to the earlier 1.5 m walkway. The proposed deck is a separate, not yet verified constructed, segment."
 },
 {
  "id": "hantangang",
@@ -330,7 +368,35 @@ export const references = [
    "https://www.tour.go.kr/FileSystem/UploadTemp/SendNewsLetter/week_poliy%282021_11_04%29.pdf"
   ]
  ],
- "dimensionNote": "3.6 km covers the entire trail including cliff walkway, multiple bridges, and viewpoints. It is not a continuous cantilever. Individual cantilever projections, support spacing, and anchorage depths remain unknown."
+ "dimensionNote": "3.6 km covers the entire trail including cliff walkway, multiple bridges, and viewpoints. It is not a continuous cantilever. Individual cantilever projections, support spacing, and anchorage depths remain unknown.",
+ "technicalEvidence": [
+  {
+   "label": "Original route components",
+   "value": "709 m cliff gallery + 2.2 km timber/steel deck route + 13 bridges + 3 viewpoints",
+   "status": "GOVERNMENT 2021 COMPLETION REPORT",
+   "source": "https://www.tour.go.kr/FileSystem/UploadTemp/SendNewsLetter/week_poliy%282021_11_04%29.pdf"
+  },
+  {
+   "label": "2025 slope stabilization rock bolt",
+   "value": "Ø25 mm × 5.0 m; grouted cement-paste system",
+   "status": "DESIGN SPEC — ROCKFALL SAFETY ONLY",
+   "source": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R25BK01001896&bidPbancOrd=000&fileSeq=3&fileType="
+  },
+  {
+   "label": "2025 rock-bolt bearing plate",
+   "value": "150 × 150 × 9 mm; wire rope Ø16 mm",
+   "status": "DESIGN SPEC — ROCKFALL SAFETY ONLY",
+   "source": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R25BK01001896&bidPbancOrd=000&fileSeq=3&fileType="
+  },
+  {
+   "label": "Nearby Dureumi suspension bridge",
+   "value": "201 m length × 2.0 m clear deck; ring frames Ø5m at 9m spacing; secondary beams 1.5 m apart",
+   "status": "SEPARATE BUILT BRIDGE — NOT CLIFF GALLERY",
+   "source": "https://journal.kibse.or.kr/articles/xml/PgD9/"
+  }
+ ],
+ "technicalUnknowns": "Original cliff-gallery cantilever projection; gallery bracket center-to-center spacing, rock anchor diameter and embedment; structural grout details; open-edge post free heights.",
+ "researchNote": "The 2025 Ø25×5m rock bolts reinforce slopes and rockfall nets, NOT the cliff walkway deck. A separate 201m Dureumi cable-net footbridge demonstrates an alternative response to weak columnar-jointed gorge rock; its measurements must never be ascribed to the 709m cliff gallery."
 },
 {
  "id": "byeongbangchi",
@@ -368,6 +434,22 @@ export const references = [
    "https://www.yna.co.kr/view/AKR20170202050800805"
   ]
  ],
- "dimensionNote": "11 m is the publicly described length of the U-shaped visitor structure, not a verified free cantilever span or exact distance from the cliff edge. The foundation, net overhang and anchorage are unverified."
+ "dimensionNote": "11 m is the publicly described length of the U-shaped visitor structure, not a verified free cantilever span or exact distance from the cliff edge. The foundation, net overhang and anchorage are unverified.",
+ "technicalEvidence": [
+  {
+   "label": "Visitor platform",
+   "value": "11 m overall U-shape × about 2 m walkway width",
+   "status": "TOURISM / PUBLIC STRUCTURE DATA",
+   "source": "https://access.visitkorea.or.kr/ms/detail.do?cotId=372fd1f9-9243-4352-8312-fc961573763f"
+  },
+  {
+   "label": "Site height",
+   "value": "583 m above sea level (not platform clearance)",
+   "status": "SITE ELEVATION",
+   "source": "https://access.visitkorea.or.kr/ms/detail.do?cotId=372fd1f9-9243-4352-8312-fc961573763f"
+  }
+ ],
+ "technicalUnknowns": "True unconstrained cantilever span beyond the support plane; concrete footings, rock anchor diameter/spacing/embedment, steel beam dimensions and tip deflection.",
+ "researchNote": "The published 11 m dimension describes the U-shaped walkway length; it is not a verified 11 m free cantilever. Ground elevation at 583 m is not the height of the deck above rock."
 }
 ];
