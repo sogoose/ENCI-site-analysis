@@ -234,7 +234,7 @@ export const references = [
  "designer": "Korean temple craft tradition / subsequent reconstruction",
  "family": "Stilted",
  "scheme": "saseongam",
- "scale": "Elevated hall with reported c. 20 m high supporting posts",
+ "scale": "Reported ~20 m supporting-post height; hall plan dimensions not published",
  "ground": "Steep irregular rock face and discontinuous rock ledges",
  "connection": "Painted timber hall with tall slender supporting columns standing on or reaching lower rock ledges; rear of the hall is closely integrated with an uneven cliff face. Precise foundation and rock-to-column joint details not verified.",
  "materials": "Timber columns and beams · tiled roof · natural rock · stone masonry",
@@ -257,7 +257,8 @@ export const references = [
    "Heritage study / site preservation (PDF)",
    "https://www.ii.re.kr/storage/report/BB0000026308.pdf"
   ]
- ]
+ ],
+ "dimensionNote": "~20 m is a published account of the tall support posts, not a verified measured drawing. Hall width, plan depth, post spacing, and footing detail remain unknown."
 },
 {
  "id": "yonggwolsan",
@@ -267,7 +268,7 @@ export const references = [
  "designer": "Sunchang County / trail construction contractors",
  "family": "Anchored",
  "scheme": "cliffposts",
- "scale": "1,096 m route along exposed sloping rock",
+ "scale": "1,096 m total deck route × ~1.5 m walking width",
  "ground": "Steep exposed bedrock slab (reported slope about 60°)",
  "connection": "Metal support columns fixed into the steep rock surface carry raised timber walking-deck units above the irregular inclined ground. Details of embedment, bolt size and foundation design not yet verified.",
  "materials": "Steel support posts · timber deck · protective railings · exposed bedrock",
@@ -289,8 +290,13 @@ export const references = [
   [
    "Municipal 2026 refurbishment specification (PDF)",
    "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01311339&bidPbancOrd=000&fileSeq=1&fileType=&prcmBsneSeCd=05"
+  ],
+  [
+   "JoongAng Ilbo: approximate 1.5 m deck width and construction logistics",
+   "https://www.joongang.co.kr/article/25186979"
   ]
- ]
+ ],
+ "dimensionNote": "1,096 m is the combined deck-route length after the 2023 extension, not a single structural span. ~1.5 m is a reported approximate deck width. Individual module spans, post heights and anchorage depths are not published."
 },
 {
  "id": "hantangang",
@@ -300,7 +306,7 @@ export const references = [
  "designer": "Cheorwon County / public infrastructure construction team",
  "family": "Anchored",
  "scheme": "hantangang",
- "scale": "3.6 km overall trail; cliff, deck and bridge segments",
+ "scale": "3.6 km total trail × 1.5 m typical walkway width",
  "ground": "Near-vertical volcanic gorge rock with columnar-jointed terrain",
  "connection": "Elevated steel passage constructed at the cliff face. Contemporary on-site construction reporting describes deep metal rods inserted into rock and wire ropes supporting rail structures. The trail also includes bridge spans, so not all 3.6 km use the same connection.",
  "materials": "Steel walkway framing · metal rods / anchors · steel wire · grating",
@@ -323,7 +329,8 @@ export const references = [
    "National government / segment composition (PDF)",
    "https://www.tour.go.kr/FileSystem/UploadTemp/SendNewsLetter/week_poliy%282021_11_04%29.pdf"
   ]
- ]
+ ],
+ "dimensionNote": "3.6 km covers the entire trail including cliff walkway, multiple bridges, and viewpoints. It is not a continuous cantilever. Individual cantilever projections, support spacing, and anchorage depths remain unknown."
 },
 {
  "id": "byeongbangchi",
@@ -333,7 +340,7 @@ export const references = [
  "designer": "Jeongseon County / structural steel specialists",
  "family": "Cantilevered",
  "scheme": "korean-skywalk",
- "scale": "11 m long × approximately 2 m wide U-shaped projection",
+ "scale": "U-shaped platform: 11 m overall length × 2 m width",
  "ground": "Cliff edge at approximately 583 m elevation",
  "connection": "Exposed white steel superstructure projects beyond the cliff-edge foundation zone to carry a U-shaped glass-floor walkway. The exact footing type, embedment depth, and anchorage design are not published in the referenced public material.",
  "materials": "Painted structural steel · laminated/strengthened glass · metal railings",
@@ -355,7 +362,12 @@ export const references = [
   [
    "Project photograph / steel support structure",
    "https://mfnd.hanatour.com/product-detail/gangwon-kr/MHJ-PRD33721ZMMK"
+  ],
+  [
+   "Yonhap: 11 m long, 2 m wide U-shaped platform",
+   "https://www.yna.co.kr/view/AKR20170202050800805"
   ]
- ]
+ ],
+ "dimensionNote": "11 m is the publicly described length of the U-shaped visitor structure, not a verified free cantilever span or exact distance from the cliff edge. The foundation, net overhang and anchorage are unverified."
 }
 ];

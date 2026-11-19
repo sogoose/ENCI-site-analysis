@@ -1,4 +1,4 @@
-import {references} from './data.js?v=3';
+import {references} from './data.js?v=4';
 import {diagramFor} from './diagrams.js?v=3';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
@@ -65,7 +65,7 @@ function openReference(id,keepFocus=false){
  '<div class="detail-photo-caption">Image hosted by <a href="'+esc(r.photoLink)+'" target="_blank" rel="noopener noreferrer"><u>'+esc(r.photoFrom)+' ↗</u></a>. Photo rights remain with their respective publishers and photographers.</div>'+
  '<div class="detail-two"><div><span class="kicker">STRUCTURAL SECTION / INTERPRETIVE</span><div class="detail-diagram">'+diagramFor(r.scheme,r.principle)+'</div>'+
  '<p class="detail-diagram-label">Conceptual load-path diagram, not an as-built engineering section or to scale. Blue indicates rock attachment.</p></div>'+
- '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
+ '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+(r.dimensionNote?field('DIMENSION STATUS',r.dimensionNote):'')+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
  '<div class="detail-summary"><div><span class="kicker">STRUCTURAL LOGIC / 01</span><h3>'+esc(r.connection)+'</h3></div><div><p>'+esc(r.description)+'</p></div></div>'+
  '<div class="detail-warning"><strong>Evidence / limitation.</strong> '+esc(r.evidence)+'</div>'+
  '<div class="source-title">TECHNICAL SOURCES & ORIGINAL DRAWINGS / WHERE AVAILABLE</div>'+
