@@ -1,4 +1,4 @@
-import {references} from './data.js?v=15';
+import {references,cableBenchmarks,cableCatalogue} from './data.js?v=16';
 import {diagramFor} from './diagrams.js?v=15';
 import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
 import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=14';
@@ -44,8 +44,25 @@ function createCard(r){
  '<div class="case-open"><span>'+esc(r.measuredDrawings?.length?'ARCHIVE / '+r.measuredDrawings.length+' SOURCE RECORDS':r.designer)+'</span><span>OPEN ↗</span></div>';
  el.addEventListener('click',()=>openReference(r.id));return el;
 }
+
+function renderCableDimensions(){
+ const host=$('#cable-dimensions');if(!host)return;
+ host.hidden=family!=='Cable';
+ if(host.hidden)return;
+ const source=url=>'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">SOURCE ↗</a>';
+ host.innerHTML='<div class="cable-heading"><span class="kicker">TECHNICAL REFERENCE / 01</span><h2>Diameter is not capacity.</h2><p>Published construction dimensions below are distinguished from independent product examples. No unreported capsule diameter is inferred.</p></div>'+
+ '<h3>Built comparisons / structural cable dimensions</h3>'+
+ '<div class="cable-table-scroll"><table><thead><tr><th>Case / scale</th><th>Cable diameter</th><th>Structural role / length</th><th>Rock interface</th></tr></thead><tbody>'+
+ cableBenchmarks.map(r=>'<tr><td><b>'+esc(r.name)+'</b><small>'+esc(r.location)+'</small>'+source(r.source)+'</td><td>'+esc(r.diameter)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.anchor)+'</td></tr>').join('')+
+ '</tbody></table></div>'+
+ '<h3>Manufacturer catalogue / independent size reference</h3><p>'+esc(cableCatalogue.name)+' · '+source(cableCatalogue.url)+'</p>'+
+ '<div class="cable-table-scroll"><table class="cable-catalogue"><thead><tr><th>Nominal Ø (mm)</th><th>Relative diameter</th><th>Minimum breaking force (kN)</th></tr></thead><tbody>'+
+ cableCatalogue.rows.map(([d,f])=>'<tr><td>Ø'+d+'</td><td><span class="cable-circle" style="width:'+(d*2.3)+'px;height:'+(d*2.3)+'px"></span></td><td>'+f.toFixed(2)+'</td></tr>').join('')+
+ '</tbody></table></div><p class="cable-caution">Not an OVO, Skylodge or Capilano specification. Breaking force is not allowable or design load. Actual cable system capacity depends on terminations, load combinations, inclination, fatigue, corrosion, redundancy and rock anchorage. No design sizing is provided.</p>';
+}
+
 function render(){
- renderTabs();
+ renderTabs();renderCableDimensions();
  const q=query.trim().toLowerCase();
  shown=references.filter(r=>(family==='All'||(family==='Korea'?r.place.includes('Korea'):family==='Historic'?!!r.historic:family==='Archives'?!!r.measuredDrawings?.length:family==='Cable'?!!r.cable:r.family===family))&&(!q||
  [r.name,r.year,r.place,r.designer,r.family,r.scale,r.connection,r.principle,r.materials,r.ground].some(v=>String(v).toLowerCase().includes(q))));

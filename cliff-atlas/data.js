@@ -46,6 +46,18 @@ export const references = [
    "value": "Aerial elevator; specialist high-altitude team",
    "status": "FOUNDER INTERVIEW / CONSTRUCTION ACCOUNT",
    "source": "https://tollbit.forbes.com/sites/annabel/2024/07/22/this-new-extreme-hotel-in-patagonia-takes-adventure-travel-to-new-heights/"
+  },
+  {
+   "label": "Structural cable diameter / length",
+   "value": "Not disclosed in the reviewed project description or press reports",
+   "status": "NOT VERIFIED — NO DIAMETER INFERRED",
+   "source": "https://www.lanacion.com.ar/revista-lugares/como-son-las-capsulas-de-vidrio-con-vista-al-fitz-roy-que-se-estrenan-en-el-chalten-nid30092023/"
+  },
+  {
+   "label": "Reported cable capacity",
+   "value": "3,000 kg-equivalent ≈ 29.4 kN per cable; load category and cable construction not stated",
+   "status": "PRESS VALUE / NOT A DESIGN RESISTANCE OR MBL",
+   "source": "https://www.lanacion.com.ar/revista-lugares/como-son-las-capsulas-de-vidrio-con-vista-al-fitz-roy-que-se-estrenan-en-el-chalten-nid30092023/"
   }
  ],
  "technicalUnknowns": "Cable diameter and material grade, exact inclination, anchor depth, termination hardware, preload, structural load sharing and rating basis.",
@@ -106,6 +118,12 @@ export const references = [
    "value": "3 modules per suite; 9 modules for the original 3 suites; ropes, cables and pulleys",
    "status": "DESIGNER INTERVIEW",
    "source": "https://www.cladglobal.com/architecture-design-features?codeid=30341&p=1&source=home"
+  },
+  {
+   "label": "Structural cable diameter / length",
+   "value": "Not disclosed in the reviewed architectural reports",
+   "status": "NOT VERIFIED — ACCESS / ZIPLINE CABLES EXCLUDED",
+   "source": "https://www.arch2o.com/skylodge-adventure-suites-natura-vive/"
   }
  ],
  "technicalUnknowns": "Exact cable layout and diameter, anchor embedment, force share between cables and rigid members, as-built support joints.",
@@ -804,13 +822,13 @@ export const references = [
  "designer": "Pheidias Project Management / structural consultants",
  "family": "Anchored",
  "scheme": "cable-walk",
- "scale": "213 m overall; approx. 20 m cable-supported curved segment; 0.5 m typical width",
+ "scale": "213 m overall; 30 m curved structure length (2011 engineer paper); 0.5 m typical deck width",
  "ground": "Steep granite canyon face",
- "connection": "The majority of the 213 m route uses rigid cantilevered walkway supports. A separate curved segment uses nine inclined structural cables attached high on the cliff. These are not the guardrail mesh cables.",
+ "connection": "Most walkway supports are propped cantilevers with two tension ties each; a separate curved bridge has nine structural cables. The guardrail cables and rock bolts have separate functions.",
  "materials": "Structural steel · steel cables · anchors · decking",
  "principle": "Curved cable-supported segment + separate rigid cantilever route",
  "description": "A suspended and cantilevered walkway follows the face of a canyon. The critical interface is between engineered steelwork and an uneven, stability-assessed natural rock wall.",
- "evidence": "2011 engineering paper confirms a 213 m route, majority projecting 3 m, and cable-supported curved bridge. ENR construction report gives nine cables and 65 ft curved bridge, 10–16 ft rock bolts within the project. These bolt lengths are project-wide and not necessarily the cable termination embedment.",
+ "evidence": "The 2011 and 2012 engineers' papers report a 30 m / 100 ft curved bridge; a 2010 ENR article reports 65 ft without resolving measurement basis. Both engineering papers specify project-wide grouted rock bolts but give differing maximum lengths (4 m versus 18 ft). Structural cable diameters were not found in the reviewed reports. No guardrail sizes are treated as load-bearing stay-cable sizes.",
  "photo": "https://cdn.getyourguide.com/img/tour/8da6630483c44700.jpeg/145.jpg",
  "photoFrom": "GetYourGuide / cable-supported curved Cliffwalk segment",
  "photoLink": "https://www.getyourguide.com/vancouver-l189/north-shore-capilano-suspension-bridge-and-grouse-mountain-t26644/",
@@ -830,16 +848,22 @@ export const references = [
   [
    "Construction report with nine cable supports",
    "https://www.enr.com/articles/18870-vancouver-footbridge-clings-to-cliff"
+  ],
+  [
+   "2011 engineer report / metric rock bolts and erection model",
+   "https://conf.tac-atc.ca/english/annualconference/tac2011/docs/s1/larose.pdf"
+  ],
+  [
+   "2012 engineer report / AISC",
+   "https://www.aisc.org/globalassets/nsba/conference-proceedings/2012/larose---2012-wsbs-final.pdf"
+  ],
+  [
+   "Railing supplier / Ø2 and Ø8 mm are not main cables",
+   "https://carlstahl-architektur.com/en/referenzen/detail/klippenpfad-capilano-haengebruecke"
   ]
  ],
  "cable": true,
  "technicalEvidence": [
-  {
-   "label": "Curved cable-supported segment",
-   "value": "65 ft (approx. 20 m); nine inclined cables",
-   "status": "ENGINEERING CONSTRUCTION REPORT",
-   "source": "https://www.enr.com/articles/18870-vancouver-footbridge-clings-to-cliff"
-  },
   {
    "label": "Total route",
    "value": "213 m; typical 3 m projection from cliff",
@@ -847,19 +871,43 @@ export const references = [
    "source": "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/conference-papers/design-and-construction-of-the-capilano-cliffwalk/"
   },
   {
-   "label": "Rock bolts",
-   "value": "10–16 ft (approx. 3–4.9 m), reported for walkway project",
-   "status": "PROJECT-WIDE BOLTS / NOT CABLE-SPECIFIC",
-   "source": "https://www.enr.com/articles/18870-vancouver-footbridge-clings-to-cliff"
-  },
-  {
    "label": "Field-to-fabrication",
    "value": "Surveyed installed anchor plates; 3D detailing of steelwork; final closure mismatch 15 mm",
    "status": "2011 DESIGN AND CONSTRUCTION PAPER",
    "source": "https://www.tac-atc.ca/en/knowledge-centre/technical-resources-search/conference-papers/design-and-construction-of-the-capilano-cliffwalk/"
+  },
+  {
+   "label": "Curved bridge length / cable count",
+   "value": "30 m (2011); 100 ft (2012); 9 cables. ENR 2010 says 65 ft; measurement basis unresolved.",
+   "status": "ENGINEERS' PAPERS PRIORITIZED / PRESS DISCREPANCY",
+   "source": "https://conf.tac-atc.ca/english/annualconference/tac2011/docs/s1/larose.pdf"
+  },
+  {
+   "label": "Structural stay-cable diameter and length",
+   "value": "Not found in available design and construction reports",
+   "status": "NOT VERIFIED",
+   "source": "https://www.aisc.org/globalassets/nsba/conference-proceedings/2012/larose---2012-wsbs-final.pdf"
+  },
+  {
+   "label": "Grouted rock bolts — 2011",
+   "value": "Ø25 / 32 mm; up to 4 m; galvanized steel bars, full-length cement grout",
+   "status": "ENGINEER REPORT / PROJECT-WIDE, NOT CABLE-SPECIFIC",
+   "source": "https://conf.tac-atc.ca/english/annualconference/tac2011/docs/s1/larose.pdf"
+  },
+  {
+   "label": "Grouted rock bolts — 2012",
+   "value": "Ø1 / 1¼ in (25.4 / 31.75 mm); up to 18 ft (5.49 m)",
+   "status": "ENGINEER REPORT / DIFFERENT MAXIMUM FROM 2011",
+   "source": "https://www.aisc.org/globalassets/nsba/conference-proceedings/2012/larose---2012-wsbs-final.pdf"
+  },
+  {
+   "label": "Railing cables (NOT main structural stays)",
+   "value": "Ø2 mm stainless mesh; Ø8 mm upper/lower boundary cables",
+   "status": "SUPPLIER / RAILING ONLY",
+   "source": "https://carlstahl-architektur.com/en/referenzen/detail/klippenpfad-capilano-haengebruecke"
   }
  ],
- "technicalUnknowns": "Cable diameters, terminal hardware dimensions and cable-specific rock anchor depths not established from cited summaries."
+ "technicalUnknowns": "Main cable diameter, length, cable-specific anchor bolt layout and embedment, end fitting sizes. Published project-wide anchor lengths differ; do not infer a site-specific foundation dimension."
 },{
  id:"glacier",name:"Glacier Skywalk",year:"2014",place:"Jasper, Alberta, Canada",designer:"Sturgess Architecture / structural & geotechnical team",
  family:"Cantilevered",scheme:"micropile",scale:"Curved glass-floor observation platform",
@@ -1287,3 +1335,60 @@ export const references = [
  "researchNote": "The published 11 m dimension describes the U-shaped walkway length; it is not a verified 11 m free cantilever. Ground elevation at 583 m is not the height of the deck above rock."
 }
 ];
+// Independent size comparisons; not specifications of the capsule precedents.
+export const cableBenchmarks = [
+ {
+  "name": "Durumi Footbridge",
+  "location": "Hantangang, Korea · 201 m suspension footbridge",
+  "diameter": "Ø60 mm × 8; Ø14 mm × 32",
+  "role": "Main FLC cables; stainless OSS cable net",
+  "anchor": "Clamps connect cables to Ø5 m ring beams; specific embedment dimension not established here.",
+  "source": "https://journal.kibse.or.kr/articles/xml/PgD9/"
+ },
+ {
+  "name": "Cloudraker Skybridge",
+  "location": "Whistler, Canada · 130 m suspension bridge (2018)",
+  "diameter": "Ø48 mm × 4",
+  "role": "Upper pin-to-pin ≈135 m; lower ≈128 m; reported ultimate capacity >2,250 kN each",
+  "anchor": "Ø44 mm Dywidag rock anchors, alternating 6 m and 8 m drill/grout depths; concrete slabs 4 × 7.5 × 0.55 m.",
+  "source": "https://www.canadianconsultingengineer.com/awards/pdfs/2019/B-10_MorrisonHershfieldCloudraker.pdf"
+ }
+];
+export const cableCatalogue = {
+ "name": "Jakob 10810 · AISI 316 open spiral strand 1×19 · nominal wire strength 1,570 N/mm²",
+ "url": "https://www.jakob.com/se/en/product/open-spiral-strand-rope-/e688d7e6-0b23-52e1-a395-b0e7e79901d2",
+ "rows": [
+  [
+   6,
+   29.67
+  ],
+  [
+   8,
+   52.75
+  ],
+  [
+   10,
+   82.43
+  ],
+  [
+   12,
+   118.69
+  ],
+  [
+   14,
+   161.55
+  ],
+  [
+   16,
+   211
+  ],
+  [
+   19,
+   297.55
+  ],
+  [
+   22,
+   398.94
+  ]
+ ]
+};
