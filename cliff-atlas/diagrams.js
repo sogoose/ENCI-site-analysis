@@ -77,14 +77,18 @@ podok:()=>[
  label(13,153,"& IRON TIES")
 ].join(""),
 hyeonam:()=>[
- rock("M0 159 L59 140 104 141 134 124 163 142 205 126 242 156 281 145 321 164 380 159 V180 H0 Z"),
- '<path d="M73 59 H338 V104 H73 Z" fill="#f8f7f2" stroke="#635a50" stroke-width="2"/>',
- '<path d="M66 55 L205 24 344 55" fill="none" stroke="#6e4e3d" stroke-width="5"/>',
- str("M84 61 H329 M76 105 H339",3,"#8e7866"),
- ...[[92,141],[153,142],[216,130],[281,145],[329,164]].map(([x,y])=>str("M"+x+" 104 L"+(x===92?101:x===153?157:x===216?214:x===281?278:323)+" "+(y-8),4,"#7d5542")),
- ...[[101,140],[157,141],[214,128],[278,142],[323,161]].map(([x,y])=>'<path d="M'+(x-7)+' '+(y-1)+' H'+(x+7)+'" stroke="#0033ff" stroke-width="3" />'),
- label(120,12,"11.2 × 6.35 M HALL"),
- label(162,168,"NATURAL ROCK / STONE PADS")
+ // 6 frontal bays of the Korean wooden hall; individual bay widths are NOT measured.
+ '<path d="M42 53L190 21L343 53L333 60L190 33L51 60Z" fill="#d0cbc1" stroke="#484039" stroke-width="1.7"/>',
+ '<rect x="51" y="60" width="278" height="44" fill="#f9f8f5" stroke="#65584c" stroke-width="1.4"/>',
+ ...[54,99,144,190,236,281,326].map(x=>str("M"+x+" 60 V103",2.1,"#8c725e")),
+ ...[54,99,144,190,236,281,326].map(x=>'<path d="M'+(x-8)+' 60H'+(x+8)+'L'+(x+11)+' 67H'+(x-11)+'Z" fill="#a28a70" stroke="#846d55" stroke-width=".8"/>'),
+ str("M47 105 H332",3.9,"#92785f"),
+ ...[[54,153],[99,142],[144,126],[190,131],[236,136],[281,147],[326,160]].map(([x,y])=>str("M"+(x+(x<190?1:x>190?-1:0))+" 105 L"+x+" "+(y-6),3.7,"#81624d")),
+ ...[[54,153],[99,142],[144,126],[190,131],[236,136],[281,147],[326,160]].map(([x,y])=>'<path d="M'+(x-8)+' '+(y-7)+'H'+(x+9)+'L'+(x+13)+' '+(y-1)+'H'+(x-11)+'Z" fill="#b6b1a8" stroke="#6c6964" stroke-width=".9"/>'),
+ rock("M0 172 L35 169 54 153 76 154 99 142 118 148 144 127 162 134 190 130 214 137 236 136 254 141 281 147 302 157 326 160 380 175 V180 H0 Z"),
+ ...[[54,153],[99,142],[144,126],[190,131],[236,136],[281,147],[326,160]].map(([x,y])=>node(x,y)),
+ label(112,13,"6 × 3 BAYS / 11.2 × 6.35 M"),
+ label(116,174,"LOCAL STONE PADS ON ROCK")
 ].join(""),
 nageiredo:()=>[
  rock("M0 0 H380 V15 Q334 17 294 30 T212 42 L150 58 113 90 112 131 139 159 124 180 H0 Z"),
@@ -112,15 +116,23 @@ kiyomizu:()=>[
  label(17,174,"NUKI THROUGH-TIES")
 ].join(""),
 kasamori:()=>[
- rock("M0 176 L56 170 86 163 105 147 139 155 167 123 196 113 225 142 264 135 301 165 380 172 V180 H0 Z"),
- '<path d="M54 49 H337 V84 H54 Z" fill="#f4f3ef" stroke="#594c40" stroke-width="2.3"/>',
- str("M46 47 L196 21 348 47",4,"#756047"),str("M54 87 H343",5,"#9f8461"),
- ...[[68,169],[116,153],[163,128],[211,124],[264,139],[325,169]].map(([x,y])=>str("M"+x+" 88 V"+y,5,"#856d51")),
- ...[112,136].map(y=>str("M64 "+y+" H328",2.7,"#92785a")),
- ...[[68,169],[116,153],[163,128],[211,124],[264,139],[325,169]].map(([x,y])=>node(x,y)),
- label(135,13,"FOUR-SIDED KAKÉ-ZUKURI"),
- label(217,155,"61 VARIABLE"),
- label(219,165,"TIMBER POSTS")
+ // Prominent rock rises beneath hall: the original sectional drawings
+ // show the central outcrop, unequal historic posts, and a separate stair.
+ '<path d="M66 47L191 19L319 47L309 54L191 28L75 54Z" fill="#d1c5b2" stroke="#3b3935" stroke-width="1.8"/>',
+ '<rect x="81" y="55" width="218" height="39" fill="#faf8f4" stroke="#6e5d4e" stroke-width="1"/>',
+ ...[85,121,157,193,229,265,298].map(x=>str('M'+x+' 56 V93',1.35,"#98836d")),
+ str("M61 93 H333",4,"#765e46"),
+ str("M61 98 H333",1.3),
+ // Nuki and long posts (the rock later occludes concealed members)
+ ...[110,137].map(y=>str("M64 "+y+" H335",2,"#a28a6d")),
+ ...[[72,161],[118,140],[165,121],[215,120],[263,140],[324,169]].map(([x,y])=>str("M"+x+" 98 V"+y,4.2,"#806648")),
+ rock("M0 171 L40 167 72 162 97 154 119 140 142 128 166 120 192 111 219 118 245 131 266 142 291 151 325 171 380 176 V180 H0 Z"),
+ ...[[72,161],[118,140],[165,121],[215,120],[263,140],[324,169]].map(([x,y])=>node(x,y)),
+ str("M328 102 L362 171 M315 101 L352 170",2,"#896b4f"),
+ ...[0,1,2,3,4,5].map(i=>str("M"+(324+i*6)+" "+(109+i*11)+"H"+(337+i*5)+" ",.9)),
+ label(86,12,"61 DIFFERENT POST LENGTHS"),
+ label(194,174,"DIRECT ROCK CONTACT / HIST."),
+ label(14,152,"NUKI TIES")
 ].join(""),
 iwayado:()=>[
  rock("M0 0 H380 V20 Q314 12 277 32 T207 46 Q139 61 105 92 L96 129 133 159 118 180 H0 Z"),
