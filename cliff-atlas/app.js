@@ -1,6 +1,6 @@
 import {references} from './data.js?v=7';
-import {diagramFor} from './diagrams.js?v=6';
-import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=8';
+import {diagramFor} from './diagrams.js?v=9';
+import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
