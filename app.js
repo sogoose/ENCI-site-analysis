@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {sliceBuildings,dsmEnvelope} from './section-survey.js?v=55';
+import {sliceBuildings,projectBuildingBackdrop,dsmEnvelope} from './section-survey.js?v=57';
 import {waterLayer,createWaterMap,waterSource} from './water-map.js?v=36';
 import {cleanFactoryMeshes} from './mesh-cleanup.js?v=34';
 import {reportLayers,reportCanvas,levels as reportLevels,ecologyNotes,elevationColors,elevationLimits,terrainGrid,floodIntervals} from './quarry-analysis.js?v=35';
@@ -67,9 +67,9 @@ let year=2026,mode='terrain',stack=false,detail=false,active=null,kind='',localF
 const enabled=new Set(['buildings']), grids=new Map();
 let buildingUse=false,buildingUseMode='former',buildingUseSummary='',buildingUseCounts=null,formerSelected=null,detailAvailable=false;
 let studyBoundary=true,networkData=null,networkError='',networkBusy=false,networkModel=null;
-let sectionDsmEnabled=true,sectionBuildingsEnabled=true,sectionDsmCache=new Map(),sectionDsmWorker=null,sectionDsmPending=null,sectionBuildingCache=new Map();
+let sectionDsmEnabled=true,sectionBuildingsEnabled=true,sectionBackdropEnabled=true,sectionDsmCache=new Map(),sectionDsmWorker=null,sectionDsmPending=null,sectionBuildingCache=new Map();
 const networkLayer=new THREE.Group(),focusLayer=new THREE.Group(),mobilityLayer=new THREE.Group();scene.add(networkLayer,focusLayer,mobilityLayer);let roadFade=cfg.focus?.roadFade??.35,mobilityEnabled=false,mobilityData=null,mobilityBusy=false,mobilityError='',mobilityModel=null;const terrainFadeOriginals=new Map(),terrainFadeVariants=new Map();let terrainFade=0,outsideFade=cfg.focus?.outsideFade??.72,buildingFade=cfg.focus?.buildingFade??.35,focusMaterial=null,focusBuildingMaterial=null,focusTexture=null;
-const geologyLayer=new THREE.Group();scene.add(geologyLayer);let cliffCutaway=false,selectedCut=null,cliffMode=true,cliffData=null,cliffPromise=null,cliffSelected=null,cliffLength=240,showStrata=true,sectionToken=0,sectionBusy=false,sectionMessage='',sectionIndex=null,sectionModel=null;const cliffOverlay=new THREE.Group(),sectionFace=new THREE.Group();scene.add(cliffOverlay);const cutScene=new THREE.Scene();cutScene.add(sectionFace);const fadeScene=new THREE.Scene(),fadeCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,2);fadeCamera.position.z=1;const fadeMaterial=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.78,depthTest:false,depthWrite:false});fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fadeMaterial));let sectionBackground=.78,sectionInfo=null,sectionLast=null,dxfDatum='source';let sectionPins=[],sectionExpanded=false,sectionCameraPending=false,sectionFlip=false,sectionSlopeVisible=true;let geologyY=-840,geologyCut=true,geologyMessage='',geologyModel=null,geologyLastY=null;let legendOpen=true;const legendSections=new Map();let stackGap=650,stackEntries=[],stackLoading=false,nativeLayers=[],layerOverrides={},contextInfo={},roadCache=null;
+const geologyLayer=new THREE.Group();scene.add(geologyLayer);let cliffCutaway=false,selectedCut=null,cliffMode=true,cliffData=null,cliffPromise=null,cliffSelected=null,cliffLength=240,showStrata=true,sectionToken=0,sectionBusy=false,sectionMessage='',sectionIndex=null,sectionModel=null;const cliffOverlay=new THREE.Group(),sectionFace=new THREE.Group();scene.add(cliffOverlay);const cutScene=new THREE.Scene();cutScene.add(sectionFace);const fadeScene=new THREE.Scene(),fadeCamera=new THREE.OrthographicCamera(-1,1,1,-1,0,2);fadeCamera.position.z=1;const fadeMaterial=new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.78,depthTest:false,depthWrite:false});fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2),fadeMaterial));let sectionBackground=.55,sectionInfo=null,sectionLast=null,dxfDatum='source';let sectionPins=[],sectionExpanded=false,sectionCameraPending=false,sectionFlip=false,sectionSlopeVisible=true;let geologyY=-840,geologyCut=true,geologyMessage='',geologyModel=null,geologyLastY=null;let legendOpen=true;const legendSections=new Map();let stackGap=650,stackEntries=[],stackLoading=false,nativeLayers=[],layerOverrides={},contextInfo={},roadCache=null;
 const preview=await json('./assets/terrain/preview-grid.json');
 const compressed=Uint8Array.from(atob(preview.data),v=>v.charCodeAt(0));
 const bytes=new Uint8Array(await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
@@ -244,7 +244,7 @@ function renderGeologyControls(p){
 }
 function geologyView(){if(!active||mode!=='geology')return;controls.target.set(cx,38,-geologyY);camera.position.copy(controls.target).add(new THREE.Vector3(1100,1000,4800));camera.zoom=1.65;camera.updateProjectionMatrix();controls.update();makeDirty()}
 
-function setMode(m){if(m!==mode)chooseMobilePanel('map');if(m!=='sections'&&sectionDsmWorker){sectionDsmWorker.terminate();sectionDsmWorker=null;if(sectionDsmPending)sectionDsmCache.delete(sectionDsmPending);sectionDsmPending=null}if(m!=='sections')if(m==='geology'&&year!==2026){openGeology();return}if(stack&&m!=='terrain'){mode=m;document.body.classList.toggle('section-mode',m==='sections');if(m==='sections'){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false}selectYear(year,false).then(()=>{if(m==='sections')fit(false)});return}const entering=m==='sections'&&mode!=='sections',leavingCut=mode==='sections'&&cliffCutaway&&m!=='sections';mode=m;if(entering){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false;setSectionLock(false);fit(false)}document.body.classList.toggle('section-mode',m==='sections');updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(m==='environment'&&env)applyEnv();else clearEnv();$('#profile').hidden=true;refreshGeology();if(m==='sections'){drawSection()}else {sectionToken++;clear(sectionMark);clear(cliffOverlay);clear(sectionFace);clearSectionPins();selectedCut=null;sectionInfo=null;sectionLast=null;setSectionLock(false);renderer.clippingPlanes=[];context.visible=true;sectionExpanded=false;if(leavingCut&&!stack)fit(false);document.body.classList.remove('section-cut-active');$('#profile').classList.remove('expanded')}if(m==='geology'){renderDrawer();geologyView()}refreshReserve();refreshPhotoPins();makeDirty()}
+function setMode(m){if(m!==mode)chooseMobilePanel('map');if(m!=='sections'&&sectionDsmWorker){sectionDsmWorker.terminate();sectionDsmWorker=null;if(sectionDsmPending)sectionDsmCache.delete(sectionDsmPending);sectionDsmPending=null}if(m==='geology'&&year!==2026){openGeology();return}if(stack&&m!=='terrain'){mode=m;document.body.classList.toggle('section-mode',m==='sections');if(m==='sections'){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false}selectYear(year,false).then(()=>{if(m==='sections')fit(false)});return}const entering=m==='sections'&&mode!=='sections',leavingCut=mode==='sections'&&cliffCutaway&&m!=='sections';mode=m;if(entering){cliffCutaway=false;selectedCut=null;sectionExpanded=false;sectionFlip=false;setSectionLock(false);fit(false)}document.body.classList.toggle('section-mode',m==='sections');updateUI();renderDrawer();refreshNetwork();refreshMobility();refreshFocus();if(m==='environment'&&env)applyEnv();else clearEnv();$('#profile').hidden=true;refreshGeology();if(m==='sections'){drawSection()}else {sectionToken++;clear(sectionMark);clear(cliffOverlay);clear(sectionFace);clearSectionPins();selectedCut=null;sectionInfo=null;sectionLast=null;setSectionLock(false);renderer.clippingPlanes=[];context.visible=true;sectionExpanded=false;if(leavingCut&&!stack)fit(false);document.body.classList.remove('section-cut-active');$('#profile').classList.remove('expanded')}if(m==='geology'){renderDrawer();geologyView()}refreshReserve();refreshPhotoPins();makeDirty()}
 function linearRGB(hex){const c=new THREE.Color(hex);return 'vec3('+[c.r,c.g,c.b].map(x=>x.toFixed(6)).join(',')+')'}
 function reportFragment(type){
  const header='uniform sampler2D map;uniform float alpha;uniform vec4 bounds;varying vec3 w;void main(){vec2 uv=(vec2(w.x,-w.z)-bounds.xy)/(bounds.zw-bounds.xy);if(any(lessThan(uv,vec2(0.)))||any(greaterThan(uv,vec2(1.))))discard;';
@@ -436,11 +436,11 @@ function sectionSurvey(s){
  return entry;
 }
 function buildingSurvey(s){
- if(!sectionBuildingsEnabled||year!==2026)return null;
- const key=contextSerial+'|'+sectionKey(s);
+ if(!(sectionBuildingsEnabled||sectionBackdropEnabled)||year!==2026)return null;
+ const key=contextSerial+'|'+sectionKey(s)+'|'+sectionFlip;
  if(!sectionBuildingCache.has(key)){
   const roots=context.children.filter(o=>o.userData?.atlasBuildingContext||o.userData?.atlasIndustrial||o.userData?.atlasViewing);
-  sectionBuildingCache.set(key,sliceBuildings(roots,s));
+  const cut=sliceBuildings(roots,s);cut.backdrop=projectBuildingBackdrop(roots,s,{flip:sectionFlip,maxDepth:220});sectionBuildingCache.set(key,cut);
   if(sectionBuildingCache.size>16)sectionBuildingCache.delete(sectionBuildingCache.keys().next().value);
  }
  return sectionBuildingCache.get(key);
@@ -448,7 +448,7 @@ function buildingSurvey(s){
 function renderSectionControls(p){
  const nav=el('div',undefined,'section-tabs');for(const [txt,on,fn] of [['Overview',!cliffCutaway,()=>sectionOverview()],['Cutaway',cliffCutaway,()=>{const id=cliffMode?cliffSelected:section;if(id)sectionSelect(id,true)}]]){const b=el('button',txt,on?'active':'');b.onclick=fn;nav.append(b)}p.append(nav);
  const types=el('div',undefined,'section-tabs section-types');for(const [txt,on,fn] of [['Cliffs ≥45°',cliffMode,()=>{cliffMode=true;compare=false;sectionOverview()}],['Site transects',!cliffMode,()=>{cliffMode=false;sectionOverview()}]]){const b=el('button',txt,on?'active':'');b.onclick=fn;types.append(b)}p.append(types);
- if(cliffCutaway&&year===2026){p.append(checkOption('DSM survey · ±2 m',sectionDsmEnabled,v=>{sectionDsmEnabled=v;drawSection()}),checkOption('Buildings in section',sectionBuildingsEnabled,v=>{sectionBuildingsEnabled=v;drawSection()}));if(sectionDsmEnabled&&selectedCut){const e=sectionDsmCache.get(sectionKey(selectedCut));if(e)p.append(sub(e.message))}p.append(sub('DSM returns include roofs and vegetation; existing and approximate building masses are distinct.'))}
+ if(cliffCutaway&&year===2026){p.append(checkOption('DSM survey · ±2 m',sectionDsmEnabled,v=>{sectionDsmEnabled=v;drawSection()}),checkOption('Buildings cut by section',sectionBuildingsEnabled,v=>{sectionBuildingsEnabled=v;drawSection()}),checkOption('Buildings behind section',sectionBackdropEnabled,v=>{sectionBackdropEnabled=v;drawSection()}));if(sectionDsmEnabled&&selectedCut){const e=sectionDsmCache.get(sectionKey(selectedCut));if(e)p.append(sub(e.message))}p.append(sub('Cut = dark building fill · behind cut = light building elevations (up to 220 m). DSM includes roofs and vegetation.'))}
  if(cliffMode&&year!==2026)p.append(option('Open 2026 terrain',()=>selectYear(2026,false),false,'↗'));
  const list=sectionList(),selected=cliffMode?cliffSelected:section;
  if(list.length){const grid=el('div',undefined,'section-index');for(const c of list){const b=el('button',sectionNumber(c.id),c.id===selected&&cliffCutaway?'active':'');b.title='Open section '+sectionNumber(c.id);b.setAttribute('aria-pressed',String(c.id===selected&&cliffCutaway));b.onclick=()=>sectionSelect(c.id,true);grid.append(b)}p.append(el('div','SECTION INDEX','section-kicker'),grid)}
@@ -462,7 +462,26 @@ function renderSectionControls(p){
 }
 function focusSection(s,points,extra=[]){const dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),len=Math.hypot(dx,dz);if(len<1)return;const vals=[...points.map(p=>p[1]),...extra].filter(Number.isFinite),top=Math.max(...vals),floor=sectionBands(s,len,points).floor,span=Math.max(45,top-floor),unit=Math.max(len,span),pad=unit*.13;const W=camera.right-camera.left,H=camera.top-camera.bottom;const mobile=innerWidth<780,usable=mobile?.79:Math.min(.68,Math.max(.35,(innerWidth-590)/innerWidth));camera.zoom=Math.max(.08,Math.min(15,W*usable/(len+pad*2),H*.64/(span+pad*2)));const normal=new THREE.Vector3(-dz,0,dx).normalize().multiplyScalar(sectionFlip?-1:1),right=new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0),normal).normalize();const center=new THREE.Vector3((s.a[0]+s.b[0])/2,(top+floor)/2,-(s.a[1]+s.b[1])/2);if(!mobile)center.addScaledVector(right,W/camera.zoom*.015);center.y-=H/camera.zoom*.025;setSectionLock(true);controls.target.copy(center);camera.position.copy(center).addScaledVector(normal,3500);camera.lookAt(center);camera.updateProjectionMatrix();controls.update();makeDirty()}
 function applySectionCut(){renderer.clippingPlanes=[];context.visible=true;sectionFace.visible=false;cliffOverlay.visible=sectionSlopeVisible&&!cliffCutaway;if(mode!=='sections'||!cliffCutaway||!selectedCut||!active){setSectionLock(false);return}const s=selectedCut,dx=s.b[0]-s.a[0],dz=-(s.b[1]-s.a[1]),n=new THREE.Vector3(-dz,0,dx).normalize(),anchor=new THREE.Vector3(s.a[0],0,-s.a[1]);if(n.dot(camera.position.clone().sub(anchor))>0)n.negate();renderer.clippingPlanes=[new THREE.Plane().setFromNormalAndCoplanarPoint(n,anchor)];context.visible=false;sectionFace.visible=true;setSectionLock(true);makeDirty()}
-function renderAtlas(){renderer.autoClear=true;renderer.render(scene,camera);if(mode!=='sections'||!cliffCutaway||!selectedCut||!sectionFace.visible)return;const planes=renderer.clippingPlanes;renderer.autoClear=false;renderer.clippingPlanes=[];try{if(sectionBackground>0){fadeMaterial.opacity=sectionBackground;renderer.render(fadeScene,fadeCamera)}renderer.clearDepth();renderer.render(cutScene,camera)}finally{renderer.clippingPlanes=planes;renderer.autoClear=true}}
+function renderAtlas(){
+ renderer.autoClear=true;
+ // The actual 3D buildings beyond the plane belong to the architectural
+ // section's background; other context layers must not clutter this view.
+ const showBehind=mode==='sections'&&cliffCutaway&&selectedCut&&year===2026&&sectionBackdropEnabled;
+ const prevVisible=context.visible,visibility=showBehind?context.children.map(o=>[o,o.visible]):[];
+ if(showBehind){
+  context.visible=true;
+  for(const [o,visible] of visibility)o.visible=visible&&!!o.userData?.atlasBuildingContext;
+ }
+ try{renderer.render(scene,camera)}finally{
+  if(showBehind){for(const [o,visible] of visibility)o.visible=visible;context.visible=prevVisible}
+ }
+ if(mode!=='sections'||!cliffCutaway||!selectedCut||!sectionFace.visible)return;
+ const planes=renderer.clippingPlanes;renderer.autoClear=false;renderer.clippingPlanes=[];
+ try{
+  if(sectionBackground>0){fadeMaterial.opacity=sectionBackground;renderer.render(fadeScene,fadeCamera)}
+  renderer.clearDepth();renderer.render(cutScene,camera)
+ }finally{renderer.clippingPlanes=planes;renderer.autoClear=true}
+}
 function cliffSelection(){const c=cliffData?.candidates.find(c=>c.id===cliffSelected)||cliffData?.candidates[0];return c?lineFor(c,cliffLength,cfg.bounds):null}
 function clearSectionPins(){sectionPins=[];$('#section-pins')?.replaceChildren()}
 function pinSectionEndpoint(s,points,selected){const len=Math.hypot(s.b[0]-s.a[0],s.b[1]-s.a[1]);const p=points.find(p=>Number.isFinite(p[0])&&Number.isFinite(p[1]));if(!p||!len)return;const t=Math.max(0,Math.min(1,p[0]/len));pinSection(s.id,s.a[0]+(s.b[0]-s.a[0])*t,s.a[1]+(s.b[1]-s.a[1])*t,p[1],selected)}
@@ -560,6 +579,35 @@ function cutPosition(s,len,d,h,shift=0){
  if(normal.dot(camera.position.clone().sub(anchor))<0)normal.negate();
  return new THREE.Vector3(s.a[0]+ux*d,h,-s.a[1]-uy*d).addScaledVector(normal,shift);
 }
+function drawBuildingBackdrop(s,data,len){
+ if(!sectionBackdropEnabled||!data?.backdrop?.length)return;
+ // Fine, light projected silhouettes stay behind the cut earth and hatches.
+ for(const part of data.backdrop){
+  if(part.points.length<3)continue;
+  const shape=new THREE.Shape();
+  part.points.forEach(([d,h],i)=>i?shape.lineTo(d,h):shape.moveTo(d,h));shape.closePath();
+  const g=new THREE.ShapeGeometry(shape),p=g.attributes.position,vertices=[];
+  for(let i=0;i<p.count;i++)vertices.push(...cutPosition(s,len,p.getX(i),p.getY(i),-.55).toArray());
+  g.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  const depthFade=Math.max(.25,Math.min(.68,.72-part.depth*.0019));
+  const face=new THREE.Mesh(g,new THREE.MeshBasicMaterial({
+   color:part.kind==='approximate'?'#e0d8cf':'#cdd3d8',
+   opacity:depthFade,transparent:true,side:THREE.DoubleSide,
+   depthWrite:false,depthTest:false
+  }));face.renderOrder=0.5;sectionFace.add(face);
+  const outline=[];
+  for(let i=0;i<part.points.length;i++){
+   const a=part.points[i],b=part.points[(i+1)%part.points.length];
+   outline.push(...cutPosition(s,len,a[0],a[1],-.4).toArray(),...cutPosition(s,len,b[0],b[1],-.4).toArray());
+  }
+  if(outline.length){
+   const edges=new THREE.BufferGeometry();edges.setAttribute('position',new THREE.Float32BufferAttribute(outline,3));
+   const line=new THREE.LineSegments(edges,new THREE.LineBasicMaterial({
+    color:'#91999d',transparent:true,opacity:.4+depthFade*.35,depthTest:false,depthWrite:false
+   }));line.renderOrder=.8;sectionFace.add(line);
+  }
+ }
+}
 function drawBuildingSection(s,data,len){
  if(!data)return;
  for(const part of data.polygons){
@@ -626,15 +674,16 @@ async function drawSection(){if(mode!=='sections'||!active||stack)return;prepare
  if(cliffCutaway){
   const buildings=buildingSurvey(s),measurement=sectionSurvey(s);
   if(sectionCameraPending||!sectionLast){
-   const extra=buildings?[...buildings.polygons.flatMap(p=>p.points.map(v=>v[1])),...buildings.lines.flatMap(p=>p.points.map(v=>v[1]))]:[];
+   const extra=buildings?[...(sectionBuildingsEnabled?[...buildings.polygons.flatMap(p=>p.points.map(v=>v[1])),...buildings.lines.flatMap(p=>p.points.map(v=>v[1]))]:[]),...(sectionBackdropEnabled?buildings.backdrop.flatMap(p=>p.points.map(v=>v[1])):[])]:[];
    if(measurement?.status==='ready')for(let i=1;i<measurement.samples.length;i+=2)extra.push(measurement.samples[i]);
    focusSection(s,points,extra);sectionCameraPending=false;
   }
   buildSectionFace(s,points,len);
   drawCutAnnotations(s,rows,len);
-  if(buildings)drawBuildingSection(s,buildings,len);
+  if(buildings&&sectionBackdropEnabled)drawBuildingBackdrop(s,buildings,len);
+  if(buildings&&sectionBuildingsEnabled)drawBuildingSection(s,buildings,len);
   if(measurement)drawDsmSection(s,measurement,len);
-  sectionLast={s,rows,len,buildings,dsm:measurement};
+  sectionLast={s,rows,len,buildings:buildings?{...buildings,polygons:sectionBuildingsEnabled?buildings.polygons:[],lines:sectionBuildingsEnabled?buildings.lines:[],backdrop:sectionBackdropEnabled?buildings.backdrop:[]}:null,dsm:measurement};
  }else{sectionInfo=null;sectionLast=null}
  applySectionCut();sectionMessage='';renderDrawer();makeDirty();
  }catch(e){if(token!==sectionToken||mode!=='sections')return;sectionMessage=e.message;sectionInfo=null;sectionLast=null;setSectionLock(false);renderer.clippingPlanes=[];panel.replaceChildren(sub(e.message));renderDrawer();makeDirty()}
