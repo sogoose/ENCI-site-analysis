@@ -1,6 +1,7 @@
 import {references} from './data.js?v=7';
 import {diagramFor} from './diagrams.js?v=9';
 import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
+import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=11';
 const $=selector=>document.querySelector(selector);
 const grid=$('#archive-grid'),filters=$('#filters'),search=$('#search');
 const dialog=$('#detail'),detail=$('#detail-content');
@@ -36,7 +37,7 @@ function createCard(r){
  el.innerHTML=
  '<div class="case-top"><span class="case-number">'+String(index+1).padStart(2,'0')+' / '+references.length+'</span><span class="case-system">'+esc(r.family)+'</span></div>'+
  photo(r,false)+
- '<div class="case-diagram"><span class="diag-label">STRUCTURAL PRINCIPLE / N.T.S.</span>'+diagramFor(r.scheme,r.principle)+'</div>'+
+ '<div class="case-diagram'+(hasAxon(r.id)?' axon-mini':'')+'"><span class="diag-label">'+(hasAxon(r.id)?'3D STRUCTURAL AXON / N.T.S.':'STRUCTURAL PRINCIPLE / N.T.S.')+'</span>'+(hasAxon(r.id)?axonThumb(r.id):diagramFor(r.scheme,r.principle))+'</div>'+
  '<div class="case-name-row"><span class="case-title">'+esc(r.name)+'</span><span class="case-year">'+esc(r.year)+'</span></div>'+
  '<div class="case-place">'+esc(r.place)+'</div>'+
  '<div class="case-fields">'+field('SCALE',r.scale)+field('TERRAIN / GROUND',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIAL',r.materials)+'</div>'+
@@ -67,6 +68,20 @@ function openReference(id,keepFocus=false){
  (r.technicalUnknowns?'<div class="technical-unknown"><b>NOT VERIFIED / </b>'+esc(r.technicalUnknowns)+'</div>':'')+
  (r.researchNote?'<p class="technical-note">'+esc(r.researchNote)+'</p>':'')+'</section>':'';
 
+ const axonModule=hasAxon(r.id)?
+ '<section class="plate-module axon-module" aria-label="Verified-principle structural axonometric">'+
+ '<div class="archive-section-top"><span class="kicker">STRUCTURAL AXONOMETRIC / SOURCE-BASED</span><span class="archive-status">GEOMETRY / DIAGRAMMATIC — NOT A MEASURED RECONSTRUCTION</span></div>'+
+ '<h3 class="archive-section-title">Timber × cliff / structural reading in three dimensions</h3>'+
+ '<div class="plate-controls" role="group" aria-label="Axonometric view">'+
+ '<button type="button" data-axon="assembly" aria-pressed="true" class="active">01 / FULL STRUCTURE</button>'+
+ '<button type="button" data-axon="contact" aria-pressed="false">02 / SUPPORTS ONLY</button>'+
+ '<span class="plate-grow"></span>'+
+ '<button type="button" id="axon-expand">OPEN FULL SIZE ↗</button>'+
+ '<button type="button" id="axon-save">SVG ↓</button></div>'+
+ '<div class="plate-window" tabindex="0" aria-label="Axonometric diagram scroll region"><div id="axon-sheet" class="plate-sheet">'+axonPlate(r.id,'assembly')+'</div></div>'+
+ '<div class="plate-meta"><span>GREY / ROCK SCHEMATIC</span><span>BROWN / TIMBER STRUCTURE</span><span>BLUE / REPORTED STRUCTURAL CONNECTION</span></div>'+
+ '<p class="plate-warning">Only documented structural relationships are represented. The diagram does NOT reconstruct the roof design, cliff survey, actual number or spacing of sockets, historic joinery dimensions or footing geometry. Timber bay placement is representative, not an as-built model. See linked research sources for each claim.</p>'+
+ '</section>':'';
  const detailedPlate=hasStructuralPlate(r.id)?
   '<section class="plate-module" aria-label="Refined analytical drawings">'+
   '<div class="archive-section-top"><span class="kicker">ARCHITECTURAL ANALYSIS / VECTOR DRAWINGS</span><span class="archive-status">ORIGINAL INTERPRETATION · NOT MEASURED</span></div>'+
@@ -118,13 +133,36 @@ function openReference(id,keepFocus=false){
  '<div class="detail-data">'+field('YEAR / STATUS',r.year+' · Built')+field('SCALE',r.scale)+(r.dimensionNote?field('DIMENSION STATUS',r.dimensionNote):'')+field('GROUND TYPE',r.ground)+field('ROCK INTERFACE',r.principle)+field('MATERIALS',r.materials)+'</div></div>'+
  '<div class="detail-summary"><div><span class="kicker">STRUCTURAL LOGIC / 01</span><h3>'+esc(r.connection)+'</h3></div><div><p>'+esc(r.description)+'</p></div></div>'+
  structuralEvidence+
- detailedPlate+originalArchive+timelineUI+analysisUI+
+ axonModule+detailedPlate+originalArchive+timelineUI+analysisUI+
  '<div class="detail-warning"><strong>Evidence / limitation.</strong> '+esc(r.evidence)+'</div>'+
  '<div class="source-title">TECHNICAL SOURCES & ORIGINAL DRAWINGS / WHERE AVAILABLE</div>'+
  sources+
  '<a class="source-link" href="'+esc(r.photoLink)+'" target="_blank" rel="noopener noreferrer"><span>Photographic project source</span><span>↗</span></a>';
 
- const plateNode=detail.querySelector('.plate-module');
+ const axonNode=detail.querySelector('.axon-module');
+ if(axonNode){
+  let axMode='assembly';
+  const axSheet=axonNode.querySelector('#axon-sheet');
+  const axFile=()=>{
+   const blob=new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n',axonPlate(r.id,axMode)],{type:'image/svg+xml'});
+   return URL.createObjectURL(blob);
+  };
+  axonNode.querySelectorAll('[data-axon]').forEach(b=>b.addEventListener('click',()=>{
+   axMode=b.dataset.axon;axSheet.innerHTML=axonPlate(r.id,axMode);
+   axonNode.querySelectorAll('[data-axon]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',String(x===b))});
+  }));
+  axonNode.querySelector('#axon-save').addEventListener('click',()=>{
+   const url=axFile(),anchor=document.createElement('a');anchor.href=url;
+   anchor.download='CliffAtlas_'+r.id+'_'+axMode+'_structural_axon.svg';anchor.click();
+   setTimeout(()=>URL.revokeObjectURL(url),30000);
+  });
+  axonNode.querySelector('#axon-expand').addEventListener('click',()=>{
+   const url=axFile(),anchor=document.createElement('a');anchor.href=url;
+   anchor.target='_blank';anchor.rel='noopener noreferrer';anchor.click();
+   setTimeout(()=>URL.revokeObjectURL(url),180000);
+  });
+ }
+ const plateNode=detail.querySelector('.plate-module:not(.axon-module)');
  if(plateNode){
   let mode='section';
   const sheet=plateNode.querySelector('#plate-sheet');
