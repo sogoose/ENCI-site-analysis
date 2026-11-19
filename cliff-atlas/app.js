@@ -56,7 +56,7 @@ function render(){
 function openReference(id,keepFocus=false){
  const r=references.find(x=>x.id===id);if(!r)return;
  if(!keepFocus)returnFocus=document.activeElement;
- opened=id;const n=references.indexOf(r);
+ opened=id;const n=references.indexOf(r);if(location.hash.slice(1)!==encodeURIComponent(id)){const u=new URL(location.href);u.hash=id;history.replaceState(null,'',u.href)}
  $('#detail-index').textContent=String(n+1).padStart(2,'0')+' / '+String(references.length).padStart(2,'0')+' — '+r.family.toUpperCase();
  const structuralEvidence=r.technicalEvidence?.length?
  '<section class="technical-block"><div class="source-title">STRUCTURAL DIMENSIONS / EVIDENCE STATUS</div>'+
@@ -145,8 +145,7 @@ function openReference(id,keepFocus=false){
    setTimeout(()=>URL.revokeObjectURL(f.url),30000)
   });
   plateNode.querySelector('#plate-expand').addEventListener('click',()=>{
-   const f=outputFile();const win=window.open(f.url,'_blank','noopener');
-   if(!win){const a=document.createElement('a');a.href=f.url;a.download='CliffAtlas_'+r.id+'_'+mode+'_interpretive.svg';a.click()}
+   const f=outputFile();const a=document.createElement('a');a.href=f.url;a.target='_blank';a.rel='noopener noreferrer';a.click();
    setTimeout(()=>URL.revokeObjectURL(f.url),180000)
   });
  }
@@ -161,7 +160,8 @@ $('#previous').addEventListener('click',()=>step(-1));
 $('#next').addEventListener('click',()=>step(1));
 $('#detail-close').addEventListener('click',()=>dialog.close());
 dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
-dialog.addEventListener('close',()=>{opened=null;if(returnFocus?.isConnected)returnFocus.focus()});
+dialog.addEventListener('close',()=>{opened=null;if(location.hash){const u=new URL(location.href);u.hash='';history.replaceState(null,'',u.href)}if(returnFocus?.isConnected)returnFocus.focus()});
 document.addEventListener('keydown',event=>{if(!dialog.open)return;if(event.key==='ArrowLeft'){event.preventDefault();step(-1)}if(event.key==='ArrowRight'){event.preventDefault();step(1)}});
 search.addEventListener('input',()=>{query=search.value;render()});
 render();
+const deepCase=decodeURIComponent(location.hash.slice(1));if(deepCase&&references.some(r=>r.id===deepCase))openReference(deepCase);
