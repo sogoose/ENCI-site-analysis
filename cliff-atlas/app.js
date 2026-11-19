@@ -1,4 +1,4 @@
-import {references} from './data.js?v=7';
+import {references} from './data.js?v=8';
 import {diagramFor} from './diagrams.js?v=9';
 import {hasStructuralPlate,structuralPlate} from './structural-plates.js?v=9';
 import {hasAxon,axonPlate,axonThumb} from './axon-plates.js?v=13';
