@@ -28,19 +28,68 @@ function rockface(xmin,xmax,high){
  return poly(back,"#dadbd5",slate,1)+poly(first,rock,slate,1.3)+poly(first,"url(#rocks)",slate,.3)+
  poly([[xmin,-167,high],[xmax,-167,high],[xmax,-100,high],[xmin,-100,high]],"#eeeee8",slate,.8);
 }
+
+// Tile geometry is schematic, based on recorded roof typologies and photos.
+// Courses are *graphic notation*, not a claim about tile sizes or count.
+// Roofs are a separate visible layer and can be hidden to inspect the frame.
+const interpolate=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
+const tileStroke=(a,b,w=0.8,c="#707871")=>line(a,b,c,w,'opacity=".62"');
+function tiledRoof({x0,x1,y0,y1,eave,rise,hip=0,tone="#abb0aa",outline="#4b5755",corner=0,tiles=10}){
+ const ym=(y0+y1)/2,ridge=eave+rise;
+ const bl=[x0,y0,eave+corner],br=[x1,y0,eave+corner],
+       fl=[x0,y1,eave+corner],fr=[x1,y1,eave+corner],
+       rl=[x0+hip,ym,ridge],rr=[x1-hip,ym,ridge];
+ const near0=[x0,ym,eave],near1=[x1,ym,eave];
+ // Far slope and hipped end faces first. Front tiled slope last.
+ let out=poly([bl,br,rr,rl],tone,outline,1.05)+
+  poly([bl,rl,fl],"#c4c5bd",outline,1)+
+  poly([br,fr,rr],"#959e97",outline,1)+
+  poly([rl,rr,fr,fl],tone,outline,1.2);
+ const n=Math.max(4,tiles);
+ for(let i=1;i<n;i++){
+  const t=i/n;
+  const root=interpolate(rl,rr,t);
+  const foot=interpolate(fl,fr,t);
+  out+=tileStroke(root,foot,0.8,outline);
+ }
+ // Roofing courses/ridges follow the sloping surface as architectural notation.
+ for(const t of [.27,.53,.78]){
+  const a=interpolate(rl,fl,t),b=interpolate(rr,fr,t);
+  out+=tileStroke(a,b,.55,"#e4e3dc");
+ }
+ out+=line(rl,rr,outline,2.4);
+ out+=line(fl,fr,outline,2.1);
+ // Hip edges are outlined; no fabricated dragon figurines or sized tile details.
+ out+=line(rl,fl,outline,1.25)+line(rr,fr,outline,1.25);
+ return out;
+}
+function podiumEave(x0,x1,y0,y1,z){
+ let a=block(x0,y0,z,x1-x0,y1-y0,5,"#9b8470","#665543");
+ for(let x=x0+12;x<x1-3;x+=19){
+  a+=beamY(x,y0+4,z-5,y1-y0-8,2);
+ }
+ return a;
+}
+
 function podok(mode){
  const front=96;let s=rockface(-65,397,492),marks="";
- // Floor, one-bay timber hall, one actual supported front edge. Roof merely
- // a volume-outline: real roof rafters/joints cannot be reconstructed from source.
+ // Floor, one-bay timber hall, one documented external support post.
+ // The multiple roof silhouettes are documented; layer heights and tile spacing aren't.
  s+=block(42,-13,295,300,109,13);
  if(mode!=="contact"){
   for(const x of [49,334])for(const y of [-8,88])s+=post(x,y,308,399,9);
   for(const y of [-8,88])s+=beamX(48,y,400,287,9);
   for(const x of [48,334])s+=beamY(x,-9,400,103,9);
-  s+=line([43,-12,426],[340,-12,426],slate,1.5,'stroke-dasharray="4 5"');
-  s+=line([43,96,426],[340,96,426],slate,1.5,'stroke-dasharray="4 5"');
-  s+=line([43,-12,426],[43,96,426],slate,1.5,'stroke-dasharray="4 5"');
-  s+=line([340,-12,426],[340,96,426],slate,1.5,'stroke-dasharray="4 5"');
+  // Paljak / matbae / ujin-gak roof sequence is documented for the
+  // cave-front elevation; geometry here depicts TYPES only, not a survey.
+  if(mode==="assembly"){
+   s+=podiumEave(26,355,-25,118,406);
+   s+=tiledRoof({x0:19,x1:365,y0:-29,y1:124,eave:415,rise:29,hip:34,tone:"#a7aea9",tiles:16});
+   // A narrower upper gable roof and a small hipped uppermost cap make
+   // the documented layered silhouette legible; exact heights unknown.
+   s+=tiledRoof({x0:76,x1:310,y0:-22,y1:108,eave:453,rise:22,hip:0,tone:"#b9bcb3",tiles:12});
+   s+=tiledRoof({x0:147,x1:255,y0:-17,y1:94,eave:483,rise:18,hip:39,tone:"#acb4ae",tiles:7});
+  }
  }
  for(const x of [73,135,196,257,322])s+=beamY(x,-10,294,111,5);
  s+=post(193,front,16,296,14,"#967857");
@@ -72,11 +121,20 @@ function xuankong(mode){
    for(const x of [a.x+19,a.x+147])for(const y of [15,105])s+=post(x,y,a.z+10,a.z+104,9);
    for(const y of [15,105])s+=beamX(a.x+15,y,a.z+103,138,9);
    for(const x of [a.x+19,a.x+147])s+=beamY(x,15,a.z+103,92,8);
-   s+=line([a.x+3,5,a.z+128],[a.x+165,5,a.z+128],slate,1,'stroke-dasharray="5 5"');
-   s+=line([a.x+3,108,a.z+128],[a.x+165,108,a.z+128],slate,1,'stroke-dasharray="5 5"');
+   if(mode==="assembly"){
+    // Photo-based Chinese-tile silhouette: low hipped roof, upturned
+    // ends, overlapping tile rows. The two bays remain representative.
+    s+=podiumEave(a.x-9,a.x+175,0,118,a.z+109);
+    s+=tiledRoof({x0:a.x-17,x1:a.x+181,y0:-12,y1:123,eave:a.z+119,rise:38,hip:29,corner:8,tone:"#c8ad78",outline:"#5b7770",tiles:11});
+   }
   }
  }
- if(mode!=="contact")s+=block(214,18,305,147,69,10);
+ if(mode!=="contact"){
+  s+=block(214,18,305,147,69,10);
+  // Documented open galleries use timber guardrails; frequency is schematic.
+  for(const x of [223,260,298,336])s+=post(x,83,315,342,3);
+  s+=beamX(223,83,341,114,3);
+ }
  // Supplementary props shown dashed: observed category, not placement/height.
  for(const [x,low,high] of [[215,135,289],[508,205,370]]){
   s+=post(x,107,low,high,8,"#8e7659");marks+=line([x,107,high-8],[x,107,high-69],blue,1.8,'stroke-dasharray="5 6"');
@@ -108,9 +166,10 @@ export function axonPlate(id,mode="assembly",mini=false){
   // In this axon the leader target is a known *category* of joint.
   svg+=focus(a[0],969,y,a[1],a[2]);
  });
+ svg+=writing(965,625,"ROOF / RECORDED TYPE, SCHEMATIC SHAPE",9.5,slate);
  svg+=writing(965,645,"EVIDENCE / DOCUMENTED FACTS",10,blue,600);
  o.facts.forEach((v,i)=>svg+=writing(965,670+i*18,v,9.7,slate));
- svg+=writing(35,763,"SCHEMATIC / NO VERIFIED GEOMETRY OR MEMBER SPACING",11,blue,600);
+ svg+=writing(35,763,"ROOF TILE LAYOUT SCHEMATIC · NO VERIFIED GEOMETRY OR MEMBER SPACING",11,blue,600);
  svg+=writing(1250,763,"NOT TO SCALE",11,slate);
  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 790" role="img" aria-label="Source-constrained '+(isPodok?'Podok':'Xuankong')+' structural axonometric">'+svg+'</svg>';
 }
