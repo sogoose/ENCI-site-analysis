@@ -55,6 +55,58 @@ shore:()=>[
  str("M98 108 H345",5,"#656b6c"),blue("M129 107 V128 M186 107 V139",3.2),node(129,123),node(186,135),
  label(114,26,"TIMBER / STEEL CABIN"),label(240,132,"OVER WATER")
 ].join(""),
+
+saseongam:()=>[
+ rock("M0 0 H112 L126 22 118 49 135 72 123 98 143 133 172 159 171 180 H0 Z"),
+ rock("M169 180 L180 156 207 150 223 180 Z"),
+ rock("M291 180 L300 147 317 145 330 180 Z"),
+ '<path d="M104 45 L173 30 H327 V93 H112 Z" fill="#f8f6f0" stroke="#423b33" stroke-width="2.6"/>',
+ str("M110 95 H329",7,"#85504a"),
+ str("M113 47 V93 M195 31 V93 M270 31 V93 M323 32 V93",2.7,"#8e5450"),
+ str("M106 38 L197 15 331 39",3.3),
+ str("M160 100 V157 M221 100 V157 M304 100 V147",7.5,"#a45f59"),
+ str("M157 111 L210 102 M217 111 L273 100",1.8,"#78614c"),
+ node(160,157),node(221,155),node(305,148),
+ label(175,10,"TEMPLE HALL"),
+ label(172,134,"LONG WOOD POSTS"),
+ label(190,173,"IRREGULAR ROCK LEDGES")
+].join(""),
+cliffposts:()=>[
+ rock("M0 180 L0 147 60 132 120 105 175 79 230 48 295 20 380 0 V180 Z"),
+ '<path d="M37 93 L102 85 151 67 205 48 264 25 315 7" fill="none" stroke="#a07950" stroke-width="9" stroke-linecap="square"/>',
+ str("M36 86 L99 78 149 60 202 41 262 18 312 0",1.8,"#3e352e"),
+ ...[[56,139],[111,110],[164,86],[220,53],[284,24]].map(([x,y])=>str("M"+x+" "+(y-43)+" V"+y,3,"#a2443a")),
+ ...[[56,139],[111,110],[164,86],[220,53],[284,24]].map(([x,y])=>node(x,y)),
+ str("M33 65 L315 -10",1.2),
+ label(14,27,"DECK ABOVE ROCK"),
+ label(173,153,"STEEL POSTS / ROCK"),
+ label(187,166,"CONTACTS NOT TO SCALE")
+].join(""),
+hantangang:()=>[
+ rock("M0 0 H129 L145 29 131 54 147 83 130 104 139 139 128 180 H0 Z"),
+ '<path d="M137 76 H365 V87 H137 Z" fill="#d2d9da" stroke="#434d51" stroke-width="2"/>',
+ str("M141 76V41 H363 M180 42V75 M220 42V75 M260 42V75 M300 42V75 M340 42V75",1.5),
+ str("M139 89 L241 123 M141 88 L274 142",2.4,"#596569"),
+ blue("M69 92 H149 M70 112 H140",3.4),node(74,92),node(75,112),
+ str("M143 86 V99",2),
+ label(171,26,"STEEL WALKWAY"),
+ label(174,165,"ROCK CONNECTION"),
+ label(9,151,"ANCHORS /"),
+ label(9,161,"AS REPORTED")
+].join(""),
+"korean-skywalk":()=>[
+ rock("M0 112 L67 114 101 119 122 146 157 170 168 180 H0 Z"),
+ '<path d="M59 74 H354 M62 78 H347" fill="none" stroke="#c1c8c9" stroke-width="10" stroke-linecap="square"/>',
+ str("M56 67 H350",3.5,"#58666d"),
+ str("M105 78 H354 M105 78 L238 127 M238 127 L354 80",4.7,"#6a757b"),
+ str("M110 80 L165 114 M164 114 L221 80 M221 80 L286 105 M286 105 L345 80",2.4,"#818a90"),
+ ...[161,218,284,345].map(x=>str("M"+x+" 52 V67",1.5,"#5b6669")),
+ node(93,110),node(105,117),
+ str("M55 106 L116 107",2,"#6d6760"),
+ label(175,42,"11 M PROJECTED SKYWALK"),
+ label(17,151,"BASE / FOUNDATIONS"),
+ label(17,164,"DETAIL UNVERIFIED")
+].join(""),
 sockets:()=>[
  // The rock-inserted beams carry cantilevered floor framing; visible lower
  // timber posts also reach intermittent rock ledges below the pavilions.
