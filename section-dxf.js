@@ -7,20 +7,28 @@ const clean=s=>String(s).replace(/[^\x20-\x7e]/g,c=>c==='′'?"'":c==='—'?'-':
 const rgb=s=>typeof s==='string'&&/^#[0-9a-f]{6}$/i.test(s)?parseInt(s.slice(1),16):null;
 export function sectionPoint(s,d,h,zOffset=0){const len=Math.hypot(s.b[0]-s.a[0],s.b[1]-s.a[1]);if(!len)throw Error('Zero section length');return [s.a[0]+(s.b[0]-s.a[0])*d/len,s.a[1]+(s.b[1]-s.a[1])*d/len,h-zOffset]}
 function writer(){
+ // ASCII DXF R12 (AC1009) is intentionally used: Rhino, AutoCAD and other CAD
+ // importers can read its 3D POLYLINE, POINT, 3DFACE and TEXT entities without
+ // the mandatory ownership / symbol tables of later DXF releases.
+ // All coordinates remain in the source model's XYZ system and metres.
  const entities=[],layers=new Map([['0',{aci:7}]]);let handle=0x100;
  const id=()=> (++handle).toString(16).toUpperCase();
  const push=(out,...pairs)=>{for(let i=0;i<pairs.length;i+=2){const v=pairs[i+1];if(typeof v==='number'&&!Number.isFinite(v))throw Error('Non-finite DXF number');out.push(String(pairs[i]),typeof v==='number'?String(Math.round(v*1e6)/1e6):String(v))}};
  const coord=(out,k,p)=>push(out,k,p[0],k+10,p[1],k+20,p[2]);
- function layer(name,aci=7,color=null){name=safe(name);if(!layers.has(name))layers.set(name,{aci,color:rgb(color)});return name}
- function start(type,name){push(entities,0,type,5,id(),100,'AcDbEntity',8,name)}
- function poly(name,pts,closed=false){if(pts.length<(closed?3:2))return;name=layer(name);start('POLYLINE',name);push(entities,100,'AcDb3dPolyline',66,1,10,0,20,0,30,0,70,closed?9:8);for(const p of pts){start('VERTEX',name);push(entities,100,'AcDbVertex',100,'AcDb3dPolylineVertex');coord(entities,10,p);push(entities,70,32)}start('SEQEND',name)}
- function point(name,p){name=layer(name);start('POINT',name);push(entities,100,'AcDbPoint');coord(entities,10,p)}
- function face(name,pts){if(pts.length<3)return;name=layer(name);start('3DFACE',name);push(entities,100,'AcDbFace');for(let i=0;i<4;i++)coord(entities,10+i,pts[Math.min(i,pts.length-1)])}
- // Text in the vertical section plane: arbitrary-axis basis for a horizontal extrusion normal.
- function text(name,p,value,height,dir=null){name=layer(name);start('TEXT',name);push(entities,100,'AcDbText');let q=p;if(dir){const [x,y]=dir;q=[p[0]*x+p[1]*y,p[2],p[0]*y-p[1]*x]}coord(entities,10,q);push(entities,40,height,1,clean(value),50,0,7,'STANDARD');if(dir)coord(entities,210,[dir[1],-dir[0],0]);push(entities,100,'AcDbText',73,0)}
- function finish(note){const out=[];push(out,999,clean(note),0,'SECTION',2,'HEADER',9,'$ACADVER',1,'AC1018',9,'$INSUNITS',70,6,9,'$MEASUREMENT',70,1,9,'$LUNITS',70,2,9,'$LUPREC',70,3,0,'ENDSEC',0,'SECTION',2,'TABLES',0,'TABLE',2,'LTYPE',5,'A',100,'AcDbSymbolTable',70,1,0,'LTYPE',5,'B',100,'AcDbSymbolTableRecord',100,'AcDbLinetypeTableRecord',2,'CONTINUOUS',70,0,3,'Solid line',72,65,73,0,40,0,0,'ENDTAB',0,'TABLE',2,'LAYER',5,'C',100,'AcDbSymbolTable',70,layers.size);
- for(const [name,v] of layers){push(out,0,'LAYER',5,id(),100,'AcDbSymbolTableRecord',100,'AcDbLayerTableRecord',2,name,70,0,62,v.aci,6,'CONTINUOUS');if(v.color!=null)push(out,420,v.color)}
- push(out,0,'ENDTAB',0,'TABLE',2,'STYLE',5,'D',100,'AcDbSymbolTable',70,1,0,'STYLE',5,'E',100,'AcDbSymbolTableRecord',100,'AcDbTextStyleTableRecord',2,'STANDARD',70,0,40,0,41,1,50,0,71,0,42,2.5,3,'txt',4,'',0,'ENDTAB',0,'ENDSEC',0,'SECTION',2,'ENTITIES');out.push(...entities);push(out,0,'ENDSEC',0,'EOF');return out.join('\r\n')+'\r\n'}
+ function layer(name,aci=7,color=null){name=safe(name);if(!layers.has(name))layers.set(name,{aci});return name}
+ function start(type,name){push(entities,0,type,5,id(),8,name)}
+ function poly(name,pts,closed=false){if(pts.length<(closed?3:2))return;name=layer(name);start('POLYLINE',name);push(entities,66,1,10,0,20,0,30,0,70,closed?9:8);for(const p of pts){start('VERTEX',name);coord(entities,10,p);push(entities,70,32)}start('SEQEND',name)}
+ function point(name,p){name=layer(name);start('POINT',name);coord(entities,10,p)}
+ function face(name,pts){if(pts.length<3)return;name=layer(name);start('3DFACE',name);for(let i=0;i<4;i++)coord(entities,10+i,pts[Math.min(i,pts.length-1)])}
+ // Text OCS basis keeps annotation on the actual vertical section plane.
+ function text(name,p,value,height,dir=null){name=layer(name);start('TEXT',name);let q=p;if(dir){const [x,y]=dir;q=[p[0]*x+p[1]*y,p[2],p[0]*y-p[1]*x]}coord(entities,10,q);push(entities,40,height,1,clean(value),50,0,7,'STANDARD');if(dir)coord(entities,210,[dir[1],-dir[0],0])}
+ function finish(note){const out=[];
+  push(out,999,clean(note),0,'SECTION',2,'HEADER',9,'$ACADVER',1,'AC1009',9,'$MEASUREMENT',70,1,9,'$LUNITS',70,2,9,'$LUPREC',70,3,0,'ENDSEC');
+  push(out,0,'SECTION',2,'TABLES',0,'TABLE',2,'LTYPE',70,1,0,'LTYPE',2,'CONTINUOUS',70,0,3,'Solid line',72,65,73,0,40,0,0,'ENDTAB',0,'TABLE',2,'LAYER',70,layers.size);
+  for(const [name,v] of layers)push(out,0,'LAYER',2,name,70,0,62,v.aci,6,'CONTINUOUS');
+  push(out,0,'ENDTAB',0,'TABLE',2,'STYLE',70,1,0,'STYLE',2,'STANDARD',70,0,40,0,41,1,50,0,71,0,42,2.5,3,'txt',4,'',0,'ENDTAB',0,'ENDSEC',0,'SECTION',2,'BLOCKS',0,'ENDSEC',0,'SECTION',2,'ENTITIES');
+  out.push(...entities);push(out,0,'ENDSEC',0,'EOF');return out.join('\r\n')+'\r\n'
+ }
  return {layer,poly,face,text,point,finish};
 }
 function runs(points,fn){let r=[];const flush=()=>{if(r.length>1)fn(r);r=[]};for(const p of points){if(Number.isFinite(p[0])&&Number.isFinite(p[1]))r.push(p);else flush()}flush()}
